@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mumbai Platform — App Blueprint</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+:root{--saffron:#E8702A;--deep:#0B1D3A;--teal:#1A8A7D;--sand:#F5F0E8;--cream:#FDFBF7;--ink:#1A1A1A;--muted:#6B7280;--border:#E2DDD5;--card:#fff;--glow:#FFF3E0;--red:#DC2626;--green:#059669;--purple:#7C3AED;--blue:#2563EB}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--cream);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+
+.hero{background:linear-gradient(135deg,var(--deep) 0%,#142d52 100%);color:#fff;padding:56px 24px 48px;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;top:-80px;right:-40px;width:300px;height:300px;background:radial-gradient(circle,rgba(232,112,42,.12) 0%,transparent 70%);border-radius:50%}
+.hero-inner{max-width:820px;margin:0 auto;position:relative;z-index:1}
+.hero-label{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--saffron);font-weight:700;margin-bottom:14px}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(26px,4.5vw,44px);font-weight:700;line-height:1.2;margin-bottom:14px}
+.hero h1 em{font-style:italic;color:var(--saffron)}
+.hero p{font-size:15px;color:rgba(255,255,255,.65);max-width:560px;line-height:1.7}
+
+.nav{position:sticky;top:0;z-index:100;background:var(--cream);border-bottom:1px solid var(--border);padding:0 24px}
+.nav-inner{max-width:820px;margin:0 auto;display:flex;overflow-x:auto;scrollbar-width:none;gap:0}
+.nav-inner::-webkit-scrollbar{display:none}
+.nav-tab{padding:13px 16px;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:.2s}
+.nav-tab:hover{color:var(--ink)}
+.nav-tab.active{color:var(--saffron);border-bottom-color:var(--saffron)}
+
+.s{max-width:820px;margin:0 auto;padding:44px 24px}
+.s+.s{border-top:1px solid var(--border)}
+.s-label{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:10px}
+.s h2{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;margin-bottom:12px;line-height:1.3}
+.s>.sub{color:var(--muted);font-size:14px;max-width:580px;margin-bottom:24px}
+
+/* data boxes */
+.metrics{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:20px 0}
+.metric{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.metric .big{font-size:26px;font-weight:800;color:var(--saffron);line-height:1}
+.metric .lbl{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.4}
+
+/* cards */
+.c{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:14px}
+.c h3{font-size:15px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.c p,.c li{font-size:13px;color:var(--muted);line-height:1.7}
+.c ul{padding-left:18px;margin-top:6px}
+.c li{margin-bottom:5px}
+.c li strong{color:var(--ink)}
+
+/* screen mockup */
+.screen-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:16px 0}
+.screen{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:transform .2s,box-shadow .2s}
+.screen:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.06)}
+.screen-top{background:var(--deep);color:#fff;padding:14px 16px 12px;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.screen-top .dot{width:8px;height:8px;border-radius:50%;background:var(--saffron)}
+.screen-body{padding:16px}
+.screen-body h4{font-size:14px;font-weight:600;margin-bottom:6px}
+.screen-body p{font-size:12px;color:var(--muted);line-height:1.6}
+.screen-body .tag{display:inline-block;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:12px;margin-top:10px}
+.tag-must{background:#FFEBEE;color:var(--red)}
+.tag-conv{background:#E8F5E9;color:var(--green)}
+.tag-ret{background:#EDE7F6;color:var(--purple)}
+.tag-del{background:#E3F2FD;color:var(--blue)}
+
+/* flow */
+.flow{display:flex;flex-direction:column;gap:0}
+.flow-step{display:flex;gap:16px;align-items:stretch}
+.flow-line{display:flex;flex-direction:column;align-items:center;width:24px;flex-shrink:0}
+.flow-dot{width:12px;height:12px;border-radius:50%;border:3px solid var(--saffron);background:var(--cream);flex-shrink:0;margin-top:18px}
+.flow-bar{flex:1;width:2px;background:var(--border)}
+.flow-content{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px;flex:1;margin:6px 0}
+.flow-content h4{font-size:14px;font-weight:600;margin-bottom:4px}
+.flow-content p{font-size:12px;color:var(--muted);line-height:1.6}
+
+/* insight */
+.insight{background:var(--glow);border-left:3px solid var(--saffron);border-radius:0 8px 8px 0;padding:14px 18px;margin:18px 0}
+.insight p{font-size:13px;color:var(--ink);line-height:1.7}
+.insight strong{color:var(--saffron)}
+
+/* comparison */
+.cmp{width:100%;border-collapse:collapse;font-size:12px;margin:16px 0}
+.cmp th{text-align:left;padding:10px 12px;background:var(--sand);font-weight:600;font-size:11px;letter-spacing:.5px;text-transform:uppercase}
+.cmp td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+.cmp .yes{color:var(--green);font-weight:700}
+.cmp .no{color:#ccc}
+.cmp .partial{color:var(--saffron);font-weight:600}
+
+.footer{text-align:center;padding:28px 24px;font-size:11px;color:var(--muted);border-top:1px solid var(--border)}
+
+@media(max-width:600px){.hero{padding:40px 18px 32px}.s{padding:32px 18px}.screen-row{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+<div class="hero-inner">
+<div class="hero-label">Mobile App Blueprint</div>
+<h1>Every screen, every tap — <em>engineered to convert</em></h1>
+<p>Research-backed app feature architecture for maximum bookings, minimum friction. Built for India's mobile-first, UPI-native, WhatsApp-sharing audience.</p>
+</div>
+</header>
+
+<nav class="nav">
+<div class="nav-inner">
+<div class="nav-tab active" onclick="go('why')">Why Mobile</div>
+<div class="nav-tab" onclick="go('screens')">Core Screens</div>
+<div class="nav-tab" onclick="go('checkout')">Checkout Flow</div>
+<div class="nav-tab" onclick="go('convert')">Conversion</div>
+<div class="nav-tab" onclick="go('retain')">Retention</div>
+<div class="nav-tab" onclick="go('india')">India-Specific</div>
+<div class="nav-tab" onclick="go('compare')">Competitor Map</div>
+</div>
+</nav>
+
+<!-- WHY MOBILE FIRST -->
+<section class="s" id="why">
+<div class="s-label">01 — The Case for Mobile</div>
+<h2>Mobile isn't a channel — it's the entire business</h2>
+<p class="sub">In India's travel market, mobile is where discovery, booking, and the experience itself all happen. The data makes the case clearly.</p>
+
+<div class="metrics">
+<div class="metric"><div class="big">83%</div><div class="lbl">Online bookings made on mobile devices</div></div>
+<div class="metric"><div class="big">75%</div><div class="lbl">Headout orders placed within 24-48 hours</div></div>
+<div class="metric"><div class="big">70%</div><div class="lbl">Klook bookings happen while at the destination</div></div>
+<div class="metric"><div class="big">86%</div><div class="lbl">Mobile cart abandonment rate (vs 70% desktop)</div></div>
+<div class="metric"><div class="big">72%</div><div class="lbl">Travelers more likely to choose brands with loyalty rewards</div></div>
+<div class="metric"><div class="big">35%</div><div class="lbl">Conversion lift possible by fixing documented UX issues</div></div>
+</div>
+
+<div class="insight">
+<p><strong>The paradox:</strong> Mobile won the traffic war but hasn't won the checkout war. Mobile conversion is half of desktop, and abandonment is 16 percentage points higher. This gap is your opportunity — every friction point you fix compounds directly into revenue. Klook's app earned the reputation as the "most polished" of all major tour booking apps by obsessing over this gap.</p>
+</div>
+</section>
+
+<!-- CORE SCREENS -->
+<section class="s" id="screens">
+<div class="s-label">02 — Screen Architecture</div>
+<h2>The 12 screens that make the app</h2>
+<p class="sub">Each screen has one job. Here's every screen your app needs, what goes on it, and which conversion / retention pattern it serves.</p>
+
+<div class="screen-row">
+
+<div class="screen">
+<div class="screen-top"><span class="dot"></span>Home / Discovery</div>
+<div class="screen-body">
+<h4>The "What should I do?" screen</h4>
+<p>Smart search bar with voice + text. Location auto-detect. Category pills (Hotels · Activities · Concerts · Food · Heritage · Nightlife). "Happening Now" live strip. Curated collections ("Monsoon Picks," "This Weekend"). Personalized "For You" feed based on past browsing. Trending / selling fast badges.</p>
+<span class="tag tag-conv">Discovery & Conversion</span>
+</div>
+</div>
+
+<div class="screen">
+<div class="screen-top"><span class="dot"></span>Search & Filters</div>
+<div class="screen-body">
+<h4>Instant, typo-tolerant results</h4>
+<p>Real-time search with auto-suggestions as you type. Filter drawer: neighborhood, price range, date, rating, group size, cancellation policy. Sort: recommended, price, rating, distance. Map toggle to see results geographically. Recent searches persist. Hindi transliteration support.</p>
+<span class="tag tag-conv">Conversion</span>
+</div>
+</div>
+
+<div class="screen">
+<div class="screen-top"><span class="dot"></span>Map View</div>
+<div class="screen-body">
+<h4>Explore by location</h4>
+<p>Airbnb-style map with color-coded pins (hotels = teal, activities = saffron, events = purple). Tap pin → preview card slides up with image, price, rating. Cluster pins in dense areas. "Search this area" on map drag. Integrates with "near me" queries.</p>
+<span class="tag tag-conv">Conversion</span>
+</div>
+</div>
+
+<div class="screen">
+<div class="screen-top"><span class="dot"></span>Listing Detail</div>
+<div class="screen-body">
+<h4>The decision screen — make or break</h4>
+<p>Full-bleed photo gallery (swipe). Sticky bottom bar: price + "Book Now" always visible. Key info strip: duration, group size, languages, cancellation badge. Tabs: Overview · What's Included · Reviews · Location · Similar. Transparent pricing — no hidden fees. Operator info with response time.</p>
+<span class="tag tag-must">Critical for Conversion</span>
+</div>
+</div>
+
+<div class="screen">
+<div class="screen-top"><span class="dot"></span>Reviews & Photos</div>
+<div class="screen-body">
+<h4>Social proof that sells</h4>
+<p>Star ratings + review count on every card. Photo reviews from real travelers. "Most helpful" and "Most recent" sort. Filter by rating, traveler type (solo / family / couple). Verified-purchase badges. AI-summarized review highlights at top. Rating breakdown chart.</p>
+<span class="tag tag-conv">Conversion</span>
+</div>
+</div>
+
+<div class="screen">
+<div class="screen-top"><span class="dot"></span>Date & Time Picker</div>
+<div class="screen-body">
+<h4>Reduce selection friction</h4>
+<p>Calendar with availability color-coded (green = available, gray = sold out, yellow = few left). Time slot grid with real-time availability. "Flexible dates" toggle showing cheapest days. Smart default to next available date. Scarcity signals from real inventory.</p>
+<span class="tag tag-conv">Conversion</span>
+</div>
+</div>
+
+<div class="screen">
+<div class="screen-top"><span class="dot"></span>Checkout</div>
+<div class="screen-body">
+<h4>One-page, 3-tap completion</h4>
+<p>Single scrollable page — no multi-step wizard. Guest checkout (no forced sign-up). UPI as default payment with QR. Auto-fill everything possible. Transparent price breakdown. Cancellation policy reminder inline. Trust badges. Apply promo / loyalty points. Confirm → instant QR ticket.</p>
+<span class="tag tag-must">Critical for Conversion</span>
+</div>
+</div>
+
+<div class="screen">
+<div class="screen-top"><span class="dot"></span>Ticket Wallet</div>
+<div class="screen-body">
+<h4>Your tickets, offline-ready</h4>
+<p>All active bookings as scannable QR codes. Works offline — no internet needed at venue. Directions to meeting point with one-tap navigation. Booking details: date, time, participants, operator contact. Add to Apple/Google Wallet. Share ticket via WhatsApp.</p>
+<span class="tag tag-del">Delight</span>
+</div>
+</div>
+
+<div class="screen">
+<div class="screen-top"><span class="dot"></span>My Trips / Bookings</div>
+<div class="screen-body">
+<h4>Past, present, future — all in one</h4>
+<p>Tabs: Upcoming · Completed · Cancelled. Each card shows status, date, QR access. One-tap re-book for completed trips. Review prompt after completion. Download invoice / receipt. Cancellation and refund status tracking.</p>
+<span class="tag tag-ret">Retention</span>
+</div>
+</div>
+
+<div class="screen">
+<div class="screen-top"><span class="dot"></span>Wishlist & Collections</div>
+<div class="screen-body">
+<h4>Save now, book later</h4>
+<p>Heart-to-save from any card. Organize into named lists ("Monsoon Plans," "Mom's Visit"). Share lists via WhatsApp link — friends can view and book. Price drop notifications for wishlisted items. Collaborative lists for group trips.</p>
+<span class="tag tag-ret">Retention</span>
+</div>
+</div>
+
+<div class="screen">
+<div class="screen-top"><span class="dot"></span>Profile & Rewards</div>
+<div class="screen-body">
+<h4>Loyalty that compounds</h4>
+<p>Points balance with visual progress to next tier. Tier badges (Explorer → Insider → Legend). Booking history. Saved payment methods. Referral code with earnings tracker. Preferences: language, neighborhoods, categories. Notification settings.</p>
+<span class="tag tag-ret">Retention</span>
+</div>
+</div>
+
+<div class="screen">
+<div class="screen-top"><span class="dot"></span>AI Trip Planner</div>
+<div class="screen-body">
+<h4>Chat → itinerary → booking</h4>
+<p>"I have 2 days in Mumbai with ₹8,000 budget" → generates full itinerary with bookable cards inline. Suggests hotel + activity combos. Adjusts for weather, time of day, group size. Save itinerary to My Trips. Share plan via WhatsApp.</p>
+<span class="tag tag-del">Delight</span>
+</div>
+</div>
+
+</div>
+</section>
+
+<!-- CHECKOUT FLOW -->
+<section class="s" id="checkout">
+<div class="s-label">03 — The Checkout That Converts</div>
+<h2>From "Book Now" to "Confirmed" in under 60 seconds</h2>
+<p class="sub">70% of travel bookings are abandoned at checkout. Unexpected costs, forced sign-up, and slow load are the top three killers. Here's the fix.</p>
+
+<div class="flow">
+
+<div class="flow-step">
+<div class="flow-line"><div class="flow-dot"></div><div class="flow-bar"></div></div>
+<div class="flow-content">
+<h4>Tap 1 — Select date & time</h4>
+<p>Calendar pre-defaults to nearest available date. Time slots show real-time availability. "Few spots left" from actual inventory, never fake. Tap a slot → slides down to guest count.</p>
+</div>
+</div>
+
+<div class="flow-step">
+<div class="flow-line"><div class="flow-dot"></div><div class="flow-bar"></div></div>
+<div class="flow-content">
+<h4>Tap 2 — Guest count & add-ons</h4>
+<p>Stepper for adults/children. Optional add-ons (VIP upgrade, transport, combo deals) shown as toggle cards — not hidden upsells. Price updates live as you adjust. Running total always visible.</p>
+</div>
+</div>
+
+<div class="flow-step">
+<div class="flow-line"><div class="flow-dot"></div><div class="flow-bar"></div></div>
+<div class="flow-content">
+<h4>Tap 3 — Pay & confirm</h4>
+<p>Guest checkout — just name + email + phone. No forced account creation (lifts conversion up to 45%). UPI QR auto-appears as default. One-tap Google Pay / PhonePe. Cards with auto-fill. Full price breakdown visible: base + taxes + service fee. Cancellation policy one line above button. Apply promo code / loyalty points. Single "Confirm & Pay" button. Haptic feedback on success.</p>
+</div>
+</div>
+
+<div class="flow-step">
+<div class="flow-line"><div class="flow-dot"></div><div class="flow-bar" style="background:transparent"></div></div>
+<div class="flow-content">
+<h4>Instant — Confirmation</h4>
+<p>Confetti animation. QR ticket appears immediately in-app. WhatsApp confirmation sent. Calendar event auto-add prompt. "Share with friends" button (WhatsApp, Instagram story). Operator meeting point with map. "What to bring" checklist.</p>
+</div>
+</div>
+
+</div>
+
+<div class="insight">
+<p><strong>Research finding:</strong> One-page checkout reduces abandonment by 20% on average. Baymard Institute's benchmarking shows optimized flows need only 7-8 form fields — the average checkout has 15. For travel specifically, abandoned-booking reminder emails achieve a 42% open rate and push notifications can increase AOV by 25-40%.</p>
+</div>
+
+<div class="c">
+<h3>🚨 Anti-patterns to avoid (common mistakes)</h3>
+<ul>
+<li><strong>Never force account creation before checkout</strong> — the #1 mobile conversion killer. Let users create accounts post-booking via "save your booking details" prompt.</li>
+<li><strong>Never show surprise fees at the end</strong> — hidden charges cause 48% of abandonment. Show the full price on the listing card itself.</li>
+<li><strong>Never require typing where tapping works</strong> — date pickers, steppers, toggles. Every keystroke on mobile is friction.</li>
+<li><strong>Never break the back button</strong> — users who go back to compare should return to their exact scroll position, filters intact.</li>
+<li><strong>Never auto-scroll past the price</strong> — the sticky "Book Now" bar with price must be visible at all times on the detail page.</li>
+<li><strong>Never make cancellation policy hard to find</strong> — show it on the card, on the detail page, and in checkout. Transparency builds trust.</li>
+</ul>
+</div>
+</section>
+
+<!-- CONVERSION FEATURES -->
+<section class="s" id="convert">
+<div class="s-label">04 — Conversion Levers</div>
+<h2>Features that turn browsers into buyers</h2>
+<p class="sub">Each feature below has a documented conversion impact. Prioritize these in your first release.</p>
+
+<div class="c">
+<h3>⚡ Speed — The foundation</h3>
+<p>A 0.1-second improvement in load time = 10% conversion lift (Loveholidays/Deloitte study). Target: app launch to first content in under 1.5 seconds. Use skeleton screens during data loads. Pre-fetch listing details when the card enters viewport. Cache recently viewed listings for instant back-navigation. Lazy-load images below the fold. Compress and serve images in WebP format.</p>
+</div>
+
+<div class="c">
+<h3>🔥 Urgency & Scarcity (from real data only)</h3>
+<ul>
+<li><strong>"Only 3 spots left"</strong> — from actual inventory, never fabricated. Booking.com pioneered this; it works because it's rooted in truth.</li>
+<li><strong>"12 people viewing this right now"</strong> — real-time counter creates social proof and urgency simultaneously.</li>
+<li><strong>"Price goes up in 2 hours"</strong> — for flash deals or events approaching sellout. Timer countdown on card.</li>
+<li><strong>"Selling fast" badge</strong> — auto-applied when booking velocity exceeds threshold for that listing.</li>
+</ul>
+</div>
+
+<div class="c">
+<h3>💳 Payment Flexibility</h3>
+<ul>
+<li><strong>UPI as default</strong> — not buried in a dropdown. QR code auto-displayed. India's dominant payment method.</li>
+<li><strong>Book Now, Pay Later</strong> — via Simpl, LazyPay, or Razorpay's BNPL. 35% of Gen Z say installment plans decide how many trips they take.</li>
+<li><strong>Delayed payment</strong> — GetYourGuide's model: commit now, charged near the date. Reduces psychological friction for advance bookings.</li>
+<li><strong>International cards + UPI One World</strong> — for tourists. Auto-detect currency, show INR + their currency.</li>
+</ul>
+</div>
+
+<div class="c">
+<h3>🎯 Personalization Engine</h3>
+<ul>
+<li><strong>Recently viewed</strong> — sticky row on home screen. Instant re-access without re-searching.</li>
+<li><strong>"Because you booked X"</strong> — recommendation cards based on booking history.</li>
+<li><strong>Location-aware suggestions</strong> — "You're in Bandra. Here's what's happening within 2km in the next 3 hours."</li>
+<li><strong>Weather-aware surfacing</strong> — monsoon = push indoor activities. Winter = beach + outdoor. Real-time weather API integration.</li>
+<li><strong>Smart defaults</strong> — date picker defaults to this weekend. Location defaults to detected neighborhood. Category defaults to most-browsed.</li>
+</ul>
+</div>
+
+<div class="c">
+<h3>📲 Abandoned Booking Recovery</h3>
+<ul>
+<li><strong>Push notification (within 1 hour)</strong> — "Your [experience name] is still available. Complete your booking?"</li>
+<li><strong>WhatsApp reminder (within 3 hours)</strong> — with deep link straight back to checkout with cart pre-filled.</li>
+<li><strong>Email with incentive (within 24 hours)</strong> — "Use code COMEBACK10 for 10% off your booking."</li>
+<li><strong>Impact:</strong> Abandoned-booking reminder emails achieve 42% open rate. Push notifications can increase AOV by 25-40%.</li>
+</ul>
+</div>
+
+<div class="c">
+<h3>🔗 Deep Linking & Attribution</h3>
+<ul>
+<li><strong>Every listing has a shareable deep link</strong> — opens directly in the app (or web fallback). Critical for WhatsApp sharing, Instagram stories, creator affiliate links.</li>
+<li><strong>Smart app banners on mobile web</strong> — "Open in app for ₹100 off your first booking." Not annoying interstitials, a subtle persistent banner.</li>
+<li><strong>UTM tracking on every link</strong> — know which Instagram reel, which creator, which WhatsApp group drove each booking.</li>
+</ul>
+</div>
+</section>
+
+<!-- RETENTION -->
+<section class="s" id="retain">
+<div class="s-label">05 — Retention & Lifecycle</div>
+<h2>Getting them back — again and again</h2>
+<p class="sub">80% of customers stay with brands that have good loyalty programs. The post-booking experience is where lifetime value is built.</p>
+
+<div class="c">
+<h3>🏆 Loyalty Program — "Mumbai Insider"</h3>
+<ul>
+<li><strong>Points on every booking</strong> — ₹100 spent = 10 points. Redeemable as discount on future bookings.</li>
+<li><strong>3 tiers:</strong> Explorer (0-500 pts) → Insider (500-2000 pts) → Legend (2000+ pts)</li>
+<li><strong>Tier perks escalate:</strong> Explorer gets birthday discounts. Insider gets early access to event tickets + 5% cashback. Legend gets exclusive experiences + free cancellation on everything + priority support.</li>
+<li><strong>Flash deal alerts:</strong> Higher tiers get earlier notification of flash sales (Klook's proven model).</li>
+<li><strong>Gamification:</strong> "Book 3 experiences this month, earn 2x points." Monthly challenges keep engagement fresh.</li>
+</ul>
+</div>
+
+<div class="c">
+<h3>🔔 Smart Notification Strategy</h3>
+<ul>
+<li><strong>Never spam. Segment ruthlessly.</strong> Segmented notifications increase open rates by 50%.</li>
+<li><strong>Pre-trip:</strong> Weather update, packing suggestion, meeting point reminder (24h before).</li>
+<li><strong>During trip:</strong> "You're near [landmark]. Skip-the-line ticket available for the next hour."</li>
+<li><strong>Post-trip:</strong> Review prompt (with photo upload incentive — +50 points), "Book again" for repeatable experiences.</li>
+<li><strong>Re-engagement:</strong> "This weekend in Mumbai: [curated list]" — weekly digest for inactive users.</li>
+<li><strong>Price drops:</strong> "An experience on your wishlist just dropped ₹200." High-intent, high-conversion.</li>
+</ul>
+</div>
+
+<div class="c">
+<h3>📣 Viral Loops Built In</h3>
+<ul>
+<li><strong>Referral program:</strong> "Invite a friend, you both get ₹200 off." Referral programs boost acquisition by 25%.</li>
+<li><strong>WhatsApp sharing:</strong> Every booking, wishlist, and itinerary has a one-tap WhatsApp share button. The share card is a beautiful preview with image + price + CTA link. India's primary sharing channel.</li>
+<li><strong>Instagram story cards:</strong> Post-booking, offer a branded "I'm going to [experience]" story template. Free marketing from every booking.</li>
+<li><strong>Group booking:</strong> "Split this trip" — generate a link, friends join and pay their share. Coordination is the biggest friction for group plans.</li>
+</ul>
+</div>
+
+<div class="c">
+<h3>📊 Post-Booking Value Chain</h3>
+<ul>
+<li><strong>Cross-sell at confirmation:</strong> "Add a hotel near this activity" or "Combo: add lunch tour for ₹400 more." Non-intrusive, relevant.</li>
+<li><strong>Live experience layer:</strong> During the activity, the app shows a mini-guide: nearby restaurants, photo spots, next recommended activity. Extends session time.</li>
+<li><strong>Review → rewards loop:</strong> Photo reviews earn 50 bonus points. Top reviewers get "Local Expert" badge. UGC feeds back into listing quality.</li>
+<li><strong>One-click re-book:</strong> For activities users repeat (monthly comedy shows, seasonal treks). Reduces re-booking to zero effort.</li>
+</ul>
+</div>
+</section>
+
+<!-- INDIA SPECIFIC -->
+<section class="s" id="india">
+<div class="s-label">06 — India-Specific Features</div>
+<h2>What makes this app native to India</h2>
+<p class="sub">Global travel apps miss these. Getting them right is your unfair advantage over Klook, GetYourGuide, and Headout in the Indian market.</p>
+
+<div class="screen-row">
+
+<div class="screen">
+<div class="screen-top"><span class="dot"></span>UPI-Native Payments</div>
+<div class="screen-body">
+<h4>UPI first, not last</h4>
+<p>UPI QR as the primary checkout UI — not a radio button in a list. Support Google Pay, PhonePe, Paytm, BHIM intent flows. Auto-detect installed UPI app. For tourists: UPI One World wallet integration + international cards with zero FX fee display.</p>
+<span class="tag tag-must">Critical</span>
+</div>
+</div>
+
+<div class="screen">
+<div class="screen-top"><span class="dot"></span>WhatsApp-First Comms</div>
+<div class="screen-body">
+<h4>India's OS is WhatsApp</h4>
+<p>Booking confirmations via WhatsApp (not just email). Operator communication on WhatsApp. Share itineraries, wishlists, group plans via WhatsApp deep links. WhatsApp Business API for booking reminders and support. The #1 viral channel in India.</p>
+<span class="tag tag-must">Critical</span>
+</div>
+</div>
+
+<div class="screen">
+<div class="screen-top"><span class="dot"></span>Multi-Language</div>
+<div class="screen-body">
+<h4>English · Hindi · Marathi</h4>
+<p>Full UI in three languages — not machine-translated labels, but native copy. Auto-detect from device language, easy toggle in header. Hindi search with transliteration (typing "mumbai darshan" in Devanagari or Roman). Marathi for local operators' descriptions.</p>
+<span class="tag tag-conv">Conversion</span>
+</div>
+</div>
+
+<div class="screen">
+<div class="screen-top"><span class="dot"></span>Offline Mode</div>
+<div class="screen-body">
+<h4>Works without internet</h4>
+<p>QR tickets available offline — critical at venues with poor connectivity. Cached maps for meeting point navigation. Saved booking details accessible without data. Booking syncs when back online. India's mobile networks are variable; offline is non-negotiable.</p>
+<span class="tag tag-del">Delight</span>
+</div>
+</div>
+
+<div class="screen">
+<div class="screen-top"><span class="dot"></span>Low-Data Mode</div>
+<div class="screen-body">
+<h4>Fast on 4G, functional on 3G</h4>
+<p>Compressed images by default (<100KB per card). Skeleton screens instead of spinners. Lazy-load everything below fold. Total home screen payload under 500KB. Progressive image loading (blur → sharp). Remember: 40% of India still browses on variable networks.</p>
+<span class="tag tag-must">Critical</span>
+</div>
+</div>
+
+<div class="screen">
+<div class="screen-top"><span class="dot"></span>Festival & Season Awareness</div>
+<div class="screen-body">
+<h4>Calendar-native to India</h4>
+<p>Ganesh Chaturthi, Diwali, Navratri, Holi — curated event collections auto-surface ahead of major festivals. Monsoon mode (Jun-Sep) pushes indoor activities. "Long weekend planner" auto-detects India's holiday calendar and suggests getaways.</p>
+<span class="tag tag-ret">Retention</span>
+</div>
+</div>
+
+</div>
+</section>
+
+<!-- COMPETITOR MAP -->
+<section class="s" id="compare">
+<div class="s-label">07 — Feature Comparison</div>
+<h2>Where you can beat every competitor</h2>
+<p class="sub">No existing app combines all these features for the Mumbai market. Here's the competitive gap analysis.</p>
+
+<div style="overflow-x:auto">
+<table class="cmp">
+<thead>
+<tr>
+<th>Feature</th>
+<th>Klook</th>
+<th>Headout</th>
+<th>GYG</th>
+<th>BookMyShow</th>
+<th>Your App</th>
+</tr>
+</thead>
+<tbody>
+<tr><td><strong>Hotels + Activities + Events</strong></td><td class="partial">Partial</td><td class="no">No</td><td class="no">No</td><td class="partial">Events only</td><td class="yes">✓ All</td></tr>
+<tr><td><strong>Mumbai-deep curation</strong></td><td class="no">Thin</td><td class="no">Thin</td><td class="no">Thin</td><td class="partial">Events</td><td class="yes">✓ Deep</td></tr>
+<tr><td><strong>UPI-first checkout</strong></td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+<tr><td><strong>WhatsApp integration</strong></td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="partial">Basic</td><td class="yes">✓ Deep</td></tr>
+<tr><td><strong>Hindi / Marathi UI</strong></td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="partial">Hindi</td><td class="yes">✓ Both</td></tr>
+<tr><td><strong>"Happening Now" feed</strong></td><td class="no">No</td><td class="yes">✓</td><td class="no">No</td><td class="no">No</td><td class="yes">✓</td></tr>
+<tr><td><strong>Offline QR tickets</strong></td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+<tr><td><strong>Bundle pricing (hotel + activity)</strong></td><td class="yes">✓</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="yes">✓</td></tr>
+<tr><td><strong>AI trip planner</strong></td><td class="no">No</td><td class="no">No</td><td class="partial">Beta</td><td class="no">No</td><td class="yes">✓</td></tr>
+<tr><td><strong>Group booking / split pay</strong></td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="yes">✓</td></tr>
+<tr><td><strong>Loyalty program</strong></td><td class="yes">✓ Best</td><td class="no">No</td><td class="no">No</td><td class="partial">Basic</td><td class="yes">✓</td></tr>
+<tr><td><strong>Weekend getaway bundles</strong></td><td class="partial">Limited</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="yes">✓</td></tr>
+<tr><td><strong>Festival/monsoon awareness</strong></td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="partial">Events</td><td class="yes">✓</td></tr>
+<tr><td><strong>Creator affiliate program</strong></td><td class="yes">✓ 20K+</td><td class="no">No</td><td class="partial">Basic</td><td class="no">No</td><td class="yes">✓</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="insight">
+<p><strong>The whitespace is clear.</strong> No app combines hotels + activities + events with Mumbai-deep curation, UPI-native payments, WhatsApp integration, Hindi/Marathi support, and India's festival calendar. BookMyShow does events but not hotels or activities. Klook and Headout do activities but have thin Mumbai coverage and no India-native payment or language support. You don't need to beat them globally — you just need to own Mumbai completely.</p>
+</div>
+
+<div class="c">
+<h3>📱 Tech Stack for the App</h3>
+<ul>
+<li><strong>Framework:</strong> React Native (one codebase, iOS + Android) or Flutter for performance-critical animations</li>
+<li><strong>State:</strong> Redux / Zustand for offline-capable state management</li>
+<li><strong>Payments:</strong> Razorpay SDK (UPI + cards + wallets + BNPL in one integration)</li>
+<li><strong>Maps:</strong> Google Maps SDK with custom pin clusters</li>
+<li><strong>Notifications:</strong> Firebase Cloud Messaging + WhatsApp Business API</li>
+<li><strong>Search:</strong> Algolia with Hindi transliteration + typo tolerance</li>
+<li><strong>Analytics:</strong> Mixpanel for funnel tracking, FullStory for session replay</li>
+<li><strong>Deep links:</strong> Branch.io for universal links across WhatsApp, Instagram, web</li>
+<li><strong>Offline:</strong> SQLite local cache for tickets, WatermelonDB for offline-first data</li>
+<li><strong>Backend:</strong> Node.js + PostgreSQL (Supabase) + Redis cache</li>
+</ul>
+</div>
+
+<div class="c">
+<h3>🚀 MVP → V1 → V2 Roadmap</h3>
+<ul>
+<li><strong>MVP (8-10 weeks):</strong> Home discovery, search + filters, listing detail, checkout (UPI + cards), ticket wallet, push notifications. 50+ Mumbai listings. Web + mobile.</li>
+<li><strong>V1 (4-6 weeks after):</strong> Loyalty program, wishlists, reviews system, WhatsApp confirmations, map view, creator affiliate links, abandoned booking recovery.</li>
+<li><strong>V2 (6-8 weeks after):</strong> AI trip planner, group booking / split pay, hotel vertical with bundles, Hindi/Marathi UI, Instagram story cards, festival auto-curation, analytics dashboard for operators.</li>
+</ul>
+</div>
+</section>
+
+<footer class="footer">Mumbai Experience Platform — Mobile App Blueprint · Research compiled August 2026</footer>
+
+<script>
+function go(id){document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'})}
+const ids=['why','screens','checkout','convert','retain','india','compare'];
+const tabs=document.querySelectorAll('.nav-tab');
+window.addEventListener('scroll',()=>{
+let c='';ids.forEach(id=>{const el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<=80)c=id});
+tabs.forEach(t=>{t.classList.remove('active');if(t.getAttribute('onclick')?.includes(c))t.classList.add('active')});
+});
+</script>
+</body>
+</html>
