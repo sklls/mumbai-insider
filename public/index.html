@@ -1,61 +1,35 @@
 <!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
 <title>Mumbai Insider</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B0D12">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23FF6A50'/%3E%3Ctext x='50%25' y='55%25' font-size='20' text-anchor='middle' dominant-baseline='middle' fill='white' font-family='sans-serif' font-weight='700'%3EM%3C/text%3E%3C/svg%3E">
 <style>
-/* ============================================================
-   BASALT — dark cinematic single-world design
-   ============================================================ */
 :root{
-  --bg:#0B0D12;
-  --bg-2:#0F1218;
-  --surface:#151A22;
-  --surface-2:#1A1F28;
-  --border:#242A36;
-  --border-strong:#323949;
-  --text:#ECEEF3;
-  --text-2:#C7CBD6;
-  --muted:#8A93A6;
-  --muted-2:#5C6577;
-  --accent:#FF6A50;
-  --accent-2:#FF8A6E;
-  --accent-glow:rgba(255,106,80,.22);
-  --success:#2ECC8F;
-  --amber:#F2A93C;
-  --danger:#FF5470;
-
+  --bg:#0B0D12; --bg-2:#0F1218; --surface:#151A22; --surface-2:#1A1F28;
+  --elevated:#1F2632; --border:#242A36; --border-2:#323949;
+  --text:#ECEEF3; --text-2:#C7CBD6; --muted:#8A93A6; --muted-2:#5C6577;
+  --accent:#FF6A50; --accent-2:#FF8A6E; --accent-glow:rgba(255,106,80,.22);
+  --success:#2ECC8F; --amber:#F2A93C; --danger:#FF5470;
   --ease-spring:cubic-bezier(.32,.72,0,1);
-  --ease-swift:cubic-bezier(.22,.61,.36,1);
-
   --f-display:'Bricolage Grotesque','Hanken Grotesk',system-ui,sans-serif;
   --f-body:'Hanken Grotesk',system-ui,-apple-system,sans-serif;
   --f-mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
-
-  --shadow-1:0 1px 2px rgba(0,0,0,.5), 0 8px 22px -10px rgba(0,0,0,.55);
-  --shadow-2:0 2px 4px rgba(0,0,0,.5), 0 22px 60px -20px rgba(0,0,0,.7);
-  --shadow-glow:0 0 0 1px rgba(255,106,80,.22), 0 12px 40px -8px rgba(255,106,80,.35);
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
 html{scroll-behavior:smooth}
-@media (prefers-reduced-motion: reduce){
-  html{scroll-behavior:auto}
-  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
-}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 body{
-  font-family:var(--f-body);
-  color:var(--text);
-  background:var(--bg);
-  min-height:100vh;
-  -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
-  position:relative;
-  font-feature-settings:'ss01','cv02','cv11';
-  letter-spacing:-0.005em;
+  font-family:var(--f-body);color:var(--text);background:var(--bg);
+  min-height:100vh;-webkit-font-smoothing:antialiased;
+  letter-spacing:-.005em;overflow-x:hidden;position:relative;
 }
-/* ambient backdrop */
 body::before{
   content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   background:
@@ -63,236 +37,77 @@ body::before{
     radial-gradient(900px 700px at 100% 12%, rgba(80,120,255,.06), transparent 60%),
     radial-gradient(1000px 900px at 50% 120%, rgba(255,106,80,.05), transparent 60%);
 }
-body::after{ /* grain */
-  content:'';position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.06;mix-blend-mode:overlay;
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-}
 
-/* ============================================================
-   MASTHEAD
-   ============================================================ */
-.top{
-  position:relative;z-index:5;
-  max-width:1240px;margin:0 auto;padding:34px 32px 8px;
-  display:flex;align-items:center;justify-content:space-between;gap:18px;
+/* ============ STAGE ============ */
+.stage{
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-start;gap:20px;padding:26px 20px 60px;position:relative;z-index:2;
 }
 .brand{display:flex;align-items:center;gap:10px;font-weight:600;letter-spacing:.02em}
 .brand-mark{
-  width:28px;height:28px;border-radius:8px;position:relative;flex-shrink:0;
+  width:26px;height:26px;border-radius:7px;position:relative;flex-shrink:0;
   background:linear-gradient(140deg,#FF7B5C,#FF5030);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.35), 0 6px 16px -6px var(--accent-glow);
 }
 .brand-mark::after{content:'';position:absolute;inset:6px;border-radius:4px;border:1.5px solid rgba(255,255,255,.35);border-bottom:none;border-right:none;transform:rotate(45deg)}
-.brand-name{font-size:14.5px}
+.brand-name{font-size:14px}
 .brand-name em{font-style:normal;color:var(--muted)}
-.top-meta{font-family:var(--f-mono);font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
 
-.hero{
-  position:relative;z-index:5;
-  max-width:1240px;margin:0 auto;padding:24px 32px 52px;
-  display:flex;flex-direction:column;gap:22px;align-items:flex-start;
+.hint{
+  font-family:var(--f-mono);font-size:10px;color:var(--muted);letter-spacing:.14em;
+  text-transform:uppercase;text-align:center;
 }
-.hero .eyebrow{
-  font-family:var(--f-mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--accent);display:flex;align-items:center;gap:10px;
-}
-.hero .eyebrow::before{content:'';width:22px;height:1px;background:var(--accent);opacity:.8}
-.hero h1{
-  font-family:var(--f-display);font-weight:600;
-  font-size:clamp(38px,6.6vw,80px);line-height:.98;letter-spacing:-0.035em;
-  margin:0;max-width:14ch;text-wrap:balance;
-}
-.hero h1 em{font-style:italic;color:var(--muted);font-weight:500}
-.hero .lead{
-  font-size:clamp(15px,1.5vw,18px);color:var(--text-2);line-height:1.55;
-  max-width:56ch;margin:0;
-}
-.hero .quick{display:flex;gap:22px;flex-wrap:wrap;margin-top:2px}
-.quick-stat{display:flex;flex-direction:column;gap:2px}
-.quick-stat b{font-family:var(--f-display);font-size:22px;font-weight:600;letter-spacing:-.02em}
-.quick-stat span{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.hint b{color:var(--text);font-weight:500}
 
-/* ============================================================
-   SCROLLYTELLING WORKBENCH
-   ============================================================ */
-.workbench{
-  position:relative;z-index:5;
-  max-width:1240px;margin:0 auto;padding:0 32px 120px;
-  display:grid;grid-template-columns:96px 1fr 460px;gap:36px;align-items:flex-start;
-}
-
-/* dot nav */
-.dotnav{
-  position:sticky;top:calc(50vh - 200px);align-self:start;
-  display:flex;flex-direction:column;gap:2px;padding:14px 8px;
-  background:linear-gradient(180deg, rgba(21,26,34,.6), rgba(21,26,34,.35));
-  border:1px solid var(--border);border-radius:100px;backdrop-filter:blur(14px);
-  -webkit-backdrop-filter:blur(14px);
-  box-shadow:var(--shadow-1);
-}
-.dotnav button{
-  all:unset;position:relative;cursor:pointer;display:flex;align-items:center;justify-content:center;
-  width:34px;height:34px;border-radius:50%;
-}
-.dotnav button::after{
-  content:'';width:6px;height:6px;border-radius:50%;background:var(--muted-2);
-  transition:transform .35s var(--ease-spring), background .3s ease;
-}
-.dotnav button:hover::after{background:var(--muted);transform:scale(1.25)}
-.dotnav button.on::after{background:var(--accent);transform:scale(1.55);box-shadow:0 0 0 5px rgba(255,106,80,.14)}
-.dotnav button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:50%}
-.dotnav .tip{
-  position:absolute;right:calc(100% + 14px);top:50%;transform:translateY(-50%) translateX(4px);
-  font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--text);
-  background:rgba(21,26,34,.9);border:1px solid var(--border);padding:6px 10px;border-radius:6px;
-  white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s, transform .25s var(--ease-spring);
-}
-.dotnav button:hover .tip, .dotnav button:focus-visible .tip{opacity:1;transform:translateY(-50%) translateX(0)}
-
-/* sticky phone column */
-.phone-col{
-  position:sticky;top:60px;align-self:start;
-  display:flex;flex-direction:column;align-items:center;gap:14px;
-  min-height:calc(100vh - 80px);justify-content:center;
-}
-.phone-caption{
-  font-family:var(--f-mono);font-size:10.5px;color:var(--muted);letter-spacing:.16em;text-transform:uppercase;
-  display:flex;align-items:center;gap:10px;
-}
-.phone-caption .live{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(255,106,80,.18);animation:livepulse 2.4s ease-out infinite}
-@keyframes livepulse{0%{box-shadow:0 0 0 0 rgba(255,106,80,.35)}80%,100%{box-shadow:0 0 0 10px rgba(255,106,80,0)}}
-
-/* narrative column */
-.story{display:flex;flex-direction:column;gap:0;padding-top:20vh}
-.stage-block{
-  min-height:80vh;display:flex;flex-direction:column;justify-content:center;
-  padding:60px 0;gap:18px;
-  opacity:.35;transition:opacity .5s var(--ease-swift);
-}
-.stage-block.in-view{opacity:1}
-.stage-block .chapter{
-  font-family:var(--f-mono);font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--accent);display:flex;align-items:center;gap:12px;
-}
-.stage-block .chapter b{font-weight:500;color:var(--muted)}
-.stage-block h2{
-  font-family:var(--f-display);font-weight:600;
-  font-size:clamp(28px,3.4vw,42px);line-height:1.05;letter-spacing:-.028em;
-  margin:0;max-width:16ch;text-wrap:balance;
-}
-.stage-block h2 em{font-style:italic;color:var(--muted);font-weight:500}
-.stage-block p{
-  font-size:16px;color:var(--text-2);line-height:1.6;max-width:44ch;margin:0;
-}
-.stage-block .callout{
-  margin-top:8px;display:inline-flex;align-items:baseline;gap:10px;
-  font-family:var(--f-mono);font-size:12px;color:var(--muted);letter-spacing:.06em;
-  padding:10px 14px;border:1px solid var(--border);border-radius:10px;background:rgba(21,26,34,.4);
-  backdrop-filter:blur(8px);width:fit-content;
-}
-.stage-block .callout b{font-family:var(--f-display);font-size:22px;color:var(--text);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-
-/* ============================================================
-   PHONE DEVICE (titanium chrome)
-   ============================================================ */
+/* ============ PHONE ============ */
 .phone-shell{
-  position:relative;
-  width:352px;height:718px;
-  padding:12px;
-  border-radius:56px;
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.05), transparent 30%),
-    linear-gradient(160deg,#2f3239 0%, #1a1c22 45%, #2a2d34 100%);
+  position:relative;width:380px;height:800px;padding:14px;border-radius:58px;
+  background:linear-gradient(160deg,#2f3239 0%, #1a1c22 45%, #2a2d34 100%);
   box-shadow:
     inset 0 0 0 1px rgba(255,255,255,.09),
     inset 0 1px 0 rgba(255,255,255,.18),
-    inset 0 -1px 0 rgba(0,0,0,.5),
     0 30px 60px -20px rgba(0,0,0,.75),
     0 50px 120px -30px rgba(255,106,80,.18);
 }
-.phone-shell::before{ /* right side button */
-  content:'';position:absolute;right:-2px;top:170px;width:3px;height:78px;
-  background:linear-gradient(90deg,#3a3d44,#20232a);border-radius:2px 0 0 2px;
-}
-.phone-shell::after{ /* left side buttons */
-  content:'';position:absolute;left:-2px;top:130px;width:3px;height:36px;
-  background:linear-gradient(90deg,#20232a,#3a3d44);border-radius:0 2px 2px 0;
-  box-shadow:0 50px 0 #3a3d44, 0 96px 0 #3a3d44;
-}
+.phone-shell::before{content:'';position:absolute;right:-2px;top:170px;width:3px;height:78px;background:linear-gradient(90deg,#3a3d44,#20232a);border-radius:2px 0 0 2px}
+.phone-shell::after{content:'';position:absolute;left:-2px;top:130px;width:3px;height:36px;background:linear-gradient(90deg,#20232a,#3a3d44);border-radius:0 2px 2px 0;box-shadow:0 50px 0 #3a3d44, 0 96px 0 #3a3d44}
 .viewport{
-  position:relative;width:100%;height:100%;
-  background:#000;border-radius:44px;overflow:hidden;
+  --p-bg:#0F1218; --p-surface:#161B24; --p-surface-2:#1C222D;
+  --p-elevated:#1F2632; --p-border:#242C3A; --p-border-2:#2E3646;
+  --p-text:#ECEEF3; --p-text-2:#B7BCC9; --p-muted:#8A93A6; --p-muted-2:#606A7D;
+  --p-accent:#FF6A50; --p-accent-2:#FF8A6E; --p-success:#2ECC8F;
+  --p-amber:#F2A93C; --p-danger:#FF5470;
+  position:relative;width:100%;height:100%;background:#000;border-radius:46px;overflow:hidden;
   box-shadow:inset 0 0 0 1.5px #000, inset 0 0 0 2.5px rgba(255,255,255,.03);
+  color:var(--p-text);font-family:var(--f-body);
 }
-.island{
-  position:absolute;top:12px;left:50%;transform:translateX(-50%);
-  width:104px;height:30px;background:#000;border-radius:20px;z-index:70;
-}
-.island::after{
-  content:'';position:absolute;right:12px;top:50%;transform:translateY(-50%);
-  width:8px;height:8px;border-radius:50%;
-  background:radial-gradient(circle at 30% 30%, #2a2f3b 0%, #0a0d13 70%);
-  box-shadow:inset 0 0 3px rgba(0,0,0,.7);
-}
-.home-indicator{
-  position:absolute;bottom:8px;left:50%;transform:translateX(-50%);
-  width:126px;height:4px;border-radius:3px;background:rgba(255,255,255,.55);
-  z-index:70;
-}
-
-/* ============================================================
-   PHONE-LOCAL DESIGN SYSTEM (all in one dark world)
-   ============================================================ */
-.viewport{
-  --p-bg:#0F1218;
-  --p-surface:#161B24;
-  --p-surface-2:#1C222D;
-  --p-elevated:#1F2632;
-  --p-border:#242C3A;
-  --p-border-2:#2E3646;
-  --p-text:#ECEEF3;
-  --p-text-2:#B7BCC9;
-  --p-muted:#8A93A6;
-  --p-muted-2:#606A7D;
-  --p-accent:#FF6A50;
-  --p-accent-2:#FF8A6E;
-  --p-success:#2ECC8F;
-  --p-amber:#F2A93C;
-  --p-danger:#FF5470;
-  font-family:var(--f-body);
-  color:var(--p-text);
-}
-
+.island{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:106px;height:30px;background:#000;border-radius:20px;z-index:80}
+.island::after{content:'';position:absolute;right:12px;top:50%;transform:translateY(-50%);width:8px;height:8px;border-radius:50%;background:radial-gradient(circle at 30% 30%, #2a2f3b, #0a0d13 70%)}
+.home-indicator{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:126px;height:4px;border-radius:3px;background:rgba(255,255,255,.55);z-index:80}
 .statusbar{
-  position:absolute;top:0;left:0;right:0;height:50px;
-  display:flex;align-items:flex-end;justify-content:space-between;
-  padding:0 26px 8px;font-family:var(--f-body);font-size:14px;font-weight:600;
-  color:var(--p-text);z-index:60;pointer-events:none;letter-spacing:-.01em;
+  position:absolute;top:0;left:0;right:0;height:52px;
+  display:flex;align-items:flex-end;justify-content:space-between;padding:0 26px 8px;
+  font-size:14px;font-weight:600;color:var(--p-text);z-index:60;pointer-events:none;letter-spacing:-.01em;
 }
 .statusbar .icons{display:flex;align-items:center;gap:6px}
 .sb-bat{width:24px;height:12px;border:1.5px solid var(--p-text);border-radius:3px;position:relative;opacity:.9}
 .sb-bat::after{content:'';position:absolute;right:-3.5px;top:3.5px;width:2px;height:5px;background:var(--p-text);border-radius:0 1px 1px 0}
 .sb-bat i{position:absolute;top:1.5px;left:1.5px;bottom:1.5px;width:72%;background:var(--p-text);border-radius:1px}
 
-.screen-viewport{position:absolute;inset:0;overflow:hidden}
-.app-screen{
-  position:absolute;inset:0;padding-top:50px;overflow-y:auto;
-  background:var(--p-bg);opacity:0;visibility:hidden;
-  transform:translateY(8px) scale(.995);
-  transition:opacity .35s var(--ease-spring), transform .5s var(--ease-spring);
+/* ============ SCREEN SYSTEM ============ */
+.screen-viewport{position:absolute;inset:0;overflow:hidden;background:var(--p-bg)}
+.screen{
+  position:absolute;inset:0;padding-top:52px;overflow-y:auto;background:var(--p-bg);
+  opacity:0;visibility:hidden;transform:translateY(8px);
+  transition:opacity .28s var(--ease-spring), transform .35s var(--ease-spring);
   -ms-overflow-style:none;scrollbar-width:none;
 }
-.app-screen::-webkit-scrollbar{display:none}
-.app-screen.active{opacity:1;visibility:visible;transform:none;z-index:5}
+.screen::-webkit-scrollbar{display:none}
+.screen.active{opacity:1;visibility:visible;transform:none;z-index:5}
+.screen.with-tabbar{padding-bottom:88px}
+.screen.with-cta-bar{padding-bottom:96px}
 
-/* screen backdrop wash — each screen paints its own ambient */
-.screen-bg{
-  position:absolute;top:0;left:0;right:0;height:280px;pointer-events:none;z-index:-1;
-  background:radial-gradient(680px 300px at 20% -10%, rgba(255,106,80,.16), transparent 70%);
-}
-
-/* ---------- primitives ---------- */
-.hdr{display:flex;align-items:center;gap:10px;padding:10px 20px 14px}
+.hdr{display:flex;align-items:center;gap:10px;padding:10px 20px 12px}
 .hdr h3{font-family:var(--f-display);font-size:18px;font-weight:600;margin:0;flex:1;letter-spacing:-.02em}
 .icon-btn{
   all:unset;display:flex;align-items:center;justify-content:center;
@@ -302,23 +117,24 @@ body::after{ /* grain */
 }
 .icon-btn:hover{background:rgba(255,255,255,.08);border-color:var(--p-border)}
 .icon-btn:active{transform:scale(.92)}
-.icon-btn:focus-visible{outline:2px solid var(--p-accent);outline-offset:2px}
 .icon-btn svg{width:18px;height:18px}
+.icon-btn.compact{width:30px;height:30px}
+.icon-btn.compact svg{width:15px;height:15px}
 
 .mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
-.eyebrow-s{font-family:var(--f-mono);font-size:10px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--p-muted)}
+.eyebrow{font-family:var(--f-mono);font-size:10px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--p-muted)}
+.err{color:var(--p-danger);font-size:12px;margin-top:6px}
 
 .btn{
   all:unset;box-sizing:border-box;font-family:var(--f-body);font-weight:600;font-size:14px;
   text-align:center;cursor:pointer;padding:14px 22px;border-radius:14px;
-  transition:filter .2s, transform .12s var(--ease-spring), box-shadow .3s;
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  letter-spacing:-.005em;
+  transition:filter .2s, transform .12s var(--ease-spring);
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;letter-spacing:-.005em;
 }
 .btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
 .btn-primary{
-  background:linear-gradient(180deg,var(--p-accent-2),var(--p-accent));
-  color:#160805;
+  background:linear-gradient(180deg,var(--p-accent-2),var(--p-accent));color:#160805;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.4), 0 8px 24px -8px var(--accent-glow), 0 1px 0 rgba(0,0,0,.4);
 }
 .btn-primary:hover{filter:brightness(1.06)}
@@ -326,8 +142,93 @@ body::after{ /* grain */
 .btn-ghost{background:rgba(255,255,255,.06);color:var(--p-text);border:1px solid var(--p-border)}
 .btn-ghost:hover{background:rgba(255,255,255,.09)}
 .btn-outline{background:transparent;color:var(--p-text);border:1px solid var(--p-border-2)}
+.btn-danger{background:rgba(255,84,112,.12);color:var(--p-danger);border:1px solid rgba(255,84,112,.3)}
+.btn-sm{padding:9px 14px;font-size:12.5px}
 
-/* pills */
+/* ============ SIGN-IN / SIGN-UP ============ */
+.auth-wrap{padding:36px 26px 24px;height:calc(100% - 52px);display:flex;flex-direction:column}
+.auth-hero{margin-bottom:24px}
+.auth-hero .eyebrow{margin-bottom:8px;color:var(--p-accent)}
+.auth-hero h1{font-family:var(--f-display);font-size:28px;font-weight:600;line-height:1.1;letter-spacing:-.028em;margin:0 0 8px}
+.auth-hero p{font-size:13.5px;color:var(--p-text-2);margin:0;line-height:1.55}
+.auth-form{display:flex;flex-direction:column;gap:12px}
+.auth-form label{display:block;font-size:11px;font-weight:600;color:var(--p-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}
+.auth-form input{
+  width:100%;background:var(--p-surface);border:1px solid var(--p-border);border-radius:12px;
+  padding:13px 14px;font-family:var(--f-body);font-size:14px;color:var(--p-text);outline:none;
+  transition:border-color .2s;
+}
+.auth-form input:focus{border-color:var(--p-accent)}
+.auth-form input::placeholder{color:var(--p-muted-2)}
+.auth-switch{margin-top:16px;font-size:12.5px;color:var(--p-muted);text-align:center}
+.auth-switch a{color:var(--p-accent);text-decoration:none;font-weight:600;cursor:pointer;margin-left:4px}
+.auth-guest{margin-top:auto;text-align:center;padding-top:16px;border-top:1px dashed var(--p-border);font-size:12px;color:var(--p-muted)}
+.auth-guest a{color:var(--p-accent);cursor:pointer;font-weight:600;margin-left:4px}
+
+.admin-note{
+  margin-top:12px;padding:11px 14px;background:rgba(255,106,80,.08);border:1px dashed rgba(255,106,80,.3);
+  border-radius:10px;font-size:11.5px;color:var(--p-text-2);line-height:1.55;
+}
+.admin-note b{color:var(--p-accent);display:block;margin-bottom:2px;font-family:var(--f-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+
+/* ============ ONBOARDING ============ */
+.ob-media{
+  position:relative;height:240px;overflow:hidden;
+  background:radial-gradient(circle at 50% 60%, rgba(255,106,80,.28), transparent 60%),radial-gradient(circle at 50% 10%, rgba(80,120,255,.15), transparent 55%);
+}
+.ob-orb{
+  position:absolute;left:50%;top:60%;transform:translate(-50%,-50%);width:120px;height:120px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#FFA88E,#FF6A50 55%,#B03818);
+  box-shadow:0 30px 60px -12px rgba(255,106,80,.5), inset 0 -20px 40px rgba(0,0,0,.3), inset 0 2px 8px rgba(255,255,255,.5);
+}
+.ob-ring{position:absolute;left:50%;top:60%;transform:translate(-50%,-50%);border:1px solid rgba(255,255,255,.14);border-radius:50%}
+.ob-ring.r1{width:170px;height:170px}
+.ob-ring.r2{width:220px;height:220px;border-color:rgba(255,255,255,.09)}
+.ob-copy{padding:22px 22px 24px;display:flex;flex-direction:column;gap:14px;min-height:calc(100% - 240px - 52px)}
+.ob-copy h2{font-family:var(--f-display);font-size:24px;font-weight:600;letter-spacing:-.03em;line-height:1.1;margin:6px 0 0}
+.ob-copy h2 em{font-style:italic;color:var(--p-muted);font-weight:500}
+.ob-lead{font-size:13.5px;color:var(--p-text-2);line-height:1.55;margin:0}
+.perm-row{
+  display:flex;align-items:center;gap:12px;background:var(--p-surface);border:1px solid var(--p-border);
+  border-radius:14px;padding:12px 14px;
+}
+.perm-row svg{width:18px;height:18px;color:var(--p-accent);flex-shrink:0}
+.perm-row div{flex:1;min-width:0}
+.perm-row b{display:block;font-size:12.5px;font-weight:600}
+.perm-row small{display:block;font-size:11px;color:var(--p-muted);margin-top:1px}
+.toggle{width:36px;height:22px;border-radius:100px;background:var(--p-border-2);position:relative;flex-shrink:0;transition:background .2s;cursor:pointer;border:none;padding:0}
+.toggle i{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .25s var(--ease-spring)}
+.toggle.on{background:var(--p-success)}
+.toggle.on i{transform:translateX(14px)}
+.ob-cta{margin-top:auto}
+
+/* ============ HOME ============ */
+.home-hdr{padding:6px 20px 8px;display:flex;align-items:center;gap:10px}
+.home-hdr .greet{flex:1;min-width:0}
+.home-hdr .greet .eyebrow{margin-bottom:2px}
+.home-hdr .greet .name{font-family:var(--f-display);font-size:19px;font-weight:600;letter-spacing:-.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.loc-banner{
+  margin:6px 20px 12px;padding:12px 14px;background:linear-gradient(140deg, rgba(255,106,80,.12), rgba(255,106,80,.03));
+  border:1px solid rgba(255,106,80,.28);border-radius:14px;display:flex;align-items:center;gap:12px;
+}
+.loc-banner svg{width:18px;height:18px;color:var(--p-accent);flex-shrink:0}
+.loc-banner .txt{flex:1;min-width:0;font-size:12.5px;line-height:1.45}
+.loc-banner .txt b{display:block;font-weight:600}
+.loc-banner .txt small{display:block;color:var(--p-muted);font-size:11px;margin-top:2px}
+.loc-banner .close{width:24px;height:24px;flex-shrink:0;color:var(--p-muted);cursor:pointer;background:none;border:none;display:flex;align-items:center;justify-content:center;padding:0}
+.loc-banner .close:hover{color:var(--p-text)}
+.loc-banner .close svg{width:14px;height:14px}
+
+.search-bar{
+  display:flex;align-items:center;gap:10px;margin:6px 20px 14px;
+  background:var(--p-surface);border:1px solid var(--p-border);border-radius:16px;
+  padding:12px 15px;color:var(--p-muted);font-size:14px;cursor:pointer;transition:border-color .2s;
+}
+.search-bar:hover{border-color:var(--p-border-2)}
+.search-bar svg{width:17px;height:17px;flex-shrink:0}
+.search-bar input{border:none;background:none;outline:none;font:inherit;color:var(--p-text);width:100%;font-family:var(--f-body)}
+
 .pill-row{display:flex;gap:8px;overflow-x:auto;padding:2px 20px 6px;-ms-overflow-style:none;scrollbar-width:none}
 .pill-row::-webkit-scrollbar{display:none}
 .pill{
@@ -337,61 +238,13 @@ body::after{ /* grain */
 }
 .pill:hover{background:rgba(255,255,255,.08);color:var(--p-text)}
 .pill.on{background:var(--p-text);color:#0B0D12;border-color:var(--p-text)}
+.pill .glyph{margin-right:5px}
 
-/* search */
-.search-bar{
-  display:flex;align-items:center;gap:10px;margin:6px 20px 14px;
-  background:var(--p-surface);border:1px solid var(--p-border);border-radius:16px;
-  padding:13px 15px;color:var(--p-muted);font-size:14px;cursor:pointer;
-  transition:border-color .2s, background .2s;
-}
-.search-bar:hover{border-color:var(--p-border-2)}
-.search-bar svg{width:17px;height:17px;flex-shrink:0}
-.search-bar input{border:none;background:none;outline:none;font:inherit;color:var(--p-text);width:100%;font-family:var(--f-body)}
-.search-bar input::placeholder{color:var(--p-muted)}
-.search-bar .kbd{margin-left:auto;font-family:var(--f-mono);font-size:10px;color:var(--p-muted);border:1px solid var(--p-border);padding:2px 6px;border-radius:5px}
-
-/* section headers */
 .sec-head{display:flex;align-items:baseline;justify-content:space-between;padding:20px 20px 10px}
 .sec-head h4{font-family:var(--f-display);font-size:16px;font-weight:600;margin:0;letter-spacing:-.02em}
-.sec-head a{font-family:var(--f-mono);font-size:10.5px;color:var(--p-accent);font-weight:500;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:color .15s}
-.sec-head a:hover{color:var(--p-accent-2)}
+.sec-head a{font-family:var(--f-mono);font-size:10.5px;color:var(--p-accent);font-weight:500;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
 
-.strip{display:flex;gap:12px;overflow-x:auto;padding:2px 20px 8px;-ms-overflow-style:none;scrollbar-width:none}
-.strip::-webkit-scrollbar{display:none}
-
-/* live cards */
-.live-card{
-  flex-shrink:0;width:220px;position:relative;
-  background:linear-gradient(180deg, var(--p-surface), var(--p-surface-2));
-  border:1px solid var(--p-border);border-radius:18px;padding:0;
-  cursor:pointer;overflow:hidden;
-  transition:transform .3s var(--ease-spring), border-color .2s;
-}
-.live-card:hover{transform:translateY(-2px);border-color:var(--p-border-2)}
-.live-card .thumb{
-  height:120px;position:relative;overflow:hidden;
-  background:
-    radial-gradient(circle at 30% 20%, rgba(255,106,80,.5), transparent 55%),
-    linear-gradient(160deg,#1F2A3C,#0F1622);
-}
-.live-card .thumb::after{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(circle at 70% 90%, rgba(255,138,110,.25), transparent 55%);
-}
-.live-card .glyph{position:absolute;bottom:10px;left:12px;font-size:24px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.5))}
-.live-card .live-badge{
-  position:absolute;top:10px;left:10px;
-  display:inline-flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:9.5px;font-weight:500;
-  letter-spacing:.14em;text-transform:uppercase;color:#160805;
-  background:var(--p-accent);padding:4px 8px;border-radius:100px;
-}
-.live-card .live-badge i{width:5px;height:5px;border-radius:50%;background:#160805;animation:livepulse 2s infinite}
-.live-card .info{padding:12px 14px 14px}
-.live-card h5{font-family:var(--f-display);font-size:13.5px;font-weight:600;margin:0 0 4px;line-height:1.3;letter-spacing:-.015em}
-.live-card p{font-size:11.5px;margin:0;color:var(--p-muted);line-height:1.4}
-
-/* list cards */
+/* listing cards */
 .card-list{display:flex;flex-direction:column;gap:10px;padding:6px 20px 8px}
 .lcard{
   display:flex;gap:14px;background:var(--p-surface);border:1px solid var(--p-border);border-radius:16px;
@@ -405,108 +258,65 @@ body::after{ /* grain */
 .lcard .star{color:var(--p-amber);font-weight:600}
 .lcard .price{font-family:var(--f-mono);font-size:12.5px;font-weight:600;color:var(--p-text);letter-spacing:-.01em}
 .lcard .price small{color:var(--p-muted);font-weight:400;font-size:10px}
-.badge{font-family:var(--f-mono);font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:100px;display:inline-flex;align-items:center;gap:4px}
-.badge.drop{background:rgba(255,106,80,.12);color:var(--p-accent)}
-.badge.few{background:rgba(242,169,60,.14);color:var(--p-amber)}
-.badge.new{background:rgba(46,204,143,.14);color:var(--p-success)}
-
-/* deco imagery — refined abstract marks */
-.deco{
-  position:relative;border-radius:12px;overflow:hidden;flex-shrink:0;
+.lcard .thumb{
+  width:78px;height:78px;border-radius:12px;flex-shrink:0;overflow:hidden;
   background:linear-gradient(160deg,#1E2634 0%, #10161F 100%);
-  display:flex;align-items:center;justify-content:center;
+  display:flex;align-items:center;justify-content:center;color:var(--p-muted);font-size:26px;
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);
 }
-.deco::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(circle at 30% 25%, rgba(255,106,80,.35), transparent 55%);
-  mix-blend-mode:screen;
-}
-.deco svg{position:absolute;inset:0;width:100%;height:100%;opacity:.35}
-.deco .glyph{position:relative;z-index:2;filter:drop-shadow(0 3px 8px rgba(0,0,0,.55))}
-.deco.sm{width:78px;height:78px;border-radius:12px}
-.deco.sm .glyph{font-size:28px}
-.deco.hero{width:100%;height:280px;border-radius:0}
-.deco.hero .glyph{font-size:64px}
-.deco.hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:120px;background:linear-gradient(180deg, transparent, var(--p-bg))}
-.deco .dots{position:absolute;bottom:16px;left:0;right:0;display:flex;gap:5px;justify-content:center;z-index:3}
-.deco .dots i{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.35)}
-.deco .dots i:first-child{background:#fff;width:16px;border-radius:3px}
+.lcard .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.badge{font-family:var(--f-mono);font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:100px;display:inline-flex;align-items:center;gap:4px}
+.badge.new{background:rgba(46,204,143,.14);color:var(--p-success)}
+.badge.hot{background:rgba(255,106,80,.14);color:var(--p-accent)}
 
-/* tab bar */
-.tabbar{
-  position:absolute;left:12px;right:12px;bottom:10px;height:64px;
-  background:rgba(15,18,24,.72);border:1px solid var(--p-border);
-  backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);
-  border-radius:22px;
-  display:none;align-items:center;padding:0 8px;z-index:40;
-  box-shadow:0 12px 40px -12px rgba(0,0,0,.7);
+/* live-strip */
+.strip{display:flex;gap:12px;overflow-x:auto;padding:2px 20px 8px;-ms-overflow-style:none;scrollbar-width:none}
+.strip::-webkit-scrollbar{display:none}
+.live-card{
+  flex-shrink:0;width:220px;position:relative;
+  background:linear-gradient(180deg, var(--p-surface), var(--p-surface-2));
+  border:1px solid var(--p-border);border-radius:18px;padding:0;cursor:pointer;overflow:hidden;
+  transition:transform .3s var(--ease-spring), border-color .2s;
 }
-.viewport.show-tabbar .tabbar{display:flex}
-.tabbtn{
-  all:unset;flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;
-  color:var(--p-muted);padding:8px 0;position:relative;
-  transition:color .2s;
-}
-.tabbtn svg{width:20px;height:20px;transition:transform .25s var(--ease-spring)}
-.tabbtn span{font-size:9.5px;font-weight:600;letter-spacing:.02em}
-.tabbtn.on{color:var(--p-accent)}
-.tabbtn.on svg{transform:translateY(-1px)}
-.tabbtn:hover:not(.on){color:var(--p-text-2)}
+.live-card:hover{transform:translateY(-2px);border-color:var(--p-border-2)}
+.live-card .thumb{height:120px;position:relative;overflow:hidden;background:linear-gradient(160deg,#1F2A3C,#0F1622)}
+.live-card .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.live-card .thumb .fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:36px}
+.live-card .live-badge{position:absolute;top:10px;left:10px;display:inline-flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:9.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:#160805;background:var(--p-accent);padding:4px 8px;border-radius:100px}
+.live-card .info{padding:12px 14px 14px}
+.live-card h5{font-family:var(--f-display);font-size:13.5px;font-weight:600;margin:0 0 4px;line-height:1.3;letter-spacing:-.015em}
+.live-card p{font-size:11.5px;margin:0;color:var(--p-muted);line-height:1.4}
 
+.loading, .empty{padding:40px 20px;text-align:center;color:var(--p-muted);font-size:13px}
+.loading svg{animation:spin 1s linear infinite;width:22px;height:22px;color:var(--p-accent);margin-bottom:10px}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-/* ---------- onboarding ---------- */
-.ob-wrap{display:flex;flex-direction:column;height:calc(100% - 50px)}
-.ob-media{
-  position:relative;height:260px;flex-shrink:0;overflow:hidden;
-  background:radial-gradient(circle at 50% 60%, rgba(255,106,80,.28), transparent 60%),radial-gradient(circle at 50% 10%, rgba(80,120,255,.15), transparent 55%);
-}
-.ob-orb{
-  position:absolute;left:50%;top:60%;transform:translate(-50%,-50%);
-  width:130px;height:130px;border-radius:50%;
-  background:radial-gradient(circle at 35% 35%,#FFA88E,#FF6A50 55%,#B03818);
-  box-shadow:0 30px 60px -12px rgba(255,106,80,.5), inset 0 -20px 40px rgba(0,0,0,.3), inset 0 2px 8px rgba(255,255,255,.5);
-}
-.ob-ring{position:absolute;left:50%;top:60%;transform:translate(-50%,-50%);border:1px solid rgba(255,255,255,.14);border-radius:50%}
-.ob-ring.r1{width:180px;height:180px}
-.ob-ring.r2{width:230px;height:230px;border-color:rgba(255,255,255,.09)}
-.ob-ring.r3{width:290px;height:290px;border-color:rgba(255,255,255,.06)}
-.ob-copy{padding:22px 22px 24px;display:flex;flex-direction:column;gap:14px;flex:1}
-.ob-title{font-family:var(--f-display);font-size:26px;font-weight:600;letter-spacing:-.03em;line-height:1.08;margin:6px 0 0;text-wrap:balance}
-.ob-title em{font-style:italic;color:var(--p-muted);font-weight:500}
-.ob-lead{font-size:13.5px;color:var(--p-text-2);line-height:1.55;margin:0}
-.ob-perms{display:flex;flex-direction:column;gap:8px;margin-top:6px}
-.ob-perm{display:flex;align-items:center;gap:12px;background:var(--p-surface);border:1px solid var(--p-border);border-radius:14px;padding:11px 13px}
-.ob-perm svg{width:18px;height:18px;color:var(--p-accent);flex-shrink:0}
-.ob-perm div{flex:1;min-width:0}
-.ob-perm b{display:block;font-size:12.5px;font-weight:600}
-.ob-perm small{display:block;font-size:11px;color:var(--p-muted);margin-top:1px}
-.perm-toggle{width:34px;height:20px;border-radius:100px;background:var(--p-border-2);position:relative;flex-shrink:0;transition:background .2s}
-.perm-toggle i{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .25s var(--ease-spring)}
-.perm-toggle.on{background:var(--p-accent)}
-.perm-toggle.on i{transform:translateX(14px)}
-.ob-cta{margin-top:auto;display:flex;flex-direction:column;gap:12px;align-items:center}
-.ob-dots{display:flex;gap:6px}
-.ob-dots i{width:6px;height:6px;border-radius:50%;background:var(--p-border-2)}
-.ob-dots i.on{background:var(--p-accent);width:22px;border-radius:100px}
-
-/* ---------- listing detail extras ---------- */
+/* ============ LISTING DETAIL ============ */
+.detail-hero{position:relative;height:280px;overflow:hidden;background:linear-gradient(160deg,#1E2634 0%, #10161F 100%);margin-top:-52px}
+.detail-hero img{width:100%;height:100%;object-fit:cover;display:block}
+.detail-hero .fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:72px}
+.detail-hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:120px;background:linear-gradient(180deg,transparent,var(--p-bg))}
+.detail-nav{position:absolute;top:52px;left:14px;right:14px;display:flex;gap:8px;z-index:10}
+.detail-nav .icon-btn{background:rgba(0,0,0,.5);backdrop-filter:blur(10px);border-color:rgba(255,255,255,.1)}
+.detail-nav .spacer{flex:1}
+.title-block{padding:16px 20px 4px}
+.title-block h2{font-family:var(--f-display);font-size:22px;font-weight:600;letter-spacing:-.025em;line-height:1.15;margin:0 0 8px}
+.title-block .rate{font-size:12.5px;color:var(--p-muted);display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.title-block .rate .star{color:var(--p-amber);font-weight:600}
 .info-strip{display:flex;gap:0;padding:12px 6px;margin:14px 20px 4px;background:var(--p-surface);border:1px solid var(--p-border);border-radius:14px}
-.info-strip>div{flex:1;display:flex;flex-direction:column;gap:3px;padding:4px 10px;border-right:1px solid var(--p-border);align-items:flex-start}
+.info-strip>div{flex:1;display:flex;flex-direction:column;gap:3px;padding:4px 10px;border-right:1px solid var(--p-border);align-items:flex-start;min-width:0}
 .info-strip>div:last-child{border-right:none}
 .info-strip .v{font-size:12.5px;font-weight:600;letter-spacing:-.01em}
-.tabs{display:flex;gap:22px;padding:16px 20px 10px;border-bottom:1px solid var(--p-border);margin:0 20px}
-.tabs span{font-size:12.5px;font-weight:600;color:var(--p-muted);padding-bottom:10px;position:relative;cursor:default}
-.tabs span.on{color:var(--p-text)}
-.tabs span.on::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--p-accent);border-radius:2px}
 .body-copy{padding:14px 20px;font-size:13px;color:var(--p-text-2);line-height:1.7}
-.op-row{display:flex;align-items:center;gap:12px;padding:11px 13px;margin:0 20px 8px;background:var(--p-surface);border:1px solid var(--p-border);border-radius:14px}
+.included{padding:6px 20px 8px}
+.included h5{font-family:var(--f-display);font-size:13px;font-weight:600;margin:12px 0 8px}
+.included ul{margin:0;padding-left:20px;color:var(--p-text-2);font-size:12.5px;line-height:1.75}
+.op-row{display:flex;align-items:center;gap:12px;padding:11px 13px;margin:8px 20px;background:var(--p-surface);border:1px solid var(--p-border);border-radius:14px}
 .op-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(140deg,var(--p-accent-2),var(--p-accent));color:#160805;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700;flex-shrink:0;font-family:var(--f-display)}
 .op-row .t{flex:1;min-width:0}
 .op-row .t b{display:block;font-size:12.5px;font-weight:600}
 .op-row .t small{font-size:10.5px;color:var(--p-success);margin-top:2px;display:block}
-.chip-ask{display:inline-flex;align-items:center;gap:8px;margin:2px 20px 14px;font-size:12px;font-weight:600;color:var(--p-accent);background:rgba(255,106,80,.09);border:1px solid rgba(255,106,80,.22);padding:9px 14px;border-radius:100px;cursor:pointer;width:fit-content;transition:background .2s}
-.chip-ask:hover{background:rgba(255,106,80,.14)}
+
 .sticky-bar{
   position:absolute;left:0;right:0;bottom:0;background:rgba(15,18,24,.85);
   backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);
@@ -514,52 +324,43 @@ body::after{ /* grain */
   display:flex;align-items:center;gap:14px;z-index:20;
 }
 .sticky-bar .amt{flex:1;display:flex;flex-direction:column;gap:2px}
-.sticky-bar .amt b{font-family:var(--f-display);font-size:22px;font-weight:600;letter-spacing:-.02em;color:var(--p-text)}
+.sticky-bar .amt b{font-family:var(--f-display);font-size:20px;font-weight:600;letter-spacing:-.02em;color:var(--p-text)}
 
-/* ---------- date & time ---------- */
+/* ============ BOOKING ============ */
 .week{display:flex;gap:8px;padding:6px 20px 4px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none}
 .week::-webkit-scrollbar{display:none}
 .day{
-  flex-shrink:0;width:52px;padding:12px 0;border-radius:14px;text-align:center;cursor:pointer;
+  flex-shrink:0;min-width:60px;padding:12px 8px;border-radius:14px;text-align:center;cursor:pointer;
   border:1px solid var(--p-border);background:var(--p-surface);
   transition:border-color .2s, background .2s, transform .2s var(--ease-spring);
 }
 .day:hover{border-color:var(--p-border-2)}
 .day .d{font-family:var(--f-mono);font-size:9.5px;color:var(--p-muted);font-weight:500;text-transform:uppercase;letter-spacing:.1em}
 .day .n{font-size:17px;font-weight:600;margin:4px 0 5px;letter-spacing:-.02em}
-.day .s{width:5px;height:5px;border-radius:50%;margin:0 auto}
-.day.avail .s{background:var(--p-success)}
-.day.few .s{background:var(--p-amber)}
+.day .s{width:5px;height:5px;border-radius:50%;margin:0 auto;background:var(--p-success)}
 .day.sold{opacity:.35}
 .day.sold .s{background:var(--p-muted-2)}
 .day.sel{border-color:var(--p-accent);background:rgba(255,106,80,.09);transform:translateY(-2px)}
+
 .slot-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 20px 6px}
 .slot{border:1px solid var(--p-border);background:var(--p-surface);border-radius:14px;padding:12px 14px;text-align:left;cursor:pointer;transition:border-color .2s, background .2s}
 .slot:hover{border-color:var(--p-border-2)}
 .slot .t{font-size:14px;font-weight:600;letter-spacing:-.01em}
-.slot .s{font-size:11px;margin-top:3px;font-weight:500}
-.slot.avail .s{color:var(--p-success)}
-.slot.few .s{color:var(--p-amber)}
+.slot .s{font-size:11px;margin-top:3px;font-weight:500;color:var(--p-success)}
 .slot.sold{opacity:.35;cursor:default}
 .slot.sold .s{color:var(--p-muted)}
+.slot.few .s{color:var(--p-amber)}
 .slot.sel{border-color:var(--p-accent);background:rgba(255,106,80,.09)}
+
 .stepper-row{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;margin:12px 20px;background:var(--p-surface);border:1px solid var(--p-border);border-radius:14px}
 .stepper{display:flex;align-items:center;gap:14px}
 .stepper button{
   all:unset;width:30px;height:30px;border-radius:50%;background:var(--p-surface-2);border:1px solid var(--p-border);
   display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;font-weight:600;color:var(--p-accent);
-  transition:background .2s;
 }
 .stepper button:hover{background:var(--p-elevated)}
 .stepper b{font-size:16px;min-width:18px;text-align:center;font-weight:600}
-.total-row{display:flex;align-items:baseline;justify-content:space-between;padding:8px 20px 6px}
-.total-row span{font-size:13px;color:var(--p-muted)}
-.total-row b{font-size:20px;font-weight:600;color:var(--p-text);letter-spacing:-.02em}
 
-/* ---------- checkout ---------- */
-.field{margin:0 20px 12px}
-.field label{display:block;margin-bottom:6px}
-.field .val{background:var(--p-surface);border:1px solid var(--p-border);border-radius:12px;padding:12px 14px;font-size:13.5px;font-weight:500}
 .pay-opt{display:flex;align-items:center;gap:12px;padding:12px 14px;margin:0 20px 10px;border:1px solid var(--p-border);background:var(--p-surface);border-radius:14px;cursor:pointer;transition:border-color .2s, background .2s}
 .pay-opt.sel{border-color:var(--p-accent);background:rgba(255,106,80,.06)}
 .pay-opt .r{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--p-border-2);flex-shrink:0;position:relative}
@@ -568,1091 +369,1256 @@ body::after{ /* grain */
 .pay-opt .glyph{width:32px;height:32px;border-radius:8px;background:var(--p-accent);color:#160805;display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-size:11px;font-weight:700;flex-shrink:0}
 .pay-opt .lbl{flex:1;font-size:13.5px;font-weight:600}
 .pay-opt .lbl small{display:block;font-weight:400;color:var(--p-muted);font-size:11px;margin-top:2px}
+
 .breakdown{margin:8px 20px 6px;padding:14px 16px;background:var(--p-surface);border:1px solid var(--p-border);border-radius:14px}
 .bd-row{display:flex;justify-content:space-between;font-size:13px;color:var(--p-text-2);padding:4px 0}
 .bd-row.total{border-top:1px dashed var(--p-border-2);margin-top:8px;padding-top:10px;color:var(--p-text);font-weight:700;font-size:15px}
-.bd-row.total .mono{color:var(--p-text)}
-.cancel-note{display:flex;gap:8px;margin:12px 20px;font-size:11.5px;color:var(--p-muted);align-items:flex-start;line-height:1.5}
-.cancel-note svg{width:15px;height:15px;flex-shrink:0;margin-top:1px;color:var(--p-success)}
 
-/* ---------- confirmation ---------- */
+/* ============ CONFIRM ============ */
 .confirm-wrap{display:flex;flex-direction:column;align-items:center;text-align:center;padding:36px 26px 24px}
 .check-circle{
   width:68px;height:68px;border-radius:50%;
   background:linear-gradient(140deg, rgba(46,204,143,.25), rgba(46,204,143,.08));
-  color:var(--p-success);
-  display:flex;align-items:center;justify-content:center;margin-bottom:16px;
+  color:var(--p-success);display:flex;align-items:center;justify-content:center;margin-bottom:16px;
   border:1px solid rgba(46,204,143,.35);
-  box-shadow:0 0 0 6px rgba(46,204,143,.05);
 }
 .check-circle svg{width:34px;height:34px}
+.confirm-wrap h2{font-family:var(--f-display);font-size:22px;font-weight:600;letter-spacing:-.025em;margin:0 0 6px}
 .confirm-wrap p{font-size:13px;color:var(--p-text-2);margin:0 0 22px;line-height:1.6}
-.qr-card{
-  width:100%;max-width:270px;background:var(--p-surface);border:1px solid var(--p-border);border-radius:18px;
-  padding:20px;margin-bottom:16px;
-  box-shadow:0 20px 40px -20px rgba(0,0,0,.8);
-}
-.qr-mock{
-  width:130px;height:130px;margin:0 auto 14px;border-radius:10px;
-  background:#fff;position:relative;
-  background-image:
-    radial-gradient(circle at 12% 12%, transparent 6px, #fff 6.5px, #fff 8px, #000 8.5px, #000 13px, #fff 13.5px, #fff 15px, transparent 15.5px),
-    radial-gradient(circle at 88% 12%, transparent 6px, #fff 6.5px, #fff 8px, #000 8.5px, #000 13px, #fff 13.5px, #fff 15px, transparent 15.5px),
-    radial-gradient(circle at 12% 88%, transparent 6px, #fff 6.5px, #fff 8px, #000 8.5px, #000 13px, #fff 13.5px, #fff 15px, transparent 15.5px),
-    repeating-conic-gradient(from 0deg at 50% 50%, #000 0deg 12deg, #fff 12deg 24deg);
-  background-color:#fff;
-  box-shadow:0 0 0 6px #fff, 0 12px 24px -8px rgba(0,0,0,.5);
-}
+.qr-card{width:100%;max-width:280px;background:var(--p-surface);border:1px solid var(--p-border);border-radius:18px;padding:20px;margin-bottom:16px}
+.qr-mock{width:130px;height:130px;margin:0 auto 14px;border-radius:10px;background:#fff;background-image:repeating-conic-gradient(from 0deg at 50% 50%, #000 0 12deg, #fff 12deg 24deg);box-shadow:0 12px 24px -8px rgba(0,0,0,.5)}
 .qr-card .ev{font-family:var(--f-display);font-size:14px;font-weight:600;margin-bottom:4px;letter-spacing:-.015em}
-.qr-card .ev-meta{font-family:var(--f-mono);font-size:10.5px;color:var(--p-muted);display:flex;align-items:center;justify-content:center;gap:6px}
-.confirm-actions{display:flex;gap:10px;width:100%;max-width:270px}
-.confirm-actions .btn{flex:1;padding:12px 10px;font-size:12.5px}
-.meet-note{margin-top:22px;font-size:11.5px;color:var(--p-muted);max-width:270px;line-height:1.65;text-align:left;padding:12px 14px;background:var(--p-surface);border:1px solid var(--p-border);border-radius:12px}
-.meet-note b{color:var(--p-text);display:block;margin-bottom:3px;font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase}
+.qr-card .ev-meta{font-family:var(--f-mono);font-size:10.5px;color:var(--p-muted)}
 
-/* ---------- countdown ---------- */
-.cd-card{
-  margin:6px 20px 14px;padding:18px 20px;
-  background:linear-gradient(160deg, rgba(255,106,80,.14), rgba(255,106,80,.02) 60%);
-  border:1px solid rgba(255,106,80,.25);border-radius:18px;position:relative;overflow:hidden;
-}
-.cd-card::before{content:'';position:absolute;right:-30px;top:-30px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(255,106,80,.3),transparent 60%)}
-.cd-title{font-family:var(--f-display);font-size:19px;font-weight:600;letter-spacing:-.02em;margin:6px 0 14px;line-height:1.15;position:relative;text-wrap:balance}
-.cd-count{display:flex;gap:14px;position:relative}
-.cd-count div{flex:1;background:rgba(15,18,24,.55);border:1px solid var(--p-border);border-radius:12px;padding:12px;text-align:center;backdrop-filter:blur(10px)}
-.cd-count b{display:block;font-family:var(--f-display);font-size:24px;font-weight:600;letter-spacing:-.02em}
-.cd-count span{font-family:var(--f-mono);font-size:9.5px;color:var(--p-muted);letter-spacing:.14em;text-transform:uppercase;margin-top:2px;display:block}
-.mini-card{margin:0 20px 8px;background:var(--p-surface);border:1px solid var(--p-border);border-radius:14px;padding:14px}
-.mc-row{display:flex;gap:12px;align-items:flex-start}
-.mc-glyph{width:36px;height:36px;border-radius:10px;background:var(--p-surface-2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.mc-body{flex:1;min-width:0}
-.mc-body b{display:block;font-size:12.5px;font-weight:600}
-.mc-body small{display:block;font-size:11px;color:var(--p-muted);margin-top:2px;line-height:1.5}
-.chk-list{display:flex;flex-direction:column;gap:2px;padding:2px 20px}
-.chk{display:flex;align-items:center;gap:11px;padding:8px 4px;font-size:13px;color:var(--p-text-2);cursor:pointer}
-.chk i{width:18px;height:18px;border-radius:6px;border:1.5px solid var(--p-border-2);flex-shrink:0;position:relative;transition:all .2s var(--ease-spring)}
-.chk.done{color:var(--p-muted);text-decoration:line-through;text-decoration-color:var(--p-muted-2)}
-.chk.done i{background:var(--p-success);border-color:var(--p-success)}
-.chk.done i::after{content:'';position:absolute;left:5px;top:2px;width:5px;height:9px;border:solid #04140C;border-width:0 2px 2px 0;transform:rotate(45deg)}
-.map-card{margin:6px 20px 4px;background:var(--p-surface);border:1px solid var(--p-border);border-radius:14px;overflow:hidden;position:relative;height:140px}
-.map-card svg{position:absolute;inset:0;width:100%;height:100%;background:linear-gradient(160deg,#151B25,#0B0F16)}
-.map-pill{position:absolute;bottom:12px;left:12px;background:rgba(15,18,24,.85);backdrop-filter:blur(10px);border:1px solid var(--p-border);border-radius:100px;padding:6px 12px;font-size:11.5px;font-weight:500}
-
-/* ---------- live in-trip ---------- */
-.live-tag{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--p-accent);background:rgba(255,106,80,.12);padding:5px 10px;border-radius:100px}
-.live-tag i{width:6px;height:6px;border-radius:50%;background:var(--p-accent);animation:livepulse 1.6s infinite}
-.progress-header{padding:6px 20px 10px}
-.ph-top{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px}
-.segbar{display:flex;gap:4px}
-.segbar i{flex:1;height:4px;border-radius:2px;background:var(--p-border);transition:background .3s}
-.segbar i.done{background:var(--p-success)}
-.segbar i.on{background:var(--p-accent);box-shadow:0 0 12px rgba(255,106,80,.5)}
-.stop-card{
-  display:flex;gap:14px;align-items:center;margin:6px 20px 4px;
-  padding:16px;background:var(--p-surface);border:1px solid var(--p-border);border-radius:16px;
-  box-shadow:0 12px 30px -14px rgba(0,0,0,.7);
-}
-.stop-glyph{width:52px;height:52px;border-radius:14px;background:linear-gradient(140deg, rgba(255,106,80,.25), rgba(255,106,80,.05));border:1px solid rgba(255,106,80,.3);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
-.next-strip{display:flex;flex-direction:column;gap:8px;padding:0 20px 10px}
-.next-item{display:flex;align-items:center;gap:14px;padding:11px 14px;background:var(--p-surface);border:1px solid var(--p-border);border-radius:12px}
-.next-item span{font-family:var(--f-display);font-size:16px;font-weight:600;color:var(--p-muted);letter-spacing:-.02em;width:20px}
-.next-item div{flex:1}
-.next-item b{display:block;font-size:12.5px;font-weight:600}
-.next-item small{display:block;font-size:10.5px;color:var(--p-muted);margin-top:1px}
-
-/* ---------- review ---------- */
-.rate-row{display:flex;gap:8px;justify-content:center;padding:14px 20px 6px}
-.star-btn{font-size:36px;color:var(--p-border-2);cursor:pointer;transition:transform .2s var(--ease-spring), color .2s;line-height:1}
-.star-btn:hover{transform:scale(1.15)}
-.star-btn.on{color:var(--p-amber);text-shadow:0 0 20px rgba(242,169,60,.4)}
-.rate-caption{font-family:var(--f-display);font-size:16px;font-weight:600;text-align:center;color:var(--p-amber);letter-spacing:-.015em;padding-bottom:4px}
-.tag-cloud{display:flex;flex-wrap:wrap;gap:8px;padding:4px 20px 10px}
-.tag{font-size:12px;font-weight:500;padding:8px 14px;border-radius:100px;background:var(--p-surface);border:1px solid var(--p-border);cursor:pointer;color:var(--p-text-2);transition:all .2s}
-.tag:hover{border-color:var(--p-border-2)}
-.tag.on{background:rgba(255,106,80,.12);border-color:var(--p-accent);color:var(--p-accent)}
-.photo-prompt{display:flex;align-items:center;gap:12px;margin:8px 20px;padding:14px;background:linear-gradient(140deg,rgba(255,106,80,.09),transparent);border:1px solid rgba(255,106,80,.25);border-radius:14px}
-.pp-icon{width:38px;height:38px;border-radius:10px;background:var(--p-surface-2);display:flex;align-items:center;justify-content:center;color:var(--p-accent);flex-shrink:0}
-.pp-icon svg{width:20px;height:20px}
-.photo-prompt div{flex:1;min-width:0}
-.photo-prompt b{display:block;font-size:12.5px;font-weight:600}
-.photo-prompt small{display:block;font-size:11px;color:var(--p-muted);margin-top:2px;line-height:1.4}
-
-/* ---------- ticket ---------- */
+/* ============ WALLET / TRIPS ============ */
 .ticket{margin:0 20px 14px;border-radius:18px;background:var(--p-surface);border:1px solid var(--p-border);overflow:hidden;box-shadow:0 8px 24px -12px rgba(0,0,0,.6)}
 .ticket-top{padding:14px 16px;display:flex;gap:12px;align-items:center}
+.ticket-top .thumb{width:48px;height:48px;border-radius:10px;background:var(--p-surface-2);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.ticket-top .thumb img{width:100%;height:100%;object-fit:cover}
 .ticket-top .t{flex:1;min-width:0}
 .ticket-top h5{font-family:var(--f-display);font-size:14px;font-weight:600;margin:0 0 3px;letter-spacing:-.015em}
 .ticket-top .meta{font-size:11.5px;color:var(--p-muted)}
 .ticket-cut{position:relative;height:0;border-top:1.5px dashed var(--p-border-2);margin:0 16px}
 .ticket-cut::before,.ticket-cut::after{content:'';position:absolute;top:-9px;width:18px;height:18px;border-radius:50%;background:var(--p-bg)}
-.ticket-cut::before{left:-25px}
-.ticket-cut::after{right:-25px}
+.ticket-cut::before{left:-25px}.ticket-cut::after{right:-25px}
 .ticket-bottom{padding:14px 16px;display:flex;align-items:center;gap:12px}
-.qr-mini{width:44px;height:44px;flex-shrink:0;border-radius:7px;background:#fff;background-image:repeating-conic-gradient(from 0deg at 50% 50%, #000 0deg 12deg, #fff 12deg 24deg);position:relative;overflow:hidden}
+.qr-mini{width:44px;height:44px;flex-shrink:0;border-radius:7px;background:#fff;background-image:repeating-conic-gradient(from 0deg at 50% 50%, #000 0 12deg, #fff 12deg 24deg)}
 .offline-badge{display:inline-flex;align-items:center;gap:5px;font-family:var(--f-mono);font-size:9.5px;font-weight:500;color:var(--p-success);background:rgba(46,204,143,.12);padding:3px 8px;border-radius:100px;text-transform:uppercase;letter-spacing:.12em}
 
-/* ---------- trips ---------- */
-.trip-tabs{display:flex;gap:6px;padding:6px 20px 14px}
-.trip-tab{flex:1;text-align:center;padding:9px;border-radius:10px;font-size:12.5px;font-weight:600;background:var(--p-surface);border:1px solid var(--p-border);color:var(--p-muted);cursor:pointer;transition:all .2s}
-.trip-tab.on{background:var(--p-text);color:#0B0D12;border-color:var(--p-text)}
-.status-tag{font-family:var(--f-mono);font-size:9.5px;font-weight:500;text-transform:uppercase;letter-spacing:.14em;padding:3px 8px;border-radius:100px}
-.status-tag.ok{background:rgba(46,204,143,.12);color:var(--p-success)}
-.status-tag.done{background:rgba(138,147,166,.14);color:var(--p-muted)}
-
-/* ---------- wishlist ---------- */
-.collection{margin:0 20px 18px}
-.col-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px}
-.col-head b{font-family:var(--f-display);font-size:14px;font-weight:600;letter-spacing:-.02em}
-.col-head span{font-size:11px;color:var(--p-muted)}
-
-/* ---------- profile ---------- */
-.profile-head{display:flex;flex-direction:column;align-items:center;padding:18px 20px 6px;text-align:center}
-.avatar-ring{width:82px;height:82px;border-radius:50%;padding:3px;background:conic-gradient(from 40deg, var(--p-accent), #FFB89C, var(--p-accent-2), var(--p-accent));margin-bottom:12px}
-.avatar{width:100%;height:100%;border-radius:50%;background:var(--p-bg) linear-gradient(140deg,#1c2130,#101520);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-size:30px;font-weight:600;letter-spacing:-.02em}
-.profile-head h3{margin:0 0 4px;font-family:var(--f-display);font-size:18px;font-weight:600;letter-spacing:-.02em}
+/* ============ PROFILE ============ */
+.profile-head{display:flex;flex-direction:column;align-items:center;padding:16px 20px 6px;text-align:center}
+.avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(140deg,#1c2130,#101520);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-size:24px;font-weight:600;letter-spacing:-.02em;margin-bottom:12px;border:2px solid var(--p-accent)}
+.profile-head h3{margin:0 0 3px;font-family:var(--f-display);font-size:18px;font-weight:600;letter-spacing:-.02em}
 .tier-tag{display:inline-flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:10.5px;font-weight:500;color:var(--p-accent);background:rgba(255,106,80,.1);border:1px solid rgba(255,106,80,.3);padding:5px 12px;border-radius:100px;margin-top:4px;letter-spacing:.1em;text-transform:uppercase}
 .progress-card{margin:16px 20px;background:var(--p-surface);border:1px solid var(--p-border);border-radius:16px;padding:16px 18px}
 .progress-card .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;font-size:12.5px;color:var(--p-muted)}
 .progress-card .top b{font-family:var(--f-display);font-size:20px;font-weight:600;color:var(--p-text);letter-spacing:-.02em}
-.progress-track{height:6px;border-radius:100px;background:var(--p-surface-2);overflow:hidden;position:relative}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--p-accent),var(--p-accent-2));border-radius:100px;box-shadow:0 0 12px rgba(255,106,80,.4)}
-.progress-card .foot{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:10px;color:var(--p-muted);margin-top:8px;text-transform:uppercase;letter-spacing:.12em}
-.perk-row{display:flex;gap:12px;padding:10px 20px;align-items:flex-start}
-.perk-row svg{width:18px;height:18px;color:var(--p-success);flex-shrink:0;margin-top:2px}
-.perk-row div b{display:block;font-size:12.5px;font-weight:600}
-.perk-row div small{font-size:11px;color:var(--p-muted);margin-top:1px;display:block}
-.refer-card{margin:14px 20px;padding:16px;background:linear-gradient(140deg, rgba(255,106,80,.18), rgba(255,106,80,.04) 60%);border:1px solid rgba(255,106,80,.3);border-radius:16px;display:flex;align-items:center;gap:12px;position:relative;overflow:hidden}
-.refer-card::before{content:'';position:absolute;right:-40px;top:-40px;width:120px;height:120px;background:radial-gradient(circle,rgba(255,106,80,.2),transparent 60%);border-radius:50%}
-.refer-card small{display:block;font-size:11px;color:var(--p-text-2)}
-.refer-card .code{font-family:var(--f-mono);font-weight:600;letter-spacing:.14em;font-size:16px;margin-top:2px;color:var(--p-text)}
-.menu-list{margin:8px 20px 0}
+.progress-track{height:6px;border-radius:100px;background:var(--p-surface-2);overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--p-accent),var(--p-accent-2));border-radius:100px}
+.menu-list{margin:12px 20px 0}
 .menu-row{display:flex;align-items:center;gap:12px;padding:13px 2px;border-bottom:1px solid var(--p-border);font-size:13px;font-weight:500;cursor:pointer;transition:padding-left .2s}
 .menu-row:hover{padding-left:4px}
 .menu-row:last-child{border-bottom:none}
 .menu-row svg{width:18px;height:18px;color:var(--p-muted)}
 .menu-row span{flex:1}
 .menu-row small{color:var(--p-muted);font-size:11.5px}
+.menu-row.admin-hint{color:var(--p-accent)}
+.menu-row.admin-hint svg{color:var(--p-accent)}
 
-/* ---------- digest ---------- */
-.digest-list{display:flex;flex-direction:column;gap:10px;padding:10px 20px}
-.digest-item{display:flex;gap:14px;align-items:center;padding:16px;background:var(--p-surface);border:1px solid var(--p-border);border-radius:16px;cursor:pointer;transition:transform .25s var(--ease-spring), border-color .2s}
-.digest-item:hover{transform:translateY(-2px);border-color:var(--p-border-2)}
-.di-num{font-family:var(--f-display);font-size:24px;font-weight:600;color:var(--p-muted);letter-spacing:-.02em;min-width:32px}
-.di-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
-.di-body b{font-family:var(--f-display);font-size:14px;font-weight:600;letter-spacing:-.015em}
-.di-body small{font-size:11px;color:var(--p-muted);line-height:1.5}
-.di-price{font-family:var(--f-mono);font-size:13px;font-weight:600;color:var(--p-accent)}
+/* ============ ADMIN ============ */
+.admin-tabs{display:flex;gap:6px;padding:6px 20px 14px}
+.admin-tab{flex:1;text-align:center;padding:10px;border-radius:10px;font-size:12.5px;font-weight:600;background:var(--p-surface);border:1px solid var(--p-border);color:var(--p-muted);cursor:pointer;transition:all .2s}
+.admin-tab.on{background:var(--p-text);color:#0B0D12;border-color:var(--p-text)}
+.admin-list{padding:0 20px 8px;display:flex;flex-direction:column;gap:10px}
+.admin-item{
+  display:flex;gap:12px;align-items:center;background:var(--p-surface);border:1px solid var(--p-border);
+  border-radius:14px;padding:10px;cursor:pointer;transition:border-color .2s;
+}
+.admin-item:hover{border-color:var(--p-border-2)}
+.admin-item .thumb{width:60px;height:60px;border-radius:10px;flex-shrink:0;overflow:hidden;background:var(--p-surface-2);display:flex;align-items:center;justify-content:center;font-size:22px}
+.admin-item .thumb img{width:100%;height:100%;object-fit:cover}
+.admin-item .info{flex:1;min-width:0}
+.admin-item .info b{display:block;font-family:var(--f-display);font-size:13.5px;font-weight:600;letter-spacing:-.015em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.admin-item .info small{font-size:11px;color:var(--p-muted);display:block;margin-top:2px}
+.admin-item .state{font-family:var(--f-mono);font-size:9.5px;padding:3px 8px;border-radius:100px;text-transform:uppercase;letter-spacing:.1em}
+.admin-item .state.active{background:rgba(46,204,143,.14);color:var(--p-success)}
+.admin-item .state.paused{background:rgba(255,84,112,.14);color:var(--p-danger)}
 
-/* ---------- toast ---------- */
+.form-field{margin:0 20px 12px}
+.form-field label{display:block;font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--p-muted);margin-bottom:6px}
+.form-field input, .form-field textarea, .form-field select{
+  width:100%;background:var(--p-surface);border:1px solid var(--p-border);border-radius:12px;
+  padding:12px 14px;font-family:var(--f-body);font-size:13.5px;color:var(--p-text);outline:none;
+  transition:border-color .2s;resize:vertical;
+}
+.form-field input:focus, .form-field textarea:focus, .form-field select:focus{border-color:var(--p-accent)}
+.form-field textarea{min-height:80px;font-family:var(--f-body);line-height:1.5}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 20px 12px}
+.form-row .form-field{margin:0}
+
+.upload-box{
+  margin:0 20px 12px;border:1.5px dashed var(--p-border-2);border-radius:14px;padding:20px;text-align:center;
+  cursor:pointer;transition:border-color .2s, background .2s;position:relative;
+}
+.upload-box:hover{border-color:var(--p-accent);background:rgba(255,106,80,.04)}
+.upload-box svg{width:24px;height:24px;color:var(--p-muted);margin:0 auto 8px;display:block}
+.upload-box b{display:block;font-size:12.5px;font-weight:600}
+.upload-box small{display:block;font-size:11px;color:var(--p-muted);margin-top:2px}
+.upload-box input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
+.upload-preview{width:100%;height:180px;object-fit:cover;border-radius:10px;margin-bottom:8px;display:block}
+.upload-box.has-image{padding:12px}
+
+.cat-item{
+  display:flex;align-items:center;gap:12px;padding:12px 14px;margin:0 20px 8px;
+  background:var(--p-surface);border:1px solid var(--p-border);border-radius:12px;
+}
+.cat-item .icon{width:36px;height:36px;border-radius:10px;background:var(--p-surface-2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.cat-item .n{flex:1;min-width:0}
+.cat-item .n b{display:block;font-size:13px;font-weight:600}
+.cat-item .n small{display:block;font-size:10.5px;color:var(--p-muted);font-family:var(--f-mono);letter-spacing:.06em}
+
+/* ============ TAB BAR ============ */
+.tabbar{
+  position:absolute;left:12px;right:12px;bottom:10px;height:66px;
+  background:rgba(15,18,24,.72);border:1px solid var(--p-border);
+  backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);
+  border-radius:22px;display:none;align-items:center;padding:0 4px;z-index:40;
+  box-shadow:0 12px 40px -12px rgba(0,0,0,.7);
+}
+.viewport.show-tabbar .tabbar{display:flex}
+.tabbtn{
+  all:unset;flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;
+  color:var(--p-muted);padding:8px 0;position:relative;transition:color .2s;
+}
+.tabbtn svg{width:20px;height:20px;transition:transform .25s var(--ease-spring)}
+.tabbtn span{font-size:9.5px;font-weight:600;letter-spacing:.02em}
+.tabbtn.on{color:var(--p-accent)}
+.tabbtn.on svg{transform:translateY(-1px)}
+
+/* ============ TOAST ============ */
 .toast{
   position:absolute;left:50%;bottom:96px;transform:translate(-50%, 10px);
   padding:10px 16px;background:rgba(15,18,24,.95);border:1px solid var(--p-border-2);
   border-radius:100px;font-size:12px;font-weight:500;color:var(--p-text);
   backdrop-filter:blur(16px);box-shadow:0 12px 28px -10px rgba(0,0,0,.7);
   z-index:90;opacity:0;pointer-events:none;transition:opacity .2s, transform .3s var(--ease-spring);
-  white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;max-width:calc(100% - 40px);overflow:hidden;text-overflow:ellipsis;
 }
 .toast.show{opacity:1;transform:translate(-50%, 0)}
-/* heart button when saved */
-.heart-btn.on svg{fill:var(--p-accent);stroke:var(--p-accent)}
-.heart-btn.on{background:rgba(255,106,80,.14)!important;border-color:rgba(255,106,80,.3)!important;color:var(--p-accent)!important}
+.toast.error{background:rgba(255,84,112,.95);color:#fff;border-color:transparent}
+.toast.success{background:rgba(46,204,143,.95);color:#04140C;border-color:transparent}
 
-/* ---------- push banner ---------- */
-.push-banner{
-  position:absolute;top:8px;left:12px;right:12px;z-index:80;
-  background:rgba(15,18,24,.92);backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);
-  border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:12px 14px;
-  display:flex;align-items:flex-start;gap:11px;
-  box-shadow:0 20px 50px -10px rgba(0,0,0,.7);
-  transform:translateY(-160%);opacity:0;pointer-events:none;
-  transition:transform .55s var(--ease-spring), opacity .35s;
-  cursor:pointer;
+/* ============ MODAL SHEET ============ */
+.sheet-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .3s;z-index:70;backdrop-filter:blur(2px)}
+.sheet-backdrop.show{opacity:1;pointer-events:auto}
+.sheet{
+  position:absolute;left:0;right:0;bottom:0;max-height:82%;
+  background:var(--p-bg);border:1px solid var(--p-border);border-bottom:none;
+  border-radius:24px 24px 0 0;box-shadow:0 -20px 60px -10px rgba(0,0,0,.7);
+  transform:translateY(100%);transition:transform .38s var(--ease-spring);
+  z-index:71;display:flex;flex-direction:column;
 }
-.push-banner.show{transform:translateY(0);opacity:1;pointer-events:auto}
-.pb-icon{flex-shrink:0}
-.pb-body{flex:1;min-width:0}
-.pb-title{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:2px}
-.pb-title b{font-size:11.5px;font-weight:600;letter-spacing:-.005em}
-.pb-title span{font-size:10px;color:var(--p-muted)}
-.pb-msg{font-size:12.5px;line-height:1.35;color:var(--p-text-2)}
+.sheet.show{transform:translateY(0)}
+.sheet .grabber{width:36px;height:4px;border-radius:100px;background:var(--p-border-2);margin:10px auto 4px}
 
-/* footer */
-.pagefoot{
-  position:relative;z-index:5;
-  max-width:1240px;margin:0 auto;padding:40px 32px 60px;
-  border-top:1px solid var(--border);
-  display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
-  font-family:var(--f-mono);font-size:11px;color:var(--muted);letter-spacing:.06em;
-}
-.pagefoot span{text-transform:uppercase}
-
-/* responsive */
-@media (max-width:1100px){
-  .workbench{grid-template-columns:60px 1fr 400px;gap:24px}
-}
-@media (max-width:900px){
-  .workbench{grid-template-columns:1fr;gap:0;padding-bottom:60px}
-  .dotnav{position:fixed;top:auto;bottom:20px;left:50%;transform:translateX(-50%);flex-direction:row;padding:8px 12px}
-  .phone-col{position:sticky;top:20px;min-height:auto;padding:0;transform:scale(.78);transform-origin:top center;margin-bottom:-160px;z-index:10}
-  .story{padding-top:40px}
-  .stage-block{min-height:auto;padding:40px 0}
-  .hero h1{font-size:44px}
-  .hero, .top{padding-left:20px;padding-right:20px}
+/* ============ RESPONSIVE ============ */
+@media (max-width:460px){
+  .stage{padding:14px 8px 40px;gap:12px}
+  .phone-shell{width:100%;height:calc(100vh - 100px);max-height:820px;padding:10px;border-radius:44px}
+  .phone-shell::before, .phone-shell::after{display:none}
+  .viewport{border-radius:34px}
 }
 </style>
+</head>
+<body>
 
-<header class="top">
+<div class="stage">
   <div class="brand">
     <div class="brand-mark" aria-hidden="true"></div>
-    <div class="brand-name">Mumbai Insider <em>· prototype</em></div>
+    <div class="brand-name">Mumbai Insider <em>· live</em></div>
   </div>
-  <div class="top-meta">v0.2 · Aug 2026</div>
-</header>
 
-<section class="hero">
-  <div class="eyebrow">The customer journey</div>
-  <h1>Fifteen screens. <em>One weekend in Mumbai.</em></h1>
-  <p class="lead">A guided walk-through of the entire lifecycle — from the first app open to the loyalty loop that brings someone back. Scroll to follow the story; the phone advances with you. Every button, picker and toggle is live.</p>
-  <div class="quick">
-    <div class="quick-stat"><b>15</b><span>Screens</span></div>
-    <div class="quick-stat"><b>9</b><span>Journey stages</span></div>
-    <div class="quick-stat"><b>Live</b><span>Every control works</span></div>
-  </div>
-</section>
-
-<main class="workbench">
-
-  <!-- ============ DOT NAV ============ -->
-  <nav class="dotnav" aria-label="Journey stages">
-    <button data-nav="s-open"  class="on"><span class="tip">01 · First open</span></button>
-    <button data-nav="s-disc"><span class="tip">02 · Discover</span></button>
-    <button data-nav="s-eval"><span class="tip">03 · Evaluate</span></button>
-    <button data-nav="s-book"><span class="tip">04 · Book</span></button>
-    <button data-nav="s-conf"><span class="tip">05 · Confirmed</span></button>
-    <button data-nav="s-antic"><span class="tip">06 · Anticipate</span></button>
-    <button data-nav="s-live"><span class="tip">07 · Experience</span></button>
-    <button data-nav="s-refl"><span class="tip">08 · Reflect</span></button>
-    <button data-nav="s-ret"><span class="tip">09 · Return</span></button>
-  </nav>
-
-  <!-- ============ STICKY PHONE ============ -->
-  <div class="phone-col">
-    <div class="phone-shell">
-      <div class="viewport" id="viewport">
-        <div class="island"></div>
-        <div class="screen-viewport" id="screenViewport">
-
-          <!-- ========== 01 ONBOARDING ========== -->
-          <section class="app-screen" id="scr-onboard">
-            <div class="statusbar"><span>9:41</span><span class="icons"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8.5a16 16 0 0 1 20 0M5.5 12a11 11 0 0 1 13 0M9 15.5a6 6 0 0 1 6 0"/><circle cx="12" cy="19" r="1" fill="currentColor" stroke="none"/></svg><span class="sb-bat"><i></i></span></span></div>
-            <div class="ob-wrap">
-              <div class="ob-media">
-                <div class="ob-orb"></div>
-                <div class="ob-ring r1"></div><div class="ob-ring r2"></div><div class="ob-ring r3"></div>
-              </div>
-              <div class="ob-copy">
-                <div class="eyebrow-s">Welcome to Mumbai Insider</div>
-                <h2 class="ob-title">Every corner of the&nbsp;city, <em>bookable in a tap.</em></h2>
-                <p class="ob-lead">Heritage walks, midnight food crawls, weekend getaways and everything in between — one app, curated locally.</p>
-                <div class="ob-perms">
-                  <div class="ob-perm">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>
-                    <div><b>Use your location</b><small>To surface what's near you, now</small></div>
-                    <span class="perm-toggle on"><i></i></span>
-                  </div>
-                  <div class="ob-perm">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6z"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
-                    <div><b>Booking reminders</b><small>Weather, meeting point, tickets</small></div>
-                    <span class="perm-toggle on"><i></i></span>
-                  </div>
-                </div>
-                <div class="ob-cta">
-                  <button class="btn btn-primary btn-block" data-go="home">Get started</button>
-                  <div class="ob-dots"><i class="on"></i><i></i></div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- ========== 02 HOME ========== -->
-          <section class="app-screen" id="scr-home" data-tab="home">
-            <div class="screen-bg"></div>
-            <div class="statusbar"><span>9:41</span><span class="icons"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8.5a16 16 0 0 1 20 0M5.5 12a11 11 0 0 1 13 0M9 15.5a6 6 0 0 1 6 0"/><circle cx="12" cy="19" r="1" fill="currentColor" stroke="none"/></svg><span class="sb-bat"><i></i></span></span></div>
-            <div class="hdr" style="padding-top:6px">
-              <div style="flex:1">
-                <div class="eyebrow-s" style="margin-bottom:2px">Bandra West</div>
-                <div style="font-family:var(--f-display);font-size:20px;font-weight:600;letter-spacing:-.02em">Namaste, Aisha</div>
-              </div>
-              <button class="icon-btn" data-toast="No new notifications" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6z"/><path d="M10 21a2 2 0 0 0 4 0"/></svg></button>
-              <button class="icon-btn" data-go="wallet" aria-label="Wallet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/></svg></button>
-            </div>
-            <div class="search-bar" data-go="search">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-              Search heritage walks, food, events…
-              <span class="kbd">⌘K</span>
-            </div>
-            <div class="pill-row" data-scope>
-              <div class="pill" data-toggle-group="home-cat">Hotels</div>
-              <div class="pill on" data-toggle-group="home-cat">Activities</div>
-              <div class="pill" data-toggle-group="home-cat">Concerts</div>
-              <div class="pill" data-toggle-group="home-cat">Food</div>
-              <div class="pill" data-toggle-group="home-cat">Heritage</div>
-              <div class="pill" data-toggle-group="home-cat">Nightlife</div>
-            </div>
-            <div class="sec-head"><h4>Happening now</h4><a data-toast="Live feed refreshes every 5 minutes">Live</a></div>
-            <div class="strip">
-              <div class="live-card" data-go="listing">
-                <div class="thumb"><span class="live-badge"><i></i>Tonight · 8 PM</span><span class="glyph">🎻</span></div>
-                <div class="info"><h5>NMACC Sunburst · Indian Classical Night</h5><p>Jio World Centre · from ₹1,800</p></div>
-              </div>
-              <div class="live-card" data-go="listing">
-                <div class="thumb" style="background:radial-gradient(circle at 30% 20%,rgba(46,204,143,.4),transparent 55%),linear-gradient(160deg,#1B2A2A,#0F1A1A)"><span class="live-badge" style="background:var(--p-success);color:#04140C"><i style="background:#04140C"></i>4 seats left</span><span class="glyph">🎤</span></div>
-                <div class="info"><h5>Open Mic Wednesdays</h5><p>Khar Comedy Club · ₹500</p></div>
-              </div>
-              <div class="live-card" data-go="listing">
-                <div class="thumb" style="background:radial-gradient(circle at 30% 20%,rgba(242,169,60,.42),transparent 55%),linear-gradient(160deg,#2A2418,#141008)"><span class="live-badge" style="background:var(--p-amber);color:#160805"><i style="background:#160805"></i>Rooftop · 9 PM</span><span class="glyph">🥂</span></div>
-                <div class="info"><h5>Aer Rooftop · Sundowner</h5><p>Four Seasons Worli · ₹2,400</p></div>
-              </div>
-            </div>
-            <div class="sec-head"><h4>Monsoon picks</h4><a data-go="search">See all</a></div>
-            <div class="card-list">
-              <div class="lcard" data-go="listing">
-                <div class="deco sm"><svg viewBox="0 0 100 100"><path d="M10 70 Q50 20 90 70" stroke="rgba(255,255,255,.5)" stroke-width="1" fill="none"/><path d="M10 82 Q50 40 90 82" stroke="rgba(255,255,255,.3)" stroke-width="1" fill="none"/></svg><span class="glyph">🍲</span></div>
-                <div class="info"><h5>Mohammad Ali Road Night Food Walk</h5><div class="meta"><span class="star">★ 4.8</span><span>342 reviews</span><span>·</span><span>3 hrs</span></div><div class="price">₹1,200 <small>/ person</small></div></div>
-              </div>
-              <div class="lcard" data-go="listing">
-                <div class="deco sm"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="30" stroke="rgba(255,255,255,.35)" stroke-width="1" fill="none"/><circle cx="50" cy="50" r="18" stroke="rgba(255,255,255,.25)" stroke-width="1" fill="none"/></svg><span class="glyph">⛵</span></div>
-                <div class="info"><h5>Elephanta Caves Ferry &amp; Guide</h5><div class="meta"><span class="star">★ 4.7</span><span>156</span><span>·</span><span>Half day</span></div><div class="price">₹950 <small>/ person</small></div></div>
-              </div>
-              <div class="lcard" data-go="listing">
-                <div class="deco sm"><svg viewBox="0 0 100 100"><path d="M20 80 L50 30 L80 80 Z" stroke="rgba(255,255,255,.4)" stroke-width="1" fill="none"/></svg><span class="glyph">🏘️</span></div>
-                <div class="info"><h5>Reality Tours · Dharavi Walk</h5><div class="meta"><span class="star">★ 4.9</span><span>611</span><span class="badge new">Editor's pick</span></div><div class="price">₹1,100 <small>/ person</small></div></div>
-              </div>
-            </div>
-            <div class="sec-head"><h4>This weekend</h4><a data-go="digest">Full digest</a></div>
-            <div class="pill-row" style="padding-bottom:24px" data-scope>
-              <div class="pill" data-toggle-group="weekend-idea" data-go="listing">🚗 Lonavala getaway</div>
-              <div class="pill" data-toggle-group="weekend-idea" data-go="listing">⛴️ Alibaug ferry</div>
-              <div class="pill" data-toggle-group="weekend-idea" data-go="listing">🎤 Comedy nights</div>
-            </div>
-          </section>
-
-          <!-- ========== 03 SEARCH ========== -->
-          <section class="app-screen" id="scr-search" data-tab="search">
-            <div class="statusbar"><span>9:41</span><span class="icons"><span class="sb-bat"><i></i></span></span></div>
-            <div class="hdr"><h3>Search</h3><button class="icon-btn" data-back aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
-            <div class="search-bar" style="border-color:var(--p-accent);background:rgba(255,106,80,.06)">
-              <svg viewBox="0 0 24 24" fill="none" stroke="var(--p-accent)" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-              <input value="food tour" readonly>
-            </div>
-            <div class="sec-head" style="padding-top:2px"><h4 class="eyebrow-s" style="font-family:var(--f-mono);font-size:10px">Recent</h4><a></a></div>
-            <div class="pill-row" style="padding-bottom:10px" data-scope>
-              <div class="pill" data-toggle-group="recent" data-toast="Searched: heritage walk colaba">heritage walk colaba</div>
-              <div class="pill" data-toggle-group="recent" data-toast="Searched: elephanta caves">elephanta caves</div>
-              <div class="pill" data-toggle-group="recent" data-toast="Searched: comedy show bandra">comedy show bandra</div>
-            </div>
-            <div class="pill-row" data-scope>
-              <div class="pill on" data-toggle-group="filter">Neighbourhood ▾</div>
-              <div class="pill" data-toggle-group="filter">Price ▾</div>
-              <div class="pill" data-toggle-group="filter">Date ▾</div>
-              <div class="pill" data-toggle-group="filter">Rating ▾</div>
-            </div>
-            <div class="sec-head"><h4>3 results</h4><a data-toast="Map view coming soon">Map view</a></div>
-            <div class="card-list">
-              <div class="lcard" data-go="listing"><div class="deco sm"><span class="glyph">🍲</span></div><div class="info"><h5>Mohammad Ali Road Night Food Walk</h5><div class="meta"><span class="star">★ 4.8</span><span>342 · 3 hrs</span></div><div class="price">₹1,200</div></div></div>
-              <div class="lcard" data-go="listing"><div class="deco sm"><span class="glyph">🥘</span></div><div class="info"><h5>Colaba Street Food Crawl</h5><div class="meta"><span class="star">★ 4.6</span><span>218 · 2.5 hrs</span></div><div class="price">₹950</div></div></div>
-              <div class="lcard" data-go="listing"><div class="deco sm"><span class="glyph">☕</span></div><div class="info"><h5>Irani Café &amp; Bakery Heritage Tour</h5><div class="meta"><span class="star">★ 4.9</span><span>89 · 2 hrs</span><span class="badge few">Few spots</span></div><div class="price">₹1,400</div></div></div>
-            </div>
-          </section>
-
-          <!-- ========== 04 LISTING DETAIL ========== -->
-          <section class="app-screen" id="scr-listing">
-            <div class="statusbar"><span>9:41</span><span class="icons"><span class="sb-bat"><i></i></span></span></div>
-            <div class="hdr" style="position:absolute;top:44px;left:0;right:0;z-index:10;padding:8px 14px">
-              <button class="icon-btn" data-back style="background:rgba(0,0,0,.5);backdrop-filter:blur(10px);border-color:rgba(255,255,255,.1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg></button>
-              <span style="flex:1"></span>
-              <button class="icon-btn" data-toast="Link copied — share on WhatsApp" style="background:rgba(0,0,0,.5);backdrop-filter:blur(10px);border-color:rgba(255,255,255,.1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8M16 6l-4-4-4 4M12 2v14"/></svg></button>
-              <button class="icon-btn heart-btn" data-heart aria-label="Save to wishlist" style="background:rgba(0,0,0,.5);backdrop-filter:blur(10px);border-color:rgba(255,255,255,.1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>
-            </div>
-            <div class="deco hero" style="margin-top:-50px;padding-top:50px">
-              <svg viewBox="0 0 400 300" preserveAspectRatio="none"><path d="M0 240 Q100 180 200 210 T400 200" stroke="rgba(255,255,255,.28)" stroke-width="1" fill="none"/><path d="M0 260 Q100 210 200 230 T400 220" stroke="rgba(255,255,255,.18)" stroke-width="1" fill="none"/></svg>
-              <span class="glyph">🍲</span>
-              <div class="dots"><i></i><i></i><i></i><i></i></div>
-            </div>
-            <div style="padding:16px 20px 4px">
-              <h2 style="font-family:var(--f-display);font-size:22px;font-weight:600;letter-spacing:-.025em;line-height:1.15;margin:0 0 8px;text-wrap:balance">Mohammad Ali Road Night Food Walk</h2>
-              <div style="font-size:12.5px;color:var(--p-muted);display:flex;align-items:center;gap:8px"><span class="star" style="color:var(--p-amber);font-weight:600">★ 4.8</span><span>(342 reviews)</span><span>·</span><span>Bhendi Bazaar</span></div>
-            </div>
-            <div class="info-strip">
-              <div><span class="eyebrow-s">Duration</span><span class="v">3 hours</span></div>
-              <div><span class="eyebrow-s">Group</span><span class="v">Max 12</span></div>
-              <div><span class="eyebrow-s">Language</span><span class="v">EN · HI</span></div>
-              <div><span class="eyebrow-s">Cancel</span><span class="v" style="color:var(--p-success)">Free 24h</span></div>
-            </div>
-            <div class="tabs" data-scope>
-              <span class="on" data-toggle-group="listing-tab">Overview</span>
-              <span data-toggle-group="listing-tab">Included</span>
-              <span data-toggle-group="listing-tab">Reviews</span>
-              <span data-toggle-group="listing-tab">Map</span>
-            </div>
-            <p class="body-copy">Walk Mumbai's most famous night food street with a local guide — eight stops from seekh kebabs to malpua, ending at a century-old Irani bakery. Small groups only, so every question gets answered and every stall gets its story told.</p>
-            <div class="op-row">
-              <div class="op-avatar">BF</div>
-              <div class="t"><b>Hosted by Bombay Food Trails</b><small>● Usually replies in 10 min</small></div>
-              <button class="icon-btn" data-toast="Message sent to Bombay Food Trails"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
-            </div>
-            <div class="chip-ask" data-toast="Message sent to Bombay Food Trails"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Message the operator</div>
-            <div style="height:96px"></div>
-            <div class="sticky-bar">
-              <div class="amt"><span class="eyebrow-s">From</span><b class="mono">₹1,200</b></div>
-              <button class="btn btn-primary" data-go="datetime">Book now</button>
-            </div>
-          </section>
-
-          <!-- ========== 05 DATE & TIME ========== -->
-          <section class="app-screen" id="scr-datetime">
-            <div class="statusbar"><span>9:41</span><span class="icons"><span class="sb-bat"><i></i></span></span></div>
-            <div class="hdr"><button class="icon-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg></button><h3>Select date &amp; time</h3></div>
-            <div class="eyebrow-s" style="padding:0 20px 8px">August 2026</div>
-            <div class="week" data-scope>
-              <div class="day sold" data-value="14"><div class="d">Thu</div><div class="n mono">14</div><div class="s"></div></div>
-              <div class="day avail" data-toggle-group="day" data-value="15"><div class="d">Fri</div><div class="n mono">15</div><div class="s"></div></div>
-              <div class="day avail sel" data-toggle-group="day" data-value="16"><div class="d">Sat</div><div class="n mono">16</div><div class="s"></div></div>
-              <div class="day few" data-toggle-group="day" data-value="17"><div class="d">Sun</div><div class="n mono">17</div><div class="s"></div></div>
-              <div class="day avail" data-toggle-group="day" data-value="18"><div class="d">Mon</div><div class="n mono">18</div><div class="s"></div></div>
-              <div class="day avail" data-toggle-group="day" data-value="19"><div class="d">Tue</div><div class="n mono">19</div><div class="s"></div></div>
-              <div class="day avail" data-toggle-group="day" data-value="20"><div class="d">Wed</div><div class="n mono">20</div><div class="s"></div></div>
-            </div>
-            <div class="sec-head"><h4>Slots · Sat 16</h4><a class="mono">4 available</a></div>
-            <div class="slot-grid" data-scope>
-              <div class="slot sel avail" data-toggle-group="slot" data-value="7:00 PM"><div class="t mono">7:00 PM</div><div class="s">Available</div></div>
-              <div class="slot few" data-toggle-group="slot" data-value="8:30 PM"><div class="t mono">8:30 PM</div><div class="s">3 spots left</div></div>
-              <div class="slot sold"><div class="t mono">6:00 PM</div><div class="s">Sold out</div></div>
-              <div class="slot avail" data-toggle-group="slot" data-value="9:30 PM"><div class="t mono">9:30 PM</div><div class="s">Available</div></div>
-            </div>
-            <div class="stepper-row">
-              <div><div style="font-size:13.5px;font-weight:600">Adults</div><div style="font-size:11px;color:var(--p-muted);margin-top:2px">Age 13+</div></div>
-              <div class="stepper"><button aria-label="Decrease" data-step="-" data-min="1">−</button><b class="mono" data-guests-count>4</b><button aria-label="Increase" data-step="+" data-max="12">+</button></div>
-            </div>
-            <div class="total-row"><span data-line="guests-x-price">4 guests × ₹1,200</span><b class="mono" data-line="base">₹4,800</b></div>
-            <div style="padding:14px 20px 30px"><button class="btn btn-primary btn-block" data-go="checkout">Continue to payment</button></div>
-          </section>
-
-          <!-- ========== 06 CHECKOUT ========== -->
-          <section class="app-screen" id="scr-checkout">
-            <div class="statusbar"><span>9:41</span><span class="icons"><span class="sb-bat"><i></i></span></span></div>
-            <div class="hdr"><button class="icon-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg></button><h3>Checkout</h3><span class="eyebrow-s mono">Step 3 of 3</span></div>
-            <div class="field"><label class="eyebrow-s">Contact</label><div class="val">Aisha Kulkarni · +91 98••••••41</div></div>
-            <div class="sec-head" style="padding-top:2px"><h4 class="eyebrow-s" style="font-family:var(--f-mono);font-size:10px">Payment method</h4><a></a></div>
-            <div data-scope>
-              <div class="pay-opt sel" data-toggle-group="pay" data-value="upi"><div class="r"></div><div class="glyph">UPI</div><div class="lbl">UPI QR<small>Google Pay · PhonePe · Paytm · BHIM</small></div></div>
-              <div class="pay-opt" data-toggle-group="pay" data-value="bnpl"><div class="r"></div><div class="glyph" style="background:var(--p-success);color:#04140C">₹</div><div class="lbl">Book now, pay later<small>Simpl · LazyPay</small></div></div>
-              <div class="pay-opt" data-toggle-group="pay" data-value="card"><div class="r"></div><div class="glyph" style="background:var(--p-surface-2);color:var(--p-text)">💳</div><div class="lbl">Card<small>Visa · Mastercard · Amex</small></div></div>
-            </div>
-            <div class="breakdown">
-              <div class="bd-row"><span data-line="guests-x-price">4 × Food walk (₹1,200)</span><span class="mono" data-line="base">₹4,800</span></div>
-              <div class="bd-row"><span>Taxes &amp; fees</span><span class="mono" data-line="tax">₹240</span></div>
-              <div class="bd-row"><span>Insider points earned</span><span class="mono" style="color:var(--p-accent)" data-line="points">+240 pts</span></div>
-              <div class="bd-row total"><span>Total</span><span class="mono" data-line="total">₹5,040</span></div>
-            </div>
-            <div class="cancel-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>Free cancellation until 24 hours before.</div>
-            <div style="padding:6px 20px 30px"><button class="btn btn-primary btn-block" data-go="confirm" data-line="confirm-btn">Confirm &amp; pay <span class="mono" data-line="total">₹5,040</span></button></div>
-          </section>
-
-          <!-- ========== 07 CONFIRMATION ========== -->
-          <section class="app-screen" id="scr-confirm">
-            <div class="statusbar"><span>9:41</span><span class="icons"><span class="sb-bat"><i></i></span></span></div>
-            <div class="confirm-wrap">
-              <div class="check-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></div>
-              <div class="eyebrow-s" style="color:var(--p-success);margin-bottom:6px">Booking confirmed</div>
-              <h2 style="font-family:var(--f-display);font-size:22px;font-weight:600;letter-spacing:-.025em;margin:0 0 6px;text-wrap:balance">You're going out on Saturday.</h2>
-              <p>Sat, 16 Aug · 7:00 PM · 4 guests<br>Mohammad Ali Road Night Food Walk</p>
-              <div class="qr-card">
-                <div class="qr-mock"></div>
-                <div class="ev">Mohammad Ali Road Food Walk</div>
-                <div class="ev-meta"><span>4 guests</span><span>·</span><span class="mono">#MI7241</span></div>
-              </div>
-              <div class="confirm-actions">
-                <button class="btn btn-ghost" data-toast="Booking link shared on WhatsApp" style="flex:1"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8M16 6l-4-4-4 4M12 2v14"/></svg>Share · WhatsApp</button>
-                <button class="btn btn-primary" data-go="wallet" style="flex:1">View ticket</button>
-              </div>
-              <div class="meet-note"><b>Meeting point</b> Crawford Market gate, Mohammad Ali Road — guide holds an orange flag.</div>
-            </div>
-          </section>
-
-          <!-- ========== 08 TRIP COUNTDOWN ========== -->
-          <section class="app-screen" id="scr-countdown">
-            <div class="statusbar"><span>9:41</span><span class="icons"><span class="sb-bat"><i></i></span></span></div>
-            <div class="hdr"><button class="icon-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg></button><h3>Your trip · Saturday</h3></div>
-            <div class="cd-card">
-              <div class="eyebrow-s" style="color:var(--p-accent)">Tomorrow · 7:00 PM</div>
-              <div class="cd-title">Mohammad Ali Road Night Food Walk</div>
-              <div class="cd-count"><div><b class="mono">21</b><span>hrs</span></div><div><b class="mono">44</b><span>min</span></div><div><b class="mono">12</b><span>sec</span></div></div>
-            </div>
-            <div class="mini-card">
-              <div class="mc-row">
-                <div class="mc-glyph">☔</div>
-                <div class="mc-body"><b>Light rain expected</b><small>Guide will bring umbrellas · 24°C, 78% humidity</small></div>
-              </div>
-            </div>
-            <div class="sec-head"><h4>What to bring</h4><a class="mono">4 of 6</a></div>
-            <div class="chk-list">
-              <label class="chk done" data-toggle><i></i>Comfortable walking shoes</label>
-              <label class="chk done" data-toggle><i></i>Light jacket or umbrella</label>
-              <label class="chk done" data-toggle><i></i>Cash for extras (₹500)</label>
-              <label class="chk done" data-toggle><i></i>Water bottle</label>
-              <label class="chk" data-toggle><i></i>ID for entry</label>
-              <label class="chk" data-toggle><i></i>Appetite</label>
-            </div>
-            <div class="sec-head"><h4>Meeting point</h4><a data-toast="Opening in Google Maps…">Directions</a></div>
-            <div class="map-card" data-toast="Opening in Google Maps…">
-              <svg viewBox="0 0 300 140" preserveAspectRatio="none"><path d="M0 100 Q60 80 120 90 T240 70 T300 60" stroke="rgba(255,255,255,.15)" stroke-width="1" fill="none"/><path d="M30 20 L60 40 L100 30 L140 60 L180 50 L220 80 L280 70" stroke="rgba(255,255,255,.1)" stroke-width="1" fill="none"/><circle cx="160" cy="70" r="8" fill="var(--p-accent)"/><circle cx="160" cy="70" r="14" fill="none" stroke="var(--p-accent)" stroke-width="1" opacity=".4"/></svg>
-              <div class="map-pill">Crawford Market gate · 18 min drive</div>
-            </div>
-            <div style="display:flex;gap:10px;padding:14px 20px 30px">
-              <button class="btn btn-ghost" data-toast="WhatsApp message sent to guide" style="flex:1"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Message guide</button>
-              <button class="btn btn-primary" style="flex:1" data-go="wallet">View ticket</button>
-            </div>
-          </section>
-
-          <!-- ========== 09 LIVE IN-TRIP ========== -->
-          <section class="app-screen" id="scr-live">
-            <div class="statusbar"><span>9:41</span><span class="icons"><span class="sb-bat"><i></i></span></span></div>
-            <div class="hdr">
-              <button class="icon-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg></button>
-              <h3>Live guide</h3>
-              <span class="live-tag"><i></i>Live</span>
-            </div>
-            <div class="progress-header">
-              <div class="ph-top"><span class="eyebrow-s" style="color:var(--p-accent)">Stop 3 of 8</span><span class="mono" style="font-size:11px;color:var(--p-muted)">47 min elapsed</span></div>
-              <div class="segbar">
-                <i class="done"></i><i class="done"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i>
-              </div>
-            </div>
-            <div class="stop-card">
-              <div class="stop-glyph">🍢</div>
-              <div>
-                <div class="eyebrow-s" style="color:var(--p-accent);margin-bottom:4px">Now stopping at</div>
-                <div style="font-family:var(--f-display);font-size:19px;font-weight:600;letter-spacing:-.02em;line-height:1.2">Bade Miya, Apollo Bunder</div>
-                <div style="font-size:12px;color:var(--p-muted);margin-top:4px">Seekh kebabs since 1946 · ~15 min stop</div>
-              </div>
-            </div>
-            <div class="body-copy" style="padding:16px 20px 8px">Order the beef seekh and the double roti — the recipe hasn't changed since the Cossijurah stall opened. Cash preferred, ₹250-400 per person.</div>
-            <div class="sec-head"><h4>Next stops</h4><a class="mono">5 to go</a></div>
-            <div class="next-strip">
-              <div class="next-item"><span class="mono">4</span><div><b>Sarvi</b><small>Kababs &amp; nihari</small></div></div>
-              <div class="next-item"><span class="mono">5</span><div><b>Noor Mohammadi</b><small>Chicken sanju baba</small></div></div>
-              <div class="next-item"><span class="mono">6</span><div><b>Suleiman Usman</b><small>Malpua &amp; firni</small></div></div>
-            </div>
-            <div class="sec-head"><h4>Nearby now</h4><a data-toast="Added chai stop to your trip">Add to trip</a></div>
-            <div class="card-list">
-              <div class="lcard" data-toast="Added Kyani &amp; Co to your trip"><div class="deco sm"><span class="glyph">☕</span></div><div class="info"><h5>Kyani &amp; Co · post-walk chai</h5><div class="meta"><span>4 min walk</span><span>·</span><span>Open till 11 PM</span></div><div class="price">₹80 <small>/ chai</small></div></div></div>
-            </div>
-            <div style="padding:6px 20px 30px"><button class="btn btn-primary btn-block" data-toast="Advanced to Stop 4 · Sarvi"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 5l7 7-7 7M20 12H4"/></svg>Next stop · Sarvi</button></div>
-          </section>
-
-          <!-- ========== 10 POST-TRIP REVIEW ========== -->
-          <section class="app-screen" id="scr-review">
-            <div class="statusbar"><span>9:41</span><span class="icons"><span class="sb-bat"><i></i></span></span></div>
-            <div class="hdr"><button class="icon-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 6l12 12M18 6 6 18"/></svg></button><h3>How was it?</h3></div>
-            <div style="padding:14px 20px 4px">
-              <div class="eyebrow-s" style="color:var(--p-muted)">Last night · 3 hours</div>
-              <div style="font-family:var(--f-display);font-size:22px;font-weight:600;letter-spacing:-.025em;line-height:1.2;margin-top:4px;text-wrap:balance">Mohammad Ali Road Food Walk</div>
-              <div style="font-size:12.5px;color:var(--p-muted);margin-top:4px">by Bombay Food Trails</div>
-            </div>
-            <div class="rate-row">
-              <span class="star-btn on" data-star="1">★</span><span class="star-btn on" data-star="2">★</span><span class="star-btn on" data-star="3">★</span><span class="star-btn on" data-star="4">★</span><span class="star-btn on" data-star="5">★</span>
-            </div>
-            <div class="rate-caption" data-rate-caption>Loved it</div>
-            <div class="sec-head"><h4>What stood out?</h4><a></a></div>
-            <div class="tag-cloud">
-              <div class="tag on" data-toggle>Guide's stories</div>
-              <div class="tag on" data-toggle>Value for money</div>
-              <div class="tag" data-toggle>Small group</div>
-              <div class="tag on" data-toggle>Off the tourist path</div>
-              <div class="tag" data-toggle>Vegetarian options</div>
-              <div class="tag" data-toggle>Pace</div>
-              <div class="tag" data-toggle>Meeting point</div>
-            </div>
-            <div class="photo-prompt" data-toast="Photo upload — opens camera">
-              <div class="pp-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="4"/><path d="M9 6l1.5-2h3L15 6"/></svg></div>
-              <div><b>Add a photo, earn <span style="color:var(--p-accent)">+50 pts</span></b><small>Only your best shot — helps future travellers.</small></div>
-              <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
-            </div>
-            <div style="padding:16px 20px 30px"><button class="btn btn-primary btn-block" data-go="profile">Submit review · Earn 100 pts</button></div>
-          </section>
-
-          <!-- ========== 11 WALLET ========== -->
-          <section class="app-screen" id="scr-wallet">
-            <div class="statusbar"><span>9:41</span><span class="icons"><span class="sb-bat"><i></i></span></span></div>
-            <div class="hdr"><button class="icon-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg></button><h3>Tickets</h3><button class="icon-btn" data-toast="Added to Apple Wallet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 5v14l4-4 4 4V5"/></svg></button></div>
-            <div class="ticket">
-              <div class="ticket-top">
-                <div class="deco sm" style="width:48px;height:48px"><span class="glyph" style="font-size:20px">🍲</span></div>
-                <div class="t"><h5>Mohammad Ali Road Food Walk</h5><div class="meta"><span class="mono">Sat 16 Aug · 7:00 PM</span></div></div>
-              </div>
-              <div class="ticket-cut"></div>
-              <div class="ticket-bottom">
-                <div class="qr-mini"></div>
-                <div style="flex:1"><span class="offline-badge">● Offline ready</span><div class="mono" style="font-size:10.5px;color:var(--p-muted);margin-top:4px">#MI7241 · 4 guests</div></div>
-                <button class="btn btn-ghost" data-toast="Opening in Google Maps…" style="padding:9px 14px;font-size:11.5px">Directions</button>
-              </div>
-            </div>
-            <div class="ticket">
-              <div class="ticket-top">
-                <div class="deco sm" style="width:48px;height:48px"><span class="glyph" style="font-size:20px">⛵</span></div>
-                <div class="t"><h5>Elephanta Caves Ferry &amp; Guide</h5><div class="meta"><span class="mono">Sun 24 Aug · 9:30 AM</span></div></div>
-              </div>
-              <div class="ticket-cut"></div>
-              <div class="ticket-bottom">
-                <div class="qr-mini"></div>
-                <div style="flex:1"><span class="offline-badge">● Offline ready</span><div class="mono" style="font-size:10.5px;color:var(--p-muted);margin-top:4px">#MI7188 · 2 guests</div></div>
-                <button class="btn btn-ghost" data-toast="Opening in Google Maps…" style="padding:9px 14px;font-size:11.5px">Directions</button>
-              </div>
-            </div>
-          </section>
-
-          <!-- ========== 12 MY TRIPS ========== -->
-          <section class="app-screen" id="scr-trips" data-tab="trips">
-            <div class="statusbar"><span>9:41</span><span class="icons"><span class="sb-bat"><i></i></span></span></div>
-            <div class="hdr"><h3>Trips</h3></div>
-            <div class="trip-tabs" data-scope><div class="trip-tab on" data-toggle-group="trip-tab">Upcoming</div><div class="trip-tab" data-toggle-group="trip-tab">Past</div><div class="trip-tab" data-toggle-group="trip-tab">Cancelled</div></div>
-            <div class="card-list" style="padding-top:0">
-              <div class="lcard" data-go="wallet"><div class="deco sm"><span class="glyph">🍲</span></div><div class="info"><h5>Mohammad Ali Road Food Walk</h5><div class="meta"><span class="mono">Sat 16 Aug · 7:00 PM</span></div><span class="status-tag ok">● Confirmed</span></div></div>
-              <div class="lcard" data-go="wallet"><div class="deco sm"><span class="glyph">⛵</span></div><div class="info"><h5>Elephanta Caves Ferry &amp; Guide</h5><div class="meta"><span class="mono">Sun 24 Aug · 9:30 AM</span></div><span class="status-tag ok">● Confirmed</span></div></div>
-            </div>
-            <div class="sec-head"><h4 class="eyebrow-s" style="font-family:var(--f-mono);font-size:10px">Completed</h4><a></a></div>
-            <div class="card-list" style="padding-top:0">
-              <div class="lcard" data-go="review"><div class="deco sm"><span class="glyph">🏘️</span></div><div class="info"><h5>Reality Tours · Dharavi Walk</h5><div class="meta"><span class="mono">12 Jul</span><span>·</span><span style="color:var(--p-accent)">Rate your trip →</span></div><span class="status-tag done">Completed</span></div></div>
-            </div>
-          </section>
-
-          <!-- ========== 13 WISHLIST ========== -->
-          <section class="app-screen" id="scr-wishlist" data-tab="wishlist">
-            <div class="statusbar"><span>9:41</span><span class="icons"><span class="sb-bat"><i></i></span></span></div>
-            <div class="hdr"><h3>Saved</h3><button class="icon-btn" data-toast="New collection created"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button></div>
-            <div class="collection">
-              <div class="col-head"><b>Monsoon plans</b><span class="mono">2 saved</span></div>
-              <div class="card-list" style="padding:0">
-                <div class="lcard" data-go="listing"><div class="deco sm"><span class="glyph">⛵</span></div><div class="info"><h5>Elephanta Caves Ferry &amp; Guide</h5><div class="meta"><span class="badge drop">↓ Price dropped ₹200</span></div><div class="price">₹950</div></div></div>
-                <div class="lcard" data-go="listing"><div class="deco sm"><span class="glyph">🥘</span></div><div class="info"><h5>Colaba Street Food Crawl</h5><div class="meta"><span class="star">★ 4.6</span><span>218</span></div><div class="price">₹950</div></div></div>
-              </div>
-            </div>
-            <div class="collection">
-              <div class="col-head"><b>Mom's visit</b><span class="mono">3 saved</span></div>
-              <div class="card-list" style="padding:0">
-                <div class="lcard" data-go="listing"><div class="deco sm"><span class="glyph">🕌</span></div><div class="info"><h5>Khaki Tours · South Mumbai Heritage</h5><div class="meta"><span class="star">★ 4.8</span><span>401</span></div><div class="price">₹800</div></div></div>
-              </div>
-            </div>
-          </section>
-
-          <!-- ========== 14 PROFILE & REWARDS ========== -->
-          <section class="app-screen" id="scr-profile" data-tab="profile">
-            <div class="statusbar"><span>9:41</span><span class="icons"><span class="sb-bat"><i></i></span></span></div>
-            <div class="profile-head">
-              <div class="avatar-ring">
-                <div class="avatar">A</div>
-              </div>
-              <h3>Aisha Kulkarni</h3>
-              <div class="tier-tag">◆ Insider tier</div>
-            </div>
-            <div class="progress-card">
-              <div class="top"><span>Points balance</span><b class="mono">1,340 pts</b></div>
-              <div class="progress-track"><div class="progress-fill" style="width:67%"></div></div>
-              <div class="foot"><span>Insider</span><span class="mono">660 pts to Legend</span></div>
-            </div>
-            <div class="perk-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 6v6c0 5 3.5 8.5 8 10 4.5-1.5 8-5 8-10V6z"/></svg><div><b>5% cashback on every booking</b><small>Insider-tier perk</small></div></div>
-            <div class="perk-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 15 8l6 1-4.5 4.5L17.5 20 12 16.7 6.5 20l1-6.5L3 9l6-1z"/></svg><div><b>Early access to flash sales</b><small>Notified 2 hours before Explorer tier</small></div></div>
-            <div class="refer-card">
-              <div style="flex:1"><small>Invite a friend, both get ₹200 off</small><div class="code mono">AISHA200</div></div>
-              <button class="btn btn-primary" data-copy="AISHA200" style="padding:10px 14px;font-size:12px">Copy</button>
-            </div>
-            <div class="menu-list">
-              <div class="menu-row" data-toast="Payment methods · UPI · Card ending 4141"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg><span>Payment methods</span><small>›</small></div>
-              <div class="menu-row" data-toast="Language: English, Hindi, Marathi coming soon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h14M5 8a4 4 0 1 1 8 0M5 8v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8"/></svg><span>Language</span><small class="mono">English</small></div>
-              <div class="menu-row" data-go="digest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6z"/></svg><span>Weekly digest</span><small>See sample</small></div>
-            </div>
-            <div style="height:20px"></div>
-          </section>
-
-          <!-- ========== 15 WEEKEND DIGEST ========== -->
-          <section class="app-screen" id="scr-digest">
-            <div class="statusbar"><span>9:41</span><span class="icons"><span class="sb-bat"><i></i></span></span></div>
-            <div class="hdr"><button class="icon-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg></button><h3>This weekend</h3></div>
-            <div style="padding:6px 20px 4px">
-              <div class="eyebrow-s" style="color:var(--p-accent)">Curated for you · Friday morning</div>
-              <h2 style="font-family:var(--f-display);font-size:26px;font-weight:600;letter-spacing:-.028em;line-height:1.05;margin:6px 0 8px;text-wrap:balance">Three ways to spend <em style="color:var(--p-muted);font-style:italic;font-weight:500">this weekend.</em></h2>
-              <p style="font-size:13px;color:var(--p-muted);line-height:1.6;margin:0">Handpicked by the Insider team — based on what you've booked before.</p>
-            </div>
-            <div class="digest-list">
-              <div class="digest-item" data-go="listing">
-                <div class="di-num mono">01</div>
-                <div class="di-body">
-                  <div class="eyebrow-s">Saturday night</div>
-                  <b>Bandra art walk + rooftop dinner</b>
-                  <small>3 spots on the walk · Aer available after</small>
-                </div>
-                <div class="di-price mono">₹2,400</div>
-              </div>
-              <div class="digest-item" data-go="listing">
-                <div class="di-num mono">02</div>
-                <div class="di-body">
-                  <div class="eyebrow-s">Sunday morning</div>
-                  <b>Elephanta caves + Sassoon Dock breakfast</b>
-                  <small>Ferry leaves 9:30 AM · returns by 2 PM</small>
-                </div>
-                <div class="di-price mono">₹1,650</div>
-              </div>
-              <div class="digest-item" data-go="listing">
-                <div class="di-num mono">03</div>
-                <div class="di-body">
-                  <div class="eyebrow-s">Weekend escape</div>
-                  <b>Overnight in Alibaug · beach shack + kayak</b>
-                  <small>Ferry + stay + activity · Sat morning departure</small>
-                </div>
-                <div class="di-price mono">₹6,900</div>
-              </div>
-            </div>
-            <div style="padding:14px 20px 30px"><button class="btn btn-ghost btn-block" data-go="home">Back to home</button></div>
-          </section>
-
-        </div>
-
-        <!-- ========== PUSH NOTIFICATION BANNER ========== -->
-        <div class="push-banner" id="pushBanner">
-          <div class="pb-icon">
-            <div class="brand-mark" style="width:24px;height:24px;border-radius:6px"></div>
-          </div>
-          <div class="pb-body">
-            <div class="pb-title"><b>Mumbai Insider</b><span class="mono" id="pbTime">now</span></div>
-            <div class="pb-msg" id="pbMsg">Your food walk is tomorrow at 7 PM.</div>
-          </div>
-        </div>
-
-        <!-- ========== TAB BAR ========== -->
-        <div class="tabbar" id="tabbar">
-          <button class="tabbtn" data-tabgo="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2h-4v-7H9v7H5a2 2 0 0 1-2-2z"/></svg><span>Home</span></button>
-          <button class="tabbtn" data-tabgo="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><span>Search</span></button>
-          <button class="tabbtn" data-tabgo="wishlist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg><span>Saved</span></button>
-          <button class="tabbtn" data-tabgo="trips"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg><span>Trips</span></button>
-          <button class="tabbtn" data-tabgo="profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4.5 5-6 8-6s6.5 1.5 8 6"/></svg><span>Profile</span></button>
-        </div>
-
-        <!-- toast (for demo-only actions like copy, share) -->
-        <div class="toast" id="toast" role="status" aria-live="polite"></div>
-
-        <div class="home-indicator"></div>
+  <div class="phone-shell">
+    <div class="viewport" id="viewport">
+      <div class="island"></div>
+      <div class="screen-viewport" id="screenViewport"></div>
+      <div class="tabbar" id="tabbar">
+        <button class="tabbtn" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2h-4v-7H9v7H5a2 2 0 0 1-2-2z"/></svg><span>Home</span></button>
+        <button class="tabbtn" data-tab="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><span>Search</span></button>
+        <button class="tabbtn" data-tab="trips"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg><span>Trips</span></button>
+        <button class="tabbtn" data-tab="profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4.5 5-6 8-6s6.5 1.5 8 6"/></svg><span>Profile</span></button>
       </div>
+      <div class="toast" id="toast"></div>
+      <div class="sheet-backdrop" id="sheetBackdrop"></div>
+      <div class="home-indicator"></div>
     </div>
-    <div class="phone-caption"><span class="live"></span><span id="phoneCaption">Onboarding · first open</span></div>
   </div>
 
-  <!-- ============ STORY ============ -->
-  <div class="story" id="story">
+  <div class="hint">A live Mumbai experiences app · <b>Sign in as yash / xyzxyz123</b> to manage listings</div>
+</div>
 
-    <section class="stage-block" id="s-open" data-screen="onboard" data-caption="Onboarding · first open">
-      <div class="chapter"><b>01</b>&nbsp;·&nbsp;First open</div>
-      <h2>The first ten seconds decide <em>if she'll ever open it again.</em></h2>
-      <p>No forced sign-up wall. A short, warm welcome that explains the value in one sentence, then asks for location and notification permission in-context — not as a system pop-up. She taps <b>Get started</b> and lands directly on Home.</p>
-      <div class="callout"><b>0</b>&nbsp;forms · <b>2</b>&nbsp;taps to the app</div>
-    </section>
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.0';
 
-    <section class="stage-block" id="s-disc" data-screen="home" data-caption="Home · discover">
-      <div class="chapter"><b>02</b>&nbsp;·&nbsp;Discover</div>
-      <h2>Home isn't a menu. <em>It's a live feed of the city.</em></h2>
-      <p>Time-aware and location-aware. "Happening now" surfaces the tonight-only concert and the rooftop with four seats left. "Monsoon picks" adapts to the weather API. Editorial curation, not an infinite grid of everything.</p>
-      <div class="callout"><b>3s</b>&nbsp;· time to first bookable card</div>
-    </section>
+// ============ CONFIG ============
+const SUPABASE_URL = 'https://rwcgtxmpokzfplgnlwye.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3Y2d0eG1wb2t6ZnBsZ25sd3llIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU2OTcxNTYsImV4cCI6MjA4MTI3MzE1Nn0.0Evmp8m5h-BEEdFcrcaNYcslCGjFlrmdni_fr5QuAW8';
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
+});
 
-    <section class="stage-block" id="s-eval" data-screen="listing" data-caption="Listing · evaluate">
-      <div class="chapter"><b>03</b>&nbsp;·&nbsp;Evaluate</div>
-      <h2>Every question answered <em>before she thinks to ask.</em></h2>
-      <p>Duration, group size, language, cancellation — visible in one glance. Sticky <b>Book now</b> bar with the price never leaves the screen. A single <b>Ask AI</b> chip handles the long-tail question the FAQ can't cover.</p>
-      <div class="callout"><b>0</b>&nbsp;hidden fees · price you see is price you pay</div>
-    </section>
+// ============ STATE ============
+const state = {
+  user: null, profile: null,
+  screen: 'auth',
+  screenStack: ['auth'],
+  categories: [],
+  listings: [],
+  currentListing: null,
+  currentAvailability: [],
+  selectedSlot: null,
+  guests: 2,
+  currentBooking: null,
+  bookings: [],
+  auth: { mode: 'signin' },
+  admin: { tab: 'listings', editing: null, uploadedUrl: null },
+  locationOn: false,
+  locationBannerDismissed: false,
+};
 
-    <section class="stage-block" id="s-book" data-screen="datetime" data-caption="Book · date and time">
-      <div class="chapter"><b>04</b>&nbsp;·&nbsp;Book</div>
-      <h2>Three taps. <em>Nothing to type.</em></h2>
-      <p>Pick a date. Pick a slot. Set guests with a stepper — the running total updates live. Colour-coded availability comes from real inventory: green available, amber few left, dim sold out. No fake urgency, ever.</p>
-      <div class="callout"><b>60s</b>&nbsp;· blueprint target from "Book now" → confirmed</div>
-    </section>
-
-    <section class="stage-block" id="s-conf" data-screen="checkout" data-caption="Checkout · confirm">
-      <div class="chapter"><b>05</b>&nbsp;·&nbsp;Confirmed</div>
-      <h2>Guest checkout. UPI by default. <em>Confirmed in a heartbeat.</em></h2>
-      <p>No account walls, no card-details rehearsal. UPI QR is the primary payment surface — not buried in a dropdown. Transparent breakdown, points earned shown live. Then a QR ticket, a meeting-point map, and a WhatsApp share.</p>
-      <div class="callout"><b>+240 pts</b>&nbsp;· earned before she even goes</div>
-    </section>
-
-    <section class="stage-block" id="s-antic" data-screen="countdown" data-caption="Anticipate · pre-trip">
-      <div class="chapter"><b>06</b>&nbsp;·&nbsp;Anticipate</div>
-      <h2>The best experience app <em>reaches back out.</em></h2>
-      <p>A push lands 24 hours ahead. Tapping it opens a trip card with the countdown, the weather, a what-to-bring checklist, and one-tap message to the guide. This is where casual booking becomes brand loyalty.</p>
-      <div class="callout"><b>42%</b>&nbsp;open rate on reminder pushes (industry benchmark)</div>
-    </section>
-
-    <section class="stage-block" id="s-live" data-screen="live" data-caption="Live · in-trip guide">
-      <div class="chapter"><b>07</b>&nbsp;·&nbsp;Experience</div>
-      <h2>During the walk, the app <em>doesn't disappear — it delivers.</em></h2>
-      <p>A live progress bar shows Stop 3 of 8. What to order, how much cash, the story behind Bade Miya. "Nearby now" surfaces a post-walk chai — extending the session and lifting average order value without feeling salesy.</p>
-      <div class="callout"><b>+30%</b>&nbsp;AOV lift from in-trip cross-sell</div>
-    </section>
-
-    <section class="stage-block" id="s-refl" data-screen="review" data-caption="Reflect · review">
-      <div class="chapter"><b>08</b>&nbsp;·&nbsp;Reflect</div>
-      <h2>The review isn't a chore. <em>It's the loop.</em></h2>
-      <p>Tag-cloud instead of a text box. A gentle <b>+50 pts</b> for a photo. Aisha's stars and tags become the social proof that closes the next booking for someone else — the flywheel starts here.</p>
-      <div class="callout"><b>100 pts</b>&nbsp;earned · unlocks the next tier</div>
-    </section>
-
-    <section class="stage-block" id="s-ret" data-screen="digest" data-caption="Return · re-engage">
-      <div class="chapter"><b>09</b>&nbsp;·&nbsp;Return</div>
-      <h2>Friday morning, <em>the city calls back.</em></h2>
-      <p>A curated three-item digest arrives. Handpicked by the Insider team, ranked by past bookings, priced clearly. Not a promo email — a considered recommendation from a friend who happens to know Mumbai.</p>
-      <div class="callout"><b>Weekly</b>&nbsp;· one push, three ideas, one tap to book</div>
-    </section>
-
-  </div>
-
-</main>
-
-<script>
-(function(){
-  'use strict';
-  var viewport = document.getElementById('viewport');
-  var caption = document.getElementById('phoneCaption');
-  var screens = Array.prototype.slice.call(document.querySelectorAll('.app-screen'));
-  var tabBtns = Array.prototype.slice.call(document.querySelectorAll('.tabbtn'));
-  var navBtns = Array.prototype.slice.call(document.querySelectorAll('.dotnav button'));
-  var stageBlocks = Array.prototype.slice.call(document.querySelectorAll('.stage-block'));
-  var TAB_IDS = ['home','search','wishlist','trips','profile'];
-  var stack = ['onboard'];
-
-  var idFor = function(name){ return 'scr-' + name; };
-
-  function showScreen(name, opts){
-    opts = opts || {};
-    var el = document.getElementById(idFor(name));
-    if(!el) return;
-    screens.forEach(function(s){ s.classList.toggle('active', s === el); });
-    var isTab = TAB_IDS.indexOf(name) !== -1;
-    viewport.classList.toggle('show-tabbar', isTab);
-    tabBtns.forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-tabgo') === name); });
-    el.scrollTop = 0;
-    if(opts.caption) caption.textContent = opts.caption;
+// ============ HELPERS ============
+const $ = sel => document.querySelector(sel);
+const el = (t, attrs={}, ...children) => {
+  const e = document.createElement(t);
+  for (const k in attrs) {
+    if (k === 'class') e.className = attrs[k];
+    else if (k === 'html') e.innerHTML = attrs[k];
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), attrs[k]);
+    else if (k === 'style') e.style.cssText = attrs[k];
+    else if (attrs[k] !== null && attrs[k] !== undefined) e.setAttribute(k, attrs[k]);
   }
-  function go(name){
-    if(!document.getElementById(idFor(name))) return;
-    stack.push(name);
-    showScreen(name);
+  for (const c of children.flat()) {
+    if (c === null || c === undefined || c === false) continue;
+    e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c);
   }
-  function tabGo(name){ stack = [name]; showScreen(name); }
-  function back(){ if(stack.length > 1){ stack.pop(); showScreen(stack[stack.length-1]); } }
+  return e;
+};
+const fmtRs = n => '₹' + Math.round(n).toLocaleString('en-IN');
+const fmtDate = iso => {
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-IN', { weekday:'short', day:'numeric', month:'short' });
+};
+const fmtTime = iso => new Date(iso).toLocaleTimeString('en-IN', { hour:'numeric', minute:'2-digit', hour12:true });
+const emojiForType = t => ({food_tour:'🍲', heritage_walk:'🕌', activity:'⛰️', event:'🎻', hotel:'🏨', bundle:'🚗'}[t] || '📍');
 
-  // ------- toast -------
-  var toast = document.getElementById('toast');
-  var toastTimer;
-  function showToast(msg){
-    if(!toast) return;
-    toast.textContent = msg;
-    toast.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 2200);
-  }
+function showToast(msg, kind) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (kind ? ' ' + kind : '');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2400);
+}
 
-  // ------- pricing state (shared across date/time + checkout) -------
-  var PRICE_PER_GUEST = 1200;
-  var TAX_RATE = 0.05;
-  var state = { guests: 4, selectedDay: '16', selectedSlot: '7:00 PM', selectedPay: 'upi' };
+const SB = () => $('#screenViewport');
+const VP = () => $('#viewport');
+const TAB_SCREENS = ['home','search','trips','profile'];
 
-  function fmtRs(n){ return '₹' + n.toLocaleString('en-IN'); }
-  function recomputeTotals(){
-    var base = PRICE_PER_GUEST * state.guests;
-    var tax = Math.round(base * TAX_RATE);
-    var points = Math.round(base * 0.05);
-    var total = base + tax;
-    document.querySelectorAll('[data-line="guests-x-price"]').forEach(function(el){ el.textContent = state.guests + ' guests × ₹1,200'; });
-    document.querySelectorAll('[data-line="base"]').forEach(function(el){ el.textContent = fmtRs(base); });
-    document.querySelectorAll('[data-line="tax"]').forEach(function(el){ el.textContent = fmtRs(tax); });
-    document.querySelectorAll('[data-line="points"]').forEach(function(el){ el.textContent = '+' + points + ' pts'; });
-    document.querySelectorAll('[data-line="total"]').forEach(function(el){ el.textContent = fmtRs(total); });
-    document.querySelectorAll('[data-line="confirm-btn"]').forEach(function(el){
-      el.innerHTML = 'Confirm &amp; pay <span class="mono">' + fmtRs(total) + '</span>';
-    });
-    var g = document.querySelector('[data-guests-count]');
-    if(g) g.textContent = state.guests;
-  }
-
-  // ------- click routing (delegated) -------
-  document.addEventListener('click', function(e){
-    // toast (visual-only actions)
-    var toastEl = e.target.closest('[data-toast]');
-    if(toastEl){ showToast(toastEl.getAttribute('data-toast')); return; }
-
-    // core navigation
-    var backEl = e.target.closest('[data-back]');
-    if(backEl){ back(); return; }
-    var tabEl = e.target.closest('[data-tabgo]');
-    if(tabEl){ tabGo(tabEl.getAttribute('data-tabgo')); return; }
-    var goEl = e.target.closest('[data-go]');
-    if(goEl){ go(goEl.getAttribute('data-go')); return; }
-    var navEl = e.target.closest('.dotnav button[data-nav]');
-    if(navEl){
-      var id = navEl.getAttribute('data-nav');
-      var target = document.getElementById(id);
-      if(target){ target.scrollIntoView({behavior:'smooth', block:'start'}); }
-      return;
-    }
-
-    // ---- interactive controls (single-select toggles) ----
-    // category pills, filter pills, tabs, trip tabs, payment options, day picker
-    var toggleEl = e.target.closest('[data-toggle-group]');
-    if(toggleEl){
-      var group = toggleEl.getAttribute('data-toggle-group');
-      var scope = toggleEl.closest('[data-scope]') || document;
-      scope.querySelectorAll('[data-toggle-group="'+group+'"]').forEach(function(el){ el.classList.remove('on','sel'); });
-      toggleEl.classList.add(toggleEl.classList.contains('slot')||toggleEl.classList.contains('day')||toggleEl.classList.contains('pay-opt') ? 'sel' : 'on');
-      // day/slot side-effects
-      if(toggleEl.classList.contains('day')){
-        state.selectedDay = toggleEl.getAttribute('data-value') || '';
-      } else if(toggleEl.classList.contains('slot')){
-        if(toggleEl.classList.contains('sold')){ toggleEl.classList.remove('sel'); return; }
-        state.selectedSlot = toggleEl.getAttribute('data-value') || '';
-      } else if(toggleEl.classList.contains('pay-opt')){
-        state.selectedPay = toggleEl.getAttribute('data-value') || 'upi';
-      }
-      return;
-    }
-
-    // multi-select toggles (tags, checklist items)
-    var multiEl = e.target.closest('[data-toggle]');
-    if(multiEl){
-      multiEl.classList.toggle('on');
-      multiEl.classList.toggle('done');
-      return;
-    }
-
-    // wishlist heart (single-item toggle)
-    var heartEl = e.target.closest('[data-heart]');
-    if(heartEl){
-      heartEl.classList.toggle('on');
-      showToast(heartEl.classList.contains('on') ? 'Saved to wishlist' : 'Removed from wishlist');
-      return;
-    }
-
-    // stepper +/-
-    var stepper = e.target.closest('[data-step]');
-    if(stepper){
-      var dir = stepper.getAttribute('data-step');
-      var min = parseInt(stepper.getAttribute('data-min') || '1', 10);
-      var max = parseInt(stepper.getAttribute('data-max') || '12', 10);
-      var next = state.guests + (dir === '+' ? 1 : -1);
-      if(next < min) next = min;
-      if(next > max) next = max;
-      state.guests = next;
-      recomputeTotals();
-      return;
-    }
-
-    // star rating
-    var starEl = e.target.closest('[data-star]');
-    if(starEl){
-      var v = parseInt(starEl.getAttribute('data-star'), 10);
-      var container = starEl.parentElement;
-      container.querySelectorAll('[data-star]').forEach(function(s){
-        var sv = parseInt(s.getAttribute('data-star'), 10);
-        s.classList.toggle('on', sv <= v);
-      });
-      var cap = document.querySelector('[data-rate-caption]');
-      if(cap){
-        var caps = ['', 'Not great', 'It was okay', 'Good', 'Really good', 'Loved it'];
-        cap.textContent = caps[v] || '';
-      }
-      return;
-    }
-
-    // copy referral
-    var copyEl = e.target.closest('[data-copy]');
-    if(copyEl){
-      var text = copyEl.getAttribute('data-copy');
-      if(navigator.clipboard) navigator.clipboard.writeText(text).catch(function(){});
-      showToast('Copied ' + text + ' to clipboard');
-      return;
-    }
-
-    // toggles (perm switches)
-    var permEl = e.target.closest('.perm-toggle');
-    if(permEl){ permEl.classList.toggle('on'); return; }
+function setTabbar(show, active) {
+  VP().classList.toggle('show-tabbar', !!show);
+  document.querySelectorAll('.tabbtn').forEach(b => {
+    b.classList.toggle('on', b.getAttribute('data-tab') === active);
   });
-
-  // ------- initial state -------
-  showScreen('onboard', {caption:'Onboarding · first open'});
-  recomputeTotals();
-
-  // ------- scroll → screen sync -------
-  var currentStage = 's-open';
-  function activateStage(id){
-    if(id === currentStage) return;
-    currentStage = id;
-    var block = document.getElementById(id);
-    if(!block) return;
-    var scr = block.getAttribute('data-screen');
-    var cap = block.getAttribute('data-caption');
-    stack = [scr];
-    showScreen(scr, {caption:cap});
-    stageBlocks.forEach(function(b){ b.classList.toggle('in-view', b === block); });
-    navBtns.forEach(function(n){ n.classList.toggle('on', n.getAttribute('data-nav') === id); });
-    if(id === 's-antic'){ scheduleBanner('Your food walk is tomorrow at 7 PM. Weather looks light-rain — tap for meeting point.', 'countdown', 'yesterday'); }
-    else if(id === 's-ret'){ scheduleBanner('This weekend in Mumbai — three curated picks handpicked for you.', 'digest', 'Fri 9:00 AM'); }
+}
+function goto(screen, opts) {
+  opts = opts || {};
+  if (opts.reset) state.screenStack = [];
+  if (!opts.replace) state.screenStack.push(screen);
+  else state.screenStack[state.screenStack.length-1] = screen;
+  render(screen);
+}
+function back() {
+  if (state.screenStack.length > 1) {
+    state.screenStack.pop();
+    render(state.screenStack[state.screenStack.length-1]);
   }
-  if('IntersectionObserver' in window){
-    var observer = new IntersectionObserver(function(entries){
-      var best = null;
-      entries.forEach(function(en){
-        if(en.isIntersecting){
-          if(!best || en.intersectionRatio > best.intersectionRatio) best = en;
+}
+function statusBar() {
+  return el('div', {class:'statusbar'},
+    el('span',{},'9:41'),
+    el('span',{class:'icons', html:'<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8.5a16 16 0 0 1 20 0M5.5 12a11 11 0 0 1 13 0M9 15.5a6 6 0 0 1 6 0"/><circle cx="12" cy="19" r="1" fill="currentColor" stroke="none"/></svg><span class="sb-bat"><i></i></span>'})
+  );
+}
+function iconBack(){ return el('button',{class:'icon-btn', onclick: back}, ...[svg('m15 18-6-6 6-6', 2.2)]); }
+function svg(d, sw){
+  const s = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  s.setAttribute('viewBox','0 0 24 24'); s.setAttribute('fill','none');
+  s.setAttribute('stroke','currentColor'); s.setAttribute('stroke-width', sw||2);
+  const p = document.createElementNS('http://www.w3.org/2000/svg','path');
+  p.setAttribute('d', d);
+  s.appendChild(p);
+  return s;
+}
+
+// ============ RENDER ROUTER ============
+function render(screen) {
+  const sv = SB();
+  sv.innerHTML = '';
+  state.screen = screen;
+  const isTab = TAB_SCREENS.includes(screen);
+  setTabbar(isTab, screen);
+  let node;
+  try {
+    switch(screen) {
+      case 'auth':      node = renderAuth(); break;
+      case 'onboard':   node = renderOnboard(); break;
+      case 'home':      node = renderHome(); break;
+      case 'search':    node = renderSearch(); break;
+      case 'listing':   node = renderListing(); break;
+      case 'book':      node = renderBook(); break;
+      case 'checkout':  node = renderCheckout(); break;
+      case 'confirm':   node = renderConfirm(); break;
+      case 'wallet':    node = renderWallet(); break;
+      case 'trips':     node = renderTrips(); break;
+      case 'profile':   node = renderProfile(); break;
+      case 'admin':     node = renderAdmin(); break;
+      case 'admin-edit':node = renderAdminEdit(); break;
+      default:          node = el('div',{class:'loading'}, 'Not found: '+screen);
+    }
+  } catch (e) {
+    console.error(e);
+    node = el('div',{class:'loading'}, 'Error: '+e.message);
+  }
+  node.classList.add('screen','active');
+  if (isTab) node.classList.add('with-tabbar');
+  sv.appendChild(node);
+}
+
+// ============ SCREEN: AUTH ============
+function renderAuth() {
+  const mode = state.auth.mode;
+  const wrap = el('div',{class:'auth-wrap'});
+  wrap.appendChild(statusBar());
+  wrap.appendChild(el('div',{class:'auth-hero'},
+    el('div',{class:'eyebrow'}, mode === 'signin' ? 'Welcome back' : 'Create account'),
+    el('h1', {}, mode === 'signin' ? 'Sign in to Mumbai Insider' : 'Join Mumbai Insider'),
+    el('p', {}, mode === 'signin'
+      ? 'Continue with your email and password. New here? Create an account below.'
+      : 'Book heritage walks, food tours, events and more — curated for Mumbai.')
+  ));
+  const form = el('form',{class:'auth-form', onsubmit: (e) => { e.preventDefault(); handleAuthSubmit(); }});
+  if (mode === 'signup') {
+    form.appendChild(el('div',{}, el('label',{},'Full name'), el('input',{id:'inp-name', placeholder:'Aisha Kulkarni', required:'', autocomplete:'name'})));
+  }
+  form.appendChild(el('div',{}, el('label',{},'Email'), el('input',{id:'inp-email', type:'email', placeholder:'you@example.com', required:'', autocomplete:'email'})));
+  form.appendChild(el('div',{}, el('label',{},'Password'), el('input',{id:'inp-pass', type:'password', placeholder:'••••••••', required:'', minlength:'6', autocomplete: mode==='signin'?'current-password':'new-password'})));
+  const errBox = el('div',{id:'auth-err', class:'err', style:'display:none'});
+  form.appendChild(errBox);
+  form.appendChild(el('button',{class:'btn btn-primary btn-block', type:'submit', id:'auth-submit'}, mode==='signin' ? 'Sign in' : 'Create account'));
+  wrap.appendChild(form);
+  wrap.appendChild(el('div',{class:'auth-switch'},
+    mode === 'signin' ? 'New to Mumbai Insider?' : 'Already have an account?',
+    el('a',{onclick:()=>{ state.auth.mode = mode==='signin'?'signup':'signin'; render('auth'); }},
+       mode === 'signin' ? 'Create one' : 'Sign in')
+  ));
+  wrap.appendChild(el('div',{class:'admin-note'},
+    el('b',{},'Admin demo'),
+    'Sign in as ', el('span',{class:'mono'},'yash@mumbaiinsider.app'), ' / ', el('span',{class:'mono'},'xyzxyz123'), ' to manage listings, photos and categories.'
+  ));
+  wrap.appendChild(el('div',{class:'auth-guest'},
+    'Or ', el('a',{onclick: () => goto('home', {reset:true})}, 'browse as guest')
+  ));
+  return wrap;
+}
+
+async function handleAuthSubmit() {
+  const btn = $('#auth-submit');
+  const errBox = $('#auth-err');
+  errBox.style.display = 'none';
+  btn.disabled = true;
+  const email = $('#inp-email').value.trim();
+  const password = $('#inp-pass').value;
+  try {
+    if (state.auth.mode === 'signin') {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      await loadSession();
+      showToast('Welcome back' + (state.profile?.full_name ? ', ' + state.profile.full_name.split(' ')[0] : '') + '!', 'success');
+      goto(state.profile?.onboarding_complete ? 'home' : 'onboard', {reset:true});
+    } else {
+      const name = $('#inp-name').value.trim();
+      const { error } = await supabase.auth.signUp({
+        email, password,
+        options: { data: { full_name: name } }
+      });
+      if (error) throw error;
+      // auto-confirm trigger fires server-side; sign in immediately for a smooth demo
+      const { error: signInErr } = await supabase.auth.signInWithPassword({ email, password });
+      if (signInErr) throw signInErr;
+      await loadSession();
+      showToast('Welcome to Mumbai Insider!', 'success');
+      goto('onboard', {reset:true});
+    }
+  } catch (e) {
+    errBox.textContent = e.message || 'Something went wrong';
+    errBox.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function loadSession() {
+  const { data: { session } } = await supabase.auth.getSession();
+  state.user = session?.user || null;
+  if (state.user) {
+    const { data: p } = await supabase.from('profiles').select('*').eq('id', state.user.id).single();
+    state.profile = p;
+  } else {
+    state.profile = null;
+  }
+}
+
+// ============ SCREEN: ONBOARD ============
+function renderOnboard() {
+  const w = el('div',{});
+  w.appendChild(statusBar());
+  w.appendChild(el('div',{class:'ob-media'},
+    el('div',{class:'ob-ring r2'}), el('div',{class:'ob-ring r1'}), el('div',{class:'ob-orb'})
+  ));
+  w.appendChild(el('div',{class:'ob-copy'},
+    el('div',{class:'eyebrow'}, 'Welcome to Mumbai Insider'),
+    el('h2',{}, 'Every corner of the city, ', el('em',{},'bookable in a tap.')),
+    el('p',{class:'ob-lead'}, 'Heritage walks, midnight food crawls, weekend getaways and everything in between — one app, curated locally.'),
+    el('div',{style:'display:flex;flex-direction:column;gap:8px;margin-top:8px'},
+      permRow('Use your location', 'To surface what\'s near you, now', 'location', state.locationOn, false),
+      permRow('Booking reminders', 'Weather, meeting point, tickets', 'notif', true, true)
+    ),
+    el('div',{class:'ob-cta'},
+      el('button',{class:'btn btn-primary btn-block', onclick: async () => {
+        if (state.user) {
+          await supabase.from('profiles').update({ onboarding_complete: true }).eq('id', state.user.id);
         }
-      });
-      if(best) activateStage(best.target.id);
-    }, {rootMargin:'-40% 0px -40% 0px', threshold:[0,.25,.5,.75,1]});
-    stageBlocks.forEach(function(b){ observer.observe(b); });
-  }
-  if(stageBlocks[0]) stageBlocks[0].classList.add('in-view');
+        goto('home', {reset:true});
+      }}, 'Get started')
+    )
+  ));
+  return w;
+}
+function permRow(title, sub, key, defOn, defaultToggleable) {
+  const t = el('button',{class:'toggle' + (defOn?' on':''), onclick: function(){
+    this.classList.toggle('on');
+    if (key === 'location') state.locationOn = this.classList.contains('on');
+  }}, el('i',{}));
+  const svgEl = key === 'location'
+    ? document.createRange().createContextualFragment('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>').firstChild
+    : document.createRange().createContextualFragment('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6z"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>').firstChild;
+  return el('div',{class:'perm-row'},
+    svgEl,
+    el('div',{}, el('b',{},title), el('small',{},sub)),
+    t
+  );
+}
 
-  // ------- push notification banner -------
-  var banner = document.getElementById('pushBanner');
-  var bannerTime = document.getElementById('pbTime');
-  var bannerMsg = document.getElementById('pbMsg');
-  var bannerTimer = null;
-  var lastBannerFor = null;
-  function scheduleBanner(msg, targetScreen, timeLabel){
-    if(lastBannerFor === targetScreen) return;
-    lastBannerFor = targetScreen;
-    if(bannerTimer) clearTimeout(bannerTimer);
-    setTimeout(function(){
-      bannerMsg.textContent = msg;
-      bannerTime.textContent = timeLabel || 'now';
-      banner.classList.add('show');
-      banner.onclick = function(){
-        banner.classList.remove('show');
-        go(targetScreen);
-      };
-      bannerTimer = setTimeout(function(){ banner.classList.remove('show'); }, 4400);
-    }, 450);
+// ============ SCREEN: HOME ============
+function renderHome() {
+  const w = el('div',{});
+  w.appendChild(statusBar());
+  const nameShort = state.profile?.full_name?.split(' ')[0] || 'friend';
+  w.appendChild(el('div',{class:'home-hdr'},
+    el('div',{class:'greet'},
+      el('div',{class:'eyebrow'}, state.locationOn ? 'Bandra West' : 'Mumbai'),
+      el('div',{class:'name'}, `Namaste, ${nameShort}`)
+    ),
+    state.profile?.role === 'admin'
+      ? el('button',{class:'icon-btn', onclick:()=>goto('admin'), title:'Admin panel', html:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 15 8l6 1-4.5 4.5L17.5 20 12 16.7 6.5 20l1-6.5L3 9l6-1z"/></svg>'})
+      : null
+  ));
+
+  // location banner (only when off & not dismissed)
+  if (!state.locationOn && !state.locationBannerDismissed) {
+    const banner = el('div',{class:'loc-banner'});
+    banner.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s7-6.5 7-12a7 7 0 1 0-14 0c0 5.5 7 12 7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>';
+    banner.appendChild(el('div',{class:'txt'},
+      el('b',{},'Turn on location for nearby activities'),
+      el('small',{},'We\'ll surface what\'s happening within 2 km of you.')
+    ));
+    banner.appendChild(el('button',{class:'btn btn-primary btn-sm', onclick: async () => {
+      if (!('geolocation' in navigator)) { showToast('Location not available on this device','error'); return; }
+      navigator.geolocation.getCurrentPosition(
+        () => { state.locationOn = true; state.locationBannerDismissed = true; render('home'); showToast('Location on — showing nearby','success'); },
+        () => { showToast('Location permission blocked','error'); }
+      );
+    }}, 'Turn on'));
+    banner.appendChild(el('button',{class:'close', 'aria-label':'Dismiss', onclick: () => { state.locationBannerDismissed = true; render('home'); }, html:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 6l12 12M18 6 6 18"/></svg>'}));
+    w.appendChild(banner);
   }
 
-  // ------- keyboard shortcut for search -------
-  document.addEventListener('keydown', function(e){
-    if((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k'){
-      e.preventDefault();
-      go('search');
+  const searchBar = el('div',{class:'search-bar', onclick:()=>goto('search')});
+  searchBar.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>Search heritage walks, food, events…';
+  w.appendChild(searchBar);
+
+  // categories pill row
+  const pills = el('div',{class:'pill-row', id:'cat-pills'});
+  pills.appendChild(el('div',{class:'pill on', 'data-cat':'', onclick: () => setCategoryFilter('')}, 'All'));
+  w.appendChild(pills);
+
+  w.appendChild(el('div',{class:'sec-head'}, el('h4',{},'For this weekend'), el('a',{onclick:()=>goto('search')}, 'See all')));
+  const list = el('div',{class:'card-list', id:'listings-list'});
+  list.appendChild(el('div',{class:'loading'}, spinnerSvg(), el('div',{}, 'Loading listings…')));
+  w.appendChild(list);
+
+  // load data
+  loadCategories().then(cats => {
+    for (const c of cats) {
+      pills.appendChild(el('div',{class:'pill', 'data-cat':c.slug, onclick: () => setCategoryFilter(c.slug)},
+        c.icon ? el('span',{class:'glyph'}, c.icon) : null, c.name));
     }
   });
-})();
-</script>
+  loadListings().then(items => {
+    renderListingList(list, items);
+  });
 
-<footer class="pagefoot">
-  <span>Mumbai Insider — clickable customer-journey prototype</span>
-  <span>Basalt v0.2 · not a live product</span>
-</footer>
+  return w;
+}
+function spinnerSvg() {
+  const s = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  s.setAttribute('viewBox','0 0 24 24');
+  s.setAttribute('fill','none');
+  s.setAttribute('stroke','currentColor');
+  s.setAttribute('stroke-width','2.4');
+  s.innerHTML = '<circle cx="12" cy="12" r="9" stroke-opacity=".25"/><path d="M21 12a9 9 0 0 1-9 9"/>';
+  return s;
+}
+function renderListingList(container, items) {
+  container.innerHTML = '';
+  if (!items.length) {
+    container.appendChild(el('div',{class:'empty'}, 'Nothing here yet.'));
+    return;
+  }
+  for (const l of items) {
+    const c = el('div',{class:'lcard', onclick: () => openListing(l)});
+    const thumb = el('div',{class:'thumb'});
+    if (l.cover_image && l.cover_image.startsWith('http')) {
+      thumb.appendChild(el('img',{src:l.cover_image, alt:l.title, loading:'lazy', onerror:'this.style.display=\'none\';this.parentElement.innerHTML=\''+emojiForType(l.type)+'\';'}));
+    } else {
+      thumb.textContent = l.cover_image || emojiForType(l.type);
+    }
+    c.appendChild(thumb);
+    const meta = el('div',{class:'meta'});
+    if (l.rating > 0) meta.appendChild(el('span',{class:'star'}, `★ ${(+l.rating).toFixed(1)}`));
+    if (l.rating_count > 0) meta.appendChild(el('span',{}, `${l.rating_count} reviews`));
+    if (l.duration_minutes) {
+      meta.appendChild(el('span',{},'·'));
+      meta.appendChild(el('span',{}, l.duration_minutes >= 60 ? Math.round(l.duration_minutes/60) + ' hrs' : l.duration_minutes+' min'));
+    }
+    if (l.editors_pick) meta.appendChild(el('span',{class:'badge hot'},'Editor\'s pick'));
+    c.appendChild(el('div',{class:'info'},
+      el('h5',{}, l.title),
+      meta,
+      el('div',{class:'price'}, fmtRs(l.base_price_paise/100), el('small',{},' / person'))
+    ));
+    container.appendChild(c);
+  }
+}
+async function setCategoryFilter(cat) {
+  document.querySelectorAll('#cat-pills .pill').forEach(p => p.classList.toggle('on', p.getAttribute('data-cat') === cat));
+  const list = $('#listings-list');
+  list.innerHTML = '';
+  list.appendChild(el('div',{class:'loading'}, spinnerSvg()));
+  const items = await loadListings(cat || null);
+  renderListingList(list, items);
+}
+async function loadCategories() {
+  if (state.categories.length) return state.categories;
+  const { data, error } = await supabase.from('categories').select('*').eq('active', true).order('sort_order');
+  if (error) { console.error(error); return []; }
+  state.categories = data;
+  return data;
+}
+async function loadListings(cat) {
+  let q = supabase.from('listings').select('*').eq('active', true).order('featured', {ascending:false}).order('booking_count', {ascending:false}).limit(20);
+  if (cat) q = q.eq('category_slug', cat);
+  const { data, error } = await q;
+  if (error) { console.error(error); return []; }
+  return data;
+}
+
+// ============ SCREEN: SEARCH ============
+function renderSearch() {
+  const w = el('div',{});
+  w.appendChild(statusBar());
+  w.appendChild(el('div',{class:'hdr'},
+    el('h3',{},'Search'),
+    el('button',{class:'icon-btn', onclick:()=>goto('home',{reset:true}), html:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 6l12 12M18 6 6 18"/></svg>'})
+  ));
+  const sb = el('div',{class:'search-bar', style:'border-color:var(--p-accent);background:rgba(255,106,80,.06)'});
+  sb.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="var(--p-accent)" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>';
+  const input = el('input',{placeholder:'Try "food", "elephanta", "heritage"…', autofocus:''});
+  sb.appendChild(input);
+  w.appendChild(sb);
+  const list = el('div',{class:'card-list', id:'search-list'});
+  list.appendChild(el('div',{class:'loading'}, spinnerSvg()));
+  w.appendChild(list);
+
+  let debounce;
+  const doSearch = async (q) => {
+    list.innerHTML = '';
+    list.appendChild(el('div',{class:'loading'}, spinnerSvg()));
+    const query = supabase.from('listings').select('*').eq('active', true).limit(30);
+    const { data, error } = q
+      ? await query.or(`title.ilike.%${q}%,description.ilike.%${q}%,neighbourhood.ilike.%${q}%`)
+      : await query.order('booking_count', {ascending:false});
+    renderListingList(list, data || []);
+  };
+  input.addEventListener('input', e => {
+    clearTimeout(debounce);
+    debounce = setTimeout(() => doSearch(e.target.value.trim()), 200);
+  });
+  doSearch('');
+  return w;
+}
+
+// ============ SCREEN: LISTING DETAIL ============
+async function openListing(l) {
+  state.currentListing = l;
+  goto('listing');
+}
+function renderListing() {
+  const l = state.currentListing;
+  if (!l) { setTimeout(()=>goto('home',{reset:true}), 0); return el('div',{class:'loading'}, spinnerSvg()); }
+  const w = el('div',{class:'with-cta-bar'});
+  w.appendChild(statusBar());
+  const hero = el('div',{class:'detail-hero'});
+  if (l.cover_image && l.cover_image.startsWith('http')) {
+    hero.appendChild(el('img',{src:l.cover_image, alt:l.title, onerror:'this.remove();this.parentElement.querySelector(".fallback").style.display=\'flex\';'}));
+    hero.appendChild(el('div',{class:'fallback', style:'display:none'}, emojiForType(l.type)));
+  } else {
+    hero.appendChild(el('div',{class:'fallback'}, l.cover_image || emojiForType(l.type)));
+  }
+  const nav = el('div',{class:'detail-nav'});
+  nav.appendChild(iconBack());
+  nav.appendChild(el('div',{class:'spacer'}));
+  nav.appendChild(el('button',{class:'icon-btn', onclick: () => share(l), html:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8M16 6l-4-4-4 4M12 2v14"/></svg>'}));
+  nav.appendChild(el('button',{class:'icon-btn', onclick: () => showToast('Saved to wishlist','success'), html:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>'}));
+  hero.appendChild(nav);
+  w.appendChild(hero);
+
+  const title = el('div',{class:'title-block'},
+    el('h2',{}, l.title),
+    el('div',{class:'rate'},
+      l.rating > 0 ? el('span',{class:'star'}, `★ ${(+l.rating).toFixed(1)}`) : null,
+      l.rating_count > 0 ? el('span',{}, `(${l.rating_count} reviews)`) : null,
+      l.neighbourhood ? el('span',{},'·') : null,
+      l.neighbourhood ? el('span',{}, l.neighbourhood) : null
+    )
+  );
+  w.appendChild(title);
+
+  w.appendChild(el('div',{class:'info-strip'},
+    el('div',{}, el('span',{class:'eyebrow'},'Duration'), el('span',{class:'v'}, l.duration_minutes ? Math.round(l.duration_minutes/60)+' hrs' : '—')),
+    el('div',{}, el('span',{class:'eyebrow'},'Group'), el('span',{class:'v'}, l.max_group_size ? 'Max '+l.max_group_size : '—')),
+    el('div',{}, el('span',{class:'eyebrow'},'Language'), el('span',{class:'v'}, (l.languages||[]).map(x=>x.toUpperCase()).join(' · ') || 'EN')),
+    el('div',{}, el('span',{class:'eyebrow'},'Cancel'), el('span',{class:'v', style:'color:var(--p-success)'}, 'Free '+ (l.cancellation_hours||24) +'h'))
+  ));
+
+  if (l.description) w.appendChild(el('p',{class:'body-copy'}, l.description));
+
+  if (l.what_included && l.what_included.length) {
+    const inc = el('div',{class:'included'});
+    inc.appendChild(el('h5',{},'What\'s included'));
+    inc.appendChild(el('ul',{}, ...l.what_included.map(i => el('li',{}, i))));
+    w.appendChild(inc);
+  }
+
+  const bar = el('div',{class:'sticky-bar'},
+    el('div',{class:'amt'},
+      el('span',{class:'eyebrow'},'From'),
+      el('b',{class:'mono'}, fmtRs(l.base_price_paise/100))
+    ),
+    el('button',{class:'btn btn-primary', onclick: () => {
+      if (!state.user) { showToast('Sign in to book','error'); state.auth.mode='signin'; goto('auth',{reset:true}); return; }
+      goto('book');
+    }}, 'Book now')
+  );
+  w.appendChild(bar);
+
+  return w;
+}
+function share(l) {
+  const url = window.location.href;
+  if (navigator.share) navigator.share({title:l.title, url}).catch(()=>{});
+  else if (navigator.clipboard) { navigator.clipboard.writeText(url); showToast('Link copied','success'); }
+}
+
+// ============ SCREEN: BOOK (date + guests) ============
+function renderBook() {
+  const l = state.currentListing;
+  if (!l) { setTimeout(()=>goto('home',{reset:true}), 0); return el('div',{}); }
+  const w = el('div',{});
+  w.appendChild(statusBar());
+  w.appendChild(el('div',{class:'hdr'}, iconBack(), el('h3',{},'Select date & time')));
+  const daysWrap = el('div',{class:'week'});
+  const slotsWrap = el('div',{class:'slot-grid', id:'slots-wrap'});
+  const totalRow = el('div',{style:'display:flex;align-items:baseline;justify-content:space-between;padding:8px 20px 6px'},
+    el('span',{style:'font-size:13px;color:var(--p-muted)'}, `${state.guests} guests × ${fmtRs(l.base_price_paise/100)}`),
+    el('b',{class:'mono', style:'font-size:20px'}, fmtRs(state.guests * l.base_price_paise/100))
+  );
+  const stepperRow = el('div',{class:'stepper-row'},
+    el('div',{}, el('div',{style:'font-size:13.5px;font-weight:600'},'Guests'), el('div',{style:'font-size:11px;color:var(--p-muted);margin-top:2px'},'Age 13+')),
+    el('div',{class:'stepper'},
+      el('button',{onclick:()=>{ if (state.guests>1){ state.guests--; render('book'); } }},'−'),
+      el('b',{class:'mono'}, String(state.guests)),
+      el('button',{onclick:()=>{ if (state.guests<12){ state.guests++; render('book'); } }},'+')
+    )
+  );
+  const cta = el('div',{style:'padding:14px 20px 30px'},
+    el('button',{class:'btn btn-primary btn-block', id:'book-cta', disabled:'', onclick:()=>goto('checkout')}, 'Choose a slot to continue')
+  );
+
+  w.appendChild(el('div',{class:'eyebrow', style:'padding:2px 20px 8px'}, 'Upcoming slots'));
+  w.appendChild(daysWrap);
+  w.appendChild(el('div',{class:'sec-head'}, el('h4',{},'Slots'), el('a',{class:'mono', id:'slot-count'},'')));
+  w.appendChild(slotsWrap);
+  w.appendChild(stepperRow);
+  w.appendChild(totalRow);
+  w.appendChild(cta);
+
+  // load availability
+  slotsWrap.innerHTML = '';
+  slotsWrap.appendChild(el('div',{class:'loading'}, spinnerSvg()));
+  loadAvailability(l.id).then(slots => {
+    state.currentAvailability = slots;
+    if (!slots.length) {
+      slotsWrap.innerHTML = '';
+      slotsWrap.appendChild(el('div',{class:'empty', style:'grid-column:1/-1'},'No slots available.'));
+      $('#slot-count').textContent = '';
+      return;
+    }
+    // group slots by day
+    const days = [...new Set(slots.map(s => s.starts_at.split('T')[0]))].sort();
+    const selDay = state.selectedSlot ? state.selectedSlot.starts_at.split('T')[0] : days[0];
+    for (const d of days) {
+      const dObj = new Date(d);
+      const item = el('div',{class:'day' + (d === selDay ? ' sel' : ''), onclick: () => { state.selectedSlot = null; state.selectedDay = d; renderSlots(d); document.querySelectorAll('.day').forEach(x=>x.classList.remove('sel')); item.classList.add('sel'); }},
+        el('div',{class:'d'}, dObj.toLocaleDateString('en-IN',{weekday:'short'})),
+        el('div',{class:'n mono'}, String(dObj.getDate())),
+        el('div',{class:'s'})
+      );
+      daysWrap.appendChild(item);
+    }
+    renderSlots(selDay);
+  });
+
+  function renderSlots(day) {
+    slotsWrap.innerHTML = '';
+    const slots = state.currentAvailability.filter(s => s.starts_at.startsWith(day));
+    $('#slot-count').textContent = slots.length + ' available';
+    slots.forEach(s => {
+      const remaining = s.capacity - s.booked;
+      const sold = remaining <= 0;
+      const few = remaining > 0 && remaining <= 3;
+      const sel = state.selectedSlot?.id === s.id;
+      const cls = 'slot' + (sold?' sold':'') + (few?' few':'') + (sel?' sel':'');
+      slotsWrap.appendChild(el('div',{class:cls, onclick: () => {
+        if (sold) return;
+        state.selectedSlot = s;
+        render('book');
+      }},
+        el('div',{class:'t mono'}, fmtTime(s.starts_at)),
+        el('div',{class:'s'}, sold?'Sold out': few? `${remaining} spots left` : 'Available')
+      ));
+    });
+    if (state.selectedSlot) {
+      $('#book-cta').disabled = false;
+      $('#book-cta').textContent = 'Continue to payment';
+    }
+  }
+
+  return w;
+}
+async function loadAvailability(listingId) {
+  const nowIso = new Date().toISOString();
+  const { data, error } = await supabase.from('availability')
+    .select('*').eq('listing_id', listingId).eq('active', true)
+    .gte('starts_at', nowIso).order('starts_at').limit(40);
+  if (error) { console.error(error); return []; }
+  return data;
+}
+
+// ============ SCREEN: CHECKOUT ============
+function renderCheckout() {
+  const l = state.currentListing;
+  const s = state.selectedSlot;
+  if (!l || !s) { setTimeout(()=>goto('home',{reset:true}), 0); return el('div',{}); }
+  const base = state.guests * l.base_price_paise / 100;
+  const tax = Math.round(base * (l.taxes_pct||5) / 100);
+  const total = base + tax;
+  const points = Math.round(base * 0.05);
+
+  const w = el('div',{});
+  w.appendChild(statusBar());
+  w.appendChild(el('div',{class:'hdr'}, iconBack(), el('h3',{},'Checkout')));
+  w.appendChild(el('div',{style:'padding:0 20px 12px'},
+    el('div',{class:'eyebrow', style:'margin-bottom:6px'}, l.title),
+    el('div',{style:'font-family:var(--f-display);font-size:16px;font-weight:600'}, `${fmtDate(s.starts_at)} · ${fmtTime(s.starts_at)}`),
+    el('div',{style:'font-size:12px;color:var(--p-muted);margin-top:2px'}, `${state.guests} guests`)
+  ));
+  w.appendChild(el('div',{class:'sec-head', style:'padding-top:2px'}, el('h4',{class:'eyebrow'},'Payment method'), el('a',{},'')));
+  const options = [
+    {v:'upi', label:'UPI QR', sub:'Google Pay · PhonePe · Paytm', glyph:'UPI'},
+    {v:'bnpl', label:'Book now, pay later', sub:'Simpl · LazyPay', glyph:'₹', bg:'var(--p-success)', color:'#04140C'},
+    {v:'card', label:'Card', sub:'Visa · Mastercard · Amex', glyph:'💳', bg:'var(--p-surface-2)', color:'var(--p-text)'},
+  ];
+  const payWrap = el('div',{});
+  options.forEach((o,i) => {
+    const row = el('div',{class:'pay-opt' + (i===0?' sel':''), onclick: function(){
+      payWrap.querySelectorAll('.pay-opt').forEach(x=>x.classList.remove('sel'));
+      this.classList.add('sel');
+    }},
+      el('div',{class:'r'}),
+      el('div',{class:'glyph', style:o.bg?`background:${o.bg};color:${o.color}`:''}, o.glyph),
+      el('div',{class:'lbl'}, o.label, el('small',{},o.sub))
+    );
+    payWrap.appendChild(row);
+  });
+  w.appendChild(payWrap);
+  w.appendChild(el('div',{class:'breakdown'},
+    el('div',{class:'bd-row'}, el('span',{}, `${state.guests} × ${fmtRs(l.base_price_paise/100)}`), el('span',{class:'mono'}, fmtRs(base))),
+    el('div',{class:'bd-row'}, el('span',{},'Taxes & fees'), el('span',{class:'mono'}, fmtRs(tax))),
+    el('div',{class:'bd-row'}, el('span',{},'Insider points earned'), el('span',{class:'mono', style:'color:var(--p-accent)'}, '+'+points+' pts')),
+    el('div',{class:'bd-row total'}, el('span',{},'Total'), el('span',{class:'mono'}, fmtRs(total)))
+  ));
+  w.appendChild(el('div',{style:'padding:14px 20px 30px'},
+    el('button',{class:'btn btn-primary btn-block', id:'pay-btn', onclick: doBooking},
+      el('span',{}, 'Confirm & pay '), el('span',{class:'mono', style:'margin-left:4px'}, fmtRs(total)))
+  ));
+  return w;
+}
+
+async function doBooking() {
+  const btn = $('#pay-btn');
+  btn.disabled = true;
+  btn.innerHTML = '';
+  const s = spinnerSvg(); s.style.width='18px';s.style.height='18px';s.style.color='#160805';
+  btn.appendChild(s);
+  btn.appendChild(document.createTextNode(' Booking…'));
+  try {
+    const { data, error } = await supabase.rpc('create_booking', {
+      p_listing_id: state.currentListing.id,
+      p_availability_id: state.selectedSlot.id,
+      p_guests: state.guests,
+      p_points_redeem: 0
+    });
+    if (error) throw error;
+    // simulate payment success: mark confirmed + award points
+    await supabase.from('bookings').update({
+      status: 'confirmed', payment_status: 'captured', confirmed_at: new Date().toISOString(),
+      razorpay_payment_id: 'demo_' + Date.now()
+    }).eq('id', data.id);
+    await supabase.rpc('award_booking_points', { p_booking_id: data.id });
+    state.currentBooking = data;
+    showToast('Booking confirmed!', 'success');
+    goto('confirm');
+  } catch (e) {
+    showToast(e.message || 'Booking failed', 'error');
+    btn.disabled = false;
+    btn.textContent = 'Try again';
+  }
+}
+
+// ============ SCREEN: CONFIRM ============
+function renderConfirm() {
+  const b = state.currentBooking;
+  const l = state.currentListing;
+  const s = state.selectedSlot;
+  if (!b) { setTimeout(()=>goto('home',{reset:true}), 0); return el('div',{}); }
+  const w = el('div',{});
+  w.appendChild(statusBar());
+  const wrap = el('div',{class:'confirm-wrap'},
+    el('div',{class:'check-circle', html:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>'}),
+    el('div',{class:'eyebrow', style:'color:var(--p-success);margin-bottom:6px'}, 'Booking confirmed'),
+    el('h2',{}, 'You\'re all set.'),
+    el('p',{}, `${fmtDate(s.starts_at)} · ${fmtTime(s.starts_at)} · ${b.guests} guests`, el('br',{}), l.title),
+    el('div',{class:'qr-card'},
+      el('div',{class:'qr-mock'}),
+      el('div',{class:'ev'}, l.title),
+      el('div',{class:'ev-meta'}, `${b.guests} guests · #${b.code}`)
+    ),
+    el('div',{style:'display:flex;gap:10px;width:100%;max-width:280px'},
+      el('button',{class:'btn btn-ghost', style:'flex:1', onclick: () => share(l)}, 'Share'),
+      el('button',{class:'btn btn-primary', style:'flex:1', onclick: () => goto('trips',{reset:true})}, 'View trips')
+    )
+  );
+  w.appendChild(wrap);
+  return w;
+}
+
+// ============ SCREEN: TRIPS ============
+function renderTrips() {
+  const w = el('div',{});
+  w.appendChild(statusBar());
+  w.appendChild(el('div',{class:'hdr'}, el('h3',{},'Trips')));
+  if (!state.user) {
+    w.appendChild(el('div',{class:'empty', style:'padding:40px 24px'},
+      el('div',{style:'font-size:14px;color:var(--p-text-2);margin-bottom:12px'},'Sign in to see your bookings.'),
+      el('button',{class:'btn btn-primary', onclick:()=>{ state.auth.mode='signin'; goto('auth',{reset:true}); }}, 'Sign in')
+    ));
+    return w;
+  }
+  const list = el('div',{});
+  list.appendChild(el('div',{class:'loading'}, spinnerSvg()));
+  w.appendChild(list);
+  loadBookings().then(rows => {
+    list.innerHTML = '';
+    if (!rows.length) {
+      list.appendChild(el('div',{class:'empty'}, 'No bookings yet. Explore the ', el('a',{style:'color:var(--p-accent);cursor:pointer', onclick:()=>goto('home',{reset:true})},'home feed'), ' to get started.'));
+      return;
+    }
+    for (const b of rows) {
+      const l = b.listings;
+      const ticket = el('div',{class:'ticket'});
+      const top = el('div',{class:'ticket-top'});
+      const thumb = el('div',{class:'thumb'});
+      if (l?.cover_image?.startsWith('http')) thumb.appendChild(el('img',{src:l.cover_image, alt:''}));
+      else thumb.textContent = l?.cover_image || emojiForType(l?.type);
+      top.appendChild(thumb);
+      top.appendChild(el('div',{class:'t'},
+        el('h5',{}, l?.title || 'Booking'),
+        el('div',{class:'meta'}, el('span',{class:'mono'}, `${fmtDate(b.starts_at)} · ${fmtTime(b.starts_at)}`))
+      ));
+      ticket.appendChild(top);
+      ticket.appendChild(el('div',{class:'ticket-cut'}));
+      ticket.appendChild(el('div',{class:'ticket-bottom'},
+        el('div',{class:'qr-mini'}),
+        el('div',{style:'flex:1'},
+          el('span',{class:'offline-badge'},'● Offline ready'),
+          el('div',{class:'mono', style:'font-size:10.5px;color:var(--p-muted);margin-top:4px'}, `#${b.code} · ${b.guests} guests`)
+        ),
+        b.status === 'confirmed'
+          ? el('button',{class:'btn btn-ghost btn-sm', onclick: () => showToast('Cancel flow — coming soon')}, 'Cancel')
+          : el('span',{class:'eyebrow', style:'color:var(--p-muted)'}, b.status)
+      ));
+      list.appendChild(ticket);
+    }
+  });
+  return w;
+}
+async function loadBookings() {
+  const { data, error } = await supabase.from('bookings')
+    .select('*, listings(*)')
+    .eq('user_id', state.user.id)
+    .order('starts_at', {ascending:false});
+  if (error) { console.error(error); return []; }
+  return data;
+}
+
+// ============ SCREEN: PROFILE ============
+function renderProfile() {
+  const w = el('div',{});
+  w.appendChild(statusBar());
+  if (!state.user) {
+    w.appendChild(el('div',{class:'confirm-wrap'},
+      el('h2',{style:'margin-bottom:12px'},'You\'re browsing as a guest'),
+      el('p',{},'Sign in to save trips, earn points, and manage bookings.'),
+      el('button',{class:'btn btn-primary btn-block', style:'max-width:280px', onclick:()=>{ state.auth.mode='signin'; goto('auth',{reset:true}); }}, 'Sign in / Sign up')
+    ));
+    return w;
+  }
+  const p = state.profile || {};
+  const name = p.full_name || 'Friend';
+  const isAdmin = p.role === 'admin';
+  w.appendChild(el('div',{class:'profile-head'},
+    el('div',{class:'avatar'}, name.charAt(0).toUpperCase()),
+    el('h3',{}, name),
+    el('div',{class:'tier-tag'}, isAdmin ? '★ Admin' : '◆ ' + (p.loyalty_tier||'explorer').charAt(0).toUpperCase() + (p.loyalty_tier||'explorer').slice(1))
+  ));
+  const pts = p.loyalty_points || 0;
+  const nextTierAt = pts >= 500 ? 2000 : 500;
+  const pct = Math.min(100, Math.round(pts / nextTierAt * 100));
+  w.appendChild(el('div',{class:'progress-card'},
+    el('div',{class:'top'}, el('span',{},'Points balance'), el('b',{class:'mono'}, pts.toLocaleString('en-IN') + ' pts')),
+    el('div',{class:'progress-track'}, el('div',{class:'progress-fill', style:`width:${pct}%`})),
+    el('div',{style:'display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:10px;color:var(--p-muted);margin-top:8px;text-transform:uppercase;letter-spacing:.12em'},
+      el('span',{}, p.loyalty_tier || 'explorer'),
+      el('span',{class:'mono'}, (nextTierAt - pts) + ' pts to next tier')
+    )
+  ));
+  const menu = el('div',{class:'menu-list'});
+  if (isAdmin) {
+    menu.appendChild(el('div',{class:'menu-row admin-hint', onclick:()=>goto('admin')},
+      el('span',{html:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 15 8l6 1-4.5 4.5L17.5 20 12 16.7 6.5 20l1-6.5L3 9l6-1z"/></svg>'}),
+      el('span',{},'Admin panel'), el('small',{},'Manage listings, photos, categories')
+    ));
+  }
+  menu.appendChild(el('div',{class:'menu-row', onclick:()=>showToast('Coming soon')},
+    el('span',{html:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>'}),
+    el('span',{},'Payment methods'), el('small',{},'›')
+  ));
+  menu.appendChild(el('div',{class:'menu-row', onclick:()=>showToast('English only in v0.3')},
+    el('span',{html:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h14M5 8a4 4 0 1 1 8 0M5 8v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8"/></svg>'}),
+    el('span',{},'Language'), el('small',{class:'mono'},'English')
+  ));
+  menu.appendChild(el('div',{class:'menu-row', onclick: async () => {
+    await supabase.auth.signOut();
+    state.user = null; state.profile = null;
+    showToast('Signed out');
+    goto('auth', {reset:true});
+  }},
+    el('span',{html:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10M10 12h11M18 8l4 4-4 4"/></svg>'}),
+    el('span',{}, 'Sign out'), el('small',{},'›')
+  ));
+  w.appendChild(menu);
+  w.appendChild(el('div',{style:'height:20px'}));
+  return w;
+}
+
+// ============ SCREEN: ADMIN ============
+function renderAdmin() {
+  const w = el('div',{});
+  w.appendChild(statusBar());
+  w.appendChild(el('div',{class:'hdr'}, iconBack(), el('h3',{},'Admin'),
+    state.admin.tab === 'listings'
+      ? el('button',{class:'icon-btn', title:'New listing', onclick: () => { state.admin.editing = null; state.admin.uploadedUrl = null; goto('admin-edit'); }, html:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>'})
+      : null
+  ));
+  w.appendChild(el('div',{class:'admin-tabs'},
+    el('div',{class:'admin-tab' + (state.admin.tab==='listings'?' on':''), onclick:()=>{ state.admin.tab='listings'; render('admin'); }}, 'Listings'),
+    el('div',{class:'admin-tab' + (state.admin.tab==='categories'?' on':''), onclick:()=>{ state.admin.tab='categories'; render('admin'); }}, 'Categories')
+  ));
+
+  if (state.admin.tab === 'listings') {
+    const wrap = el('div',{class:'admin-list'});
+    wrap.appendChild(el('div',{class:'loading'}, spinnerSvg()));
+    w.appendChild(wrap);
+    supabase.from('listings').select('*').order('created_at',{ascending:false}).then(({data,error}) => {
+      wrap.innerHTML = '';
+      if (error) { wrap.appendChild(el('div',{class:'err'}, error.message)); return; }
+      if (!data.length) wrap.appendChild(el('div',{class:'empty'},'No listings yet — tap + to add one.'));
+      for (const l of data) {
+        const item = el('div',{class:'admin-item', onclick: () => { state.admin.editing = l; state.admin.uploadedUrl = null; goto('admin-edit'); }});
+        const thumb = el('div',{class:'thumb'});
+        if (l.cover_image?.startsWith('http')) thumb.appendChild(el('img',{src:l.cover_image,alt:''}));
+        else thumb.textContent = l.cover_image || emojiForType(l.type);
+        item.appendChild(thumb);
+        item.appendChild(el('div',{class:'info'},
+          el('b',{},l.title),
+          el('small',{}, `${l.neighbourhood||'—'} · ${fmtRs(l.base_price_paise/100)} · ${l.category_slug || l.type}`)
+        ));
+        item.appendChild(el('div',{class:'state ' + (l.active?'active':'paused')}, l.active?'Active':'Paused'));
+        wrap.appendChild(item);
+      }
+    });
+  } else {
+    const wrap = el('div',{});
+    wrap.appendChild(el('div',{class:'loading'}, spinnerSvg()));
+    w.appendChild(wrap);
+    supabase.from('categories').select('*').order('sort_order').then(({data,error}) => {
+      wrap.innerHTML = '';
+      if (error) { wrap.appendChild(el('div',{class:'err'}, error.message)); return; }
+      for (const c of data) {
+        wrap.appendChild(el('div',{class:'cat-item'},
+          el('div',{class:'icon'}, c.icon || '📍'),
+          el('div',{class:'n'}, el('b',{},c.name), el('small',{}, c.slug)),
+          el('button',{class:'toggle' + (c.active?' on':''), onclick: async function(){
+            const next = !c.active;
+            const { error: e2 } = await supabase.from('categories').update({active: next}).eq('id', c.id);
+            if (e2) { showToast(e2.message,'error'); return; }
+            c.active = next; this.classList.toggle('on', next);
+            showToast(`${c.name} ${next?'shown':'hidden'} on home`,'success');
+          }}, el('i',{}))
+        ));
+      }
+      // add new
+      wrap.appendChild(el('div',{style:'padding:14px 20px 30px'},
+        el('button',{class:'btn btn-ghost btn-block', onclick: () => promptNewCategory()}, '+ New category')
+      ));
+    });
+  }
+  return w;
+}
+
+async function promptNewCategory() {
+  const name = prompt('Category name (e.g. "Cooking classes")');
+  if (!name) return;
+  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+  const icon = prompt('Icon emoji (e.g. "🍳")', '📍') || '📍';
+  const { error } = await supabase.from('categories').insert({ slug, name, icon, active:true, sort_order: 100 });
+  if (error) { showToast(error.message, 'error'); return; }
+  state.categories = [];
+  showToast('Category added','success');
+  render('admin');
+}
+
+// ============ SCREEN: ADMIN EDIT ============
+function renderAdminEdit() {
+  const edit = state.admin.editing;
+  const isNew = !edit;
+  const w = el('div',{});
+  w.appendChild(statusBar());
+  w.appendChild(el('div',{class:'hdr'}, iconBack(), el('h3',{}, isNew ? 'New listing' : 'Edit listing')));
+
+  // photo upload
+  const uploadUrl = state.admin.uploadedUrl || edit?.cover_image || '';
+  const upBox = el('div',{class:'upload-box' + (uploadUrl?' has-image':'')});
+  if (uploadUrl && uploadUrl.startsWith('http')) {
+    upBox.appendChild(el('img',{class:'upload-preview', src:uploadUrl, alt:''}));
+    upBox.appendChild(el('b',{},'Change photo'));
+    upBox.appendChild(el('small',{},'JPG, PNG or WebP · max 5MB'));
+  } else {
+    upBox.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="4"/><path d="M9 6l1.5-2h3L15 6"/></svg>';
+    upBox.appendChild(el('b',{},'Upload display photo'));
+    upBox.appendChild(el('small',{},'Shows on the card and the detail page'));
+  }
+  const upInput = el('input',{type:'file', accept:'image/*'});
+  upInput.addEventListener('change', async e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 5*1024*1024) { showToast('Max 5MB', 'error'); return; }
+    upBox.innerHTML = '<div class="loading" style="padding:24px">'+spinnerSvg().outerHTML+'<div style="margin-top:8px">Uploading…</div></div>';
+    const path = `listings/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+    const { error } = await supabase.storage.from('listing-images').upload(path, file, { cacheControl:'3600', upsert:false });
+    if (error) { showToast(error.message,'error'); render('admin-edit'); return; }
+    const { data: { publicUrl } } = supabase.storage.from('listing-images').getPublicUrl(path);
+    state.admin.uploadedUrl = publicUrl;
+    render('admin-edit');
+    showToast('Photo uploaded','success');
+  });
+  upBox.appendChild(upInput);
+  w.appendChild(upBox);
+
+  const field = (label, id, val, opts={}) => el('div',{class:'form-field'},
+    el('label',{},label),
+    opts.textarea
+      ? el('textarea',{id, placeholder:opts.ph||''}, val || '')
+      : opts.select
+        ? el('select',{id}, ...opts.options.map(o => el('option',{value:o.v, ...(o.v===val?{selected:''}:{})}, o.label)))
+        : el('input',{id, value: val==null?'':String(val), placeholder:opts.ph||'', type:opts.type||'text'})
+  );
+  w.appendChild(field('Title', 'f-title', edit?.title, {ph:'e.g. Mohammad Ali Road Night Food Walk'}));
+  w.appendChild(field('Subtitle', 'f-subtitle', edit?.subtitle, {ph:'e.g. Eight stops · seekh kebabs to malpua'}));
+  w.appendChild(field('Description', 'f-desc', edit?.description, {textarea:true, ph:'What makes this experience special?'}));
+  w.appendChild(el('div',{class:'form-row'},
+    field('Neighbourhood', 'f-nbr', edit?.neighbourhood, {ph:'Bhendi Bazaar'}),
+    field('Duration (min)', 'f-dur', edit?.duration_minutes, {type:'number', ph:'180'})
+  ));
+  w.appendChild(el('div',{class:'form-row'},
+    field('Price (₹)', 'f-price', edit?.base_price_paise ? edit.base_price_paise/100 : '', {type:'number', ph:'1200'}),
+    field('Max guests', 'f-cap', edit?.max_group_size, {type:'number', ph:'12'})
+  ));
+  const catOpts = [{v:'', label:'— Select —'}, ...state.categories.map(c => ({v:c.slug, label:c.name}))];
+  const typeOpts = [
+    {v:'food_tour', label:'Food tour'},
+    {v:'heritage_walk', label:'Heritage walk'},
+    {v:'activity', label:'Activity'},
+    {v:'event', label:'Event'},
+    {v:'hotel', label:'Hotel'},
+    {v:'bundle', label:'Bundle'},
+  ];
+  w.appendChild(el('div',{class:'form-row'},
+    field('Category', 'f-cat', edit?.category_slug || '', {select:true, options: catOpts}),
+    field('Type', 'f-type', edit?.type || 'activity', {select:true, options: typeOpts})
+  ));
+  w.appendChild(field('Meeting point', 'f-meet', edit?.meeting_point, {ph:'Crawford Market gate'}));
+  w.appendChild(el('div',{class:'form-field'},
+    el('label',{},'Status'),
+    el('div',{style:'display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--p-surface);border:1px solid var(--p-border);border-radius:12px'},
+      el('span',{style:'flex:1;font-size:13px'}, 'Visible to users'),
+      el('button',{class:'toggle' + (edit?.active !== false ? ' on' : ''), id:'f-active', onclick: function(){ this.classList.toggle('on'); }}, el('i',{}))
+    )
+  ));
+  const errBox = el('div',{class:'err', id:'edit-err', style:'display:none;margin:0 20px 12px'});
+  w.appendChild(errBox);
+  const actions = el('div',{style:'display:flex;gap:10px;padding:6px 20px 30px'});
+  if (edit) actions.appendChild(el('button',{class:'btn btn-danger btn-sm', style:'flex:0 0 auto', onclick: () => deleteListing(edit.id)}, 'Delete'));
+  actions.appendChild(el('button',{class:'btn btn-primary btn-block', style:'flex:1', id:'save-btn', onclick: () => saveListing(edit)}, isNew ? 'Publish listing' : 'Save changes'));
+  w.appendChild(actions);
+
+  // load categories if empty
+  if (!state.categories.length) loadCategories().then(() => render('admin-edit'));
+  return w;
+}
+
+async function saveListing(existing) {
+  const btn = $('#save-btn');
+  const err = $('#edit-err');
+  err.style.display = 'none';
+  btn.disabled = true;
+  try {
+    const title = $('#f-title').value.trim();
+    if (!title) throw new Error('Title is required');
+    const price = parseInt($('#f-price').value || '0', 10);
+    if (!price || price < 1) throw new Error('Enter a valid price in ₹');
+    const type = $('#f-type').value;
+    const active = $('#f-active').classList.contains('on');
+    const cover = state.admin.uploadedUrl || existing?.cover_image || null;
+    const slug = existing?.slug || (title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') + '-' + Date.now().toString(36));
+    // pick an existing operator (admin creates listings under the first verified operator for now)
+    let operatorId = existing?.operator_id;
+    if (!operatorId) {
+      const { data: op } = await supabase.from('operators').select('id').limit(1).single();
+      operatorId = op?.id;
+      if (!operatorId) throw new Error('No operator found in DB');
+    }
+    const row = {
+      operator_id: operatorId,
+      slug,
+      type,
+      title,
+      subtitle: $('#f-subtitle').value.trim() || null,
+      description: $('#f-desc').value.trim() || null,
+      neighbourhood: $('#f-nbr').value.trim() || null,
+      meeting_point: $('#f-meet').value.trim() || null,
+      duration_minutes: parseInt($('#f-dur').value||'0',10) || null,
+      max_group_size: parseInt($('#f-cap').value||'0',10) || null,
+      base_price_paise: price * 100,
+      cover_image: cover,
+      category_slug: $('#f-cat').value || null,
+      active,
+    };
+    const { error } = existing
+      ? await supabase.from('listings').update(row).eq('id', existing.id)
+      : await supabase.from('listings').insert(row);
+    if (error) throw error;
+    showToast(existing ? 'Listing updated' : 'Listing published', 'success');
+    back();
+  } catch (e) {
+    err.textContent = e.message; err.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function deleteListing(id) {
+  if (!confirm('Delete this listing? This cannot be undone.')) return;
+  const { error } = await supabase.from('listings').delete().eq('id', id);
+  if (error) { showToast(error.message, 'error'); return; }
+  showToast('Listing deleted', 'success');
+  back();
+}
+
+// ============ SCREEN: WALLET (single ticket view kept for later) ============
+function renderWallet() { goto('trips', {reset:true}); return el('div',{}); }
+
+// ============ TAB BAR EVENTS ============
+document.querySelectorAll('.tabbtn').forEach(b => b.addEventListener('click', () => {
+  goto(b.getAttribute('data-tab'), {reset:true});
+}));
+
+// ============ BOOT ============
+(async () => {
+  await loadSession();
+  await loadCategories();
+  if (state.user) {
+    if (state.profile?.onboarding_complete) goto('home',{reset:true});
+    else goto('onboard',{reset:true});
+  } else {
+    goto('auth',{reset:true});
+  }
+})();
+
+// keep session sync
+supabase.auth.onAuthStateChange((_evt, session) => {
+  state.user = session?.user || null;
+});
+</script>
+</body>
+</html>
