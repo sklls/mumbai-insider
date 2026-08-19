@@ -573,6 +573,8 @@ const state = {
   screen: 'auth',
   screenStack: ['auth'],
   categories: [],
+  subcategories: [],
+  filters: { mood: [], who: null, category: null, subcategory: null },
   listings: [],
   currentListing: null,
   currentAvailability: [],
@@ -610,6 +612,20 @@ const fmtDate = iso => {
 };
 const fmtTime = iso => new Date(iso).toLocaleTimeString('en-IN', { hour:'numeric', minute:'2-digit', hour12:true });
 const emojiForType = t => ({food_tour:'🍲', heritage_walk:'🕌', activity:'⛰️', event:'🎻', hotel:'🏨', bundle:'🚗'}[t] || '📍');
+
+const MOOD_OPTS = [
+  {v:'foodie', label:'🍲 Foodie'}, {v:'culture', label:'🕌 Culture'}, {v:'adventure', label:'⛰️ Adventure'},
+  {v:'date_night', label:'💞 Date night'}, {v:'social', label:'🎉 Social'}, {v:'creative', label:'🎨 Creative'},
+  {v:'relax', label:'🧘 Relax'}, {v:'party', label:'🎤 Party'}, {v:'learn', label:'📚 Learn'},
+];
+const WHO_OPTS = [
+  {v:'solo', label:'Solo'}, {v:'couple', label:'Couple'}, {v:'friends', label:'Friends'},
+  {v:'family', label:'Family'}, {v:'kids', label:'Kids'},
+];
+const FORMAT_OPTS = [
+  {v:'drop_in', label:'Drop-in'}, {v:'workshop', label:'Workshop'}, {v:'guided', label:'Guided'},
+  {v:'performance', label:'Performance'}, {v:'pop_up', label:'Pop-up'}, {v:'festival', label:'Festival'}, {v:'multi_stop', label:'Multi-stop plan'},
+];
 
 function showToast(msg, kind) {
   const t = $('#toast');
@@ -672,6 +688,7 @@ function render(screen) {
       case 'auth':      node = renderAuth(); break;
       case 'onboard':   node = renderOnboard(); break;
       case 'home':      node = renderHome(); break;
+      case 'categories':node = renderCategories(); break;
       case 'search':    node = renderSearch(); break;
       case 'listing':   node = renderListing(); break;
       case 'book':      node = renderBook(); break;
@@ -721,8 +738,10 @@ function renderAuth() {
        mode === 'signin' ? 'Create one' : 'Sign in')
   ));
   wrap.appendChild(el('div',{class:'admin-note'},
-    el('b',{},'Admin demo'),
-    'Sign in as ', el('span',{class:'mono'},'yash'), ' / ', el('span',{class:'mono'},'xyzxyz123'), ' to manage listings, photos and categories.'
+    el('b',{},'Demo accounts'),
+    'Admin: ', el('span',{class:'mono'},'yash'), ' / ', el('span',{class:'mono'},'xyzxyz123'),
+    ' — manage listings, photos, categories.', el('br',{}),
+    'Guest: ', el('span',{class:'mono'},'guest'), ' / ', el('span',{class:'mono'},'abcabc123')
   ));
   wrap.appendChild(el('div',{class:'auth-guest'},
     'Or ', el('a',{onclick: () => goto('home', {reset:true})}, 'browse as guest')
@@ -824,6 +843,7 @@ function permRow(title, sub, key, defOn, defaultToggleable) {
 
 // ============ SCREEN: HOME ============
 function renderHome() {
+  state.filters.category = null; state.filters.subcategory = null;
   const w = el('div',{});
   w.appendChild(statusBar());
   const nameShort = state.profile?.full_name?.split(' ')[0] || 'friend';
@@ -860,28 +880,56 @@ function renderHome() {
   searchBar.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>Search heritage walks, food, events…';
   w.appendChild(searchBar);
 
-  // categories pill row
-  const pills = el('div',{class:'pill-row', id:'cat-pills'});
-  pills.appendChild(el('div',{class:'pill on', 'data-cat':'', onclick: () => setCategoryFilter('')}, 'All'));
-  w.appendChild(pills);
+  // ---- lead with intent: mood + who, not a wall of categories ----
+  w.appendChild(el('div',{class:'sec-head', style:'padding-top:2px'}, el('h4',{},'What\'s the vibe?'), el('a',{},'')));
+  const moodRow = el('div',{class:'pill-row', id:'mood-pills'});
+  for (const m of MOOD_OPTS) {
+    moodRow.appendChild(el('div',{class:'pill' + (state.filters.mood.includes(m.v)?' on':''), 'data-mood':m.v, onclick: function(){
+      const i = state.filters.mood.indexOf(m.v);
+      if (i === -1) state.filters.mood.push(m.v); else state.filters.mood.splice(i,1);
+      this.classList.toggle('on');
+      refreshHomeResults();
+    }}, m.label));
+  }
+  w.appendChild(moodRow);
 
-  w.appendChild(el('div',{class:'sec-head'}, el('h4',{},'For this weekend'), el('a',{onclick:()=>goto('search')}, 'See all')));
+  const whoRow = el('div',{class:'pill-row', id:'who-pills', style:'padding-top:2px'});
+  whoRow.appendChild(el('div',{class:'pill' + (!state.filters.who?' on':''), onclick: function(){ state.filters.who=null; syncWhoPills(); refreshHomeResults(); }}, 'Anyone'));
+  for (const wOpt of WHO_OPTS) {
+    whoRow.appendChild(el('div',{class:'pill' + (state.filters.who===wOpt.v?' on':''), 'data-who':wOpt.v, onclick: function(){ state.filters.who = wOpt.v; syncWhoPills(); refreshHomeResults(); }}, wOpt.label));
+  }
+  w.appendChild(whoRow);
+  function syncWhoPills(){
+    whoRow.querySelectorAll('.pill').forEach((p,idx) => p.classList.toggle('on', idx===0 ? !state.filters.who : p.getAttribute('data-who')===state.filters.who));
+  }
+
+  w.appendChild(el('div',{class:'lcard', style:'margin:14px 20px 4px;cursor:pointer;justify-content:center', onclick: () => goto('categories')},
+    el('div',{class:'thumb', style:'background:linear-gradient(140deg,var(--p-accent-2),var(--p-accent));color:#160805;font-size:20px'}, '🗂️'),
+    el('div',{class:'info'}, el('h5',{},'Browse all categories'), el('div',{class:'meta'},'13 categories · 48 subcategories'))
+  ));
+
+  w.appendChild(el('div',{class:'sec-head'}, el('h4',{id:'results-title'},'Curated for you'), el('a',{onclick:()=>goto('search')}, 'See all')));
   const list = el('div',{class:'card-list', id:'listings-list'});
   list.appendChild(el('div',{class:'loading'}, spinnerSvg(), el('div',{}, 'Loading listings…')));
   w.appendChild(list);
 
-  // load data
-  loadCategories().then(cats => {
-    for (const c of cats) {
-      pills.appendChild(el('div',{class:'pill', 'data-cat':c.slug, onclick: () => setCategoryFilter(c.slug)},
-        c.icon ? el('span',{class:'glyph'}, c.icon) : null, c.name));
-    }
-  });
-  loadListings().then(items => {
-    renderListingList(list, items);
-  });
+  loadCategories();
+  loadListings({who: state.filters.who, mood: state.filters.mood}).then(items => renderListingList(list, items));
 
   return w;
+}
+async function refreshHomeResults() {
+  const list = $('#listings-list');
+  if (!list) return;
+  list.innerHTML = '';
+  list.appendChild(el('div',{class:'loading'}, spinnerSvg()));
+  const title = $('#results-title');
+  const bits = [];
+  if (state.filters.who) bits.push(WHO_OPTS.find(w=>w.v===state.filters.who)?.label);
+  if (state.filters.mood.length) bits.push(state.filters.mood.map(m => MOOD_OPTS.find(x=>x.v===m)?.label.split(' ').slice(1).join(' ')).join(', '));
+  if (title) title.textContent = bits.length ? `For ${bits.join(' · ')}` : 'Curated for you';
+  const items = await loadListings({who: state.filters.who, mood: state.filters.mood});
+  renderListingList(list, items);
 }
 function spinnerSvg() {
   const s = document.createElementNS('http://www.w3.org/2000/svg','svg');
@@ -923,14 +971,6 @@ function renderListingList(container, items) {
     container.appendChild(c);
   }
 }
-async function setCategoryFilter(cat) {
-  document.querySelectorAll('#cat-pills .pill').forEach(p => p.classList.toggle('on', p.getAttribute('data-cat') === cat));
-  const list = $('#listings-list');
-  list.innerHTML = '';
-  list.appendChild(el('div',{class:'loading'}, spinnerSvg()));
-  const items = await loadListings(cat || null);
-  renderListingList(list, items);
-}
 async function loadCategories() {
   if (state.categories.length) return state.categories;
   const { data, error } = await supabase.from('categories').select('*').eq('active', true).order('sort_order');
@@ -938,37 +978,89 @@ async function loadCategories() {
   state.categories = data;
   return data;
 }
-async function loadListings(cat) {
-  let q = supabase.from('listings').select('*').eq('active', true).order('featured', {ascending:false}).order('booking_count', {ascending:false}).limit(20);
-  if (cat) q = q.eq('category_slug', cat);
+async function loadSubcategories(categorySlug) {
+  if (!state.subcategories.length) {
+    const { data, error } = await supabase.from('subcategories').select('*').eq('active', true).order('sort_order');
+    if (error) { console.error(error); return []; }
+    state.subcategories = data;
+  }
+  return categorySlug ? state.subcategories.filter(s => s.category_slug === categorySlug) : state.subcategories;
+}
+async function loadListings(opts) {
+  opts = opts || {};
+  let q = supabase.from('listings').select('*').eq('active', true);
+  if (opts.category) q = q.eq('category_slug', opts.category);
+  if (opts.subcategory) q = q.eq('subcategory_slug', opts.subcategory);
+  if (opts.who) q = q.contains('who_tags', [opts.who]);
+  if (opts.mood && opts.mood.length) q = q.overlaps('mood_tags', opts.mood);
+  q = q.order('featured', {ascending:false}).order('booking_count', {ascending:false}).limit(30);
   const { data, error } = await q;
   if (error) { console.error(error); return []; }
   return data;
+}
+
+// ============ SCREEN: CATEGORY DIRECTORY ============
+function renderCategories() {
+  const w = el('div',{});
+  w.appendChild(statusBar());
+  w.appendChild(el('div',{class:'hdr'}, iconBack(), el('h3',{},'All categories')));
+  w.appendChild(el('p',{class:'body-copy', style:'padding-top:0;margin-top:-4px'}, 'The full Mumbai Insider taxonomy — browse by category, or go back and let mood do the picking.'));
+  const grid = el('div',{class:'admin-list'});
+  grid.appendChild(el('div',{class:'loading'}, spinnerSvg()));
+  w.appendChild(grid);
+  loadCategories().then(async cats => {
+    await loadSubcategories();
+    grid.innerHTML = '';
+    for (const c of cats) {
+      const subCount = state.subcategories.filter(s => s.category_slug === c.slug).length;
+      grid.appendChild(el('div',{class:'admin-item', onclick: () => { state.filters.category = c.slug; state.filters.subcategory = null; goto('search'); }},
+        el('div',{class:'thumb'}, c.icon || '📍'),
+        el('div',{class:'info'}, el('b',{}, c.name), el('small',{}, `${subCount} subcategories`))
+      ));
+    }
+  });
+  return w;
 }
 
 // ============ SCREEN: SEARCH ============
 function renderSearch() {
   const w = el('div',{});
   w.appendChild(statusBar());
+  const activeCat = state.categories.find(c => c.slug === state.filters.category);
   w.appendChild(el('div',{class:'hdr'},
-    el('h3',{},'Search'),
-    el('button',{class:'icon-btn', onclick:()=>goto('home',{reset:true}), html:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 6l12 12M18 6 6 18"/></svg>'})
+    el('h3',{}, activeCat ? activeCat.name : 'Search'),
+    el('button',{class:'icon-btn', onclick:()=>{ state.filters.category=null; state.filters.subcategory=null; goto('home',{reset:true}); }, html:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 6l12 12M18 6 6 18"/></svg>'})
   ));
   const sb = el('div',{class:'search-bar', style:'border-color:var(--p-accent);background:rgba(255,106,80,.06)'});
   sb.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="var(--p-accent)" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>';
   const input = el('input',{placeholder:'Try "food", "elephanta", "heritage"…', autofocus:''});
   sb.appendChild(input);
   w.appendChild(sb);
+
+  if (activeCat) {
+    const subs = state.subcategories.filter(s => s.category_slug === activeCat.slug);
+    if (subs.length) {
+      const subRow = el('div',{class:'pill-row'});
+      subRow.appendChild(el('div',{class:'pill' + (!state.filters.subcategory?' on':''), onclick: function(){ state.filters.subcategory=null; doSearch(input.value.trim()); this.parentElement.querySelectorAll('.pill').forEach(p=>p.classList.remove('on')); this.classList.add('on'); }}, 'All'));
+      for (const s of subs) {
+        subRow.appendChild(el('div',{class:'pill' + (state.filters.subcategory===s.slug?' on':''), onclick: function(){ state.filters.subcategory=s.slug; doSearch(input.value.trim()); subRow.querySelectorAll('.pill').forEach(p=>p.classList.remove('on')); this.classList.add('on'); }}, s.name));
+      }
+      w.appendChild(subRow);
+    }
+  }
+
   const list = el('div',{class:'card-list', id:'search-list'});
   list.appendChild(el('div',{class:'loading'}, spinnerSvg()));
   w.appendChild(list);
 
   let debounce;
-  const doSearch = async (q) => {
+  var doSearch = async (q) => {
     list.innerHTML = '';
     list.appendChild(el('div',{class:'loading'}, spinnerSvg()));
-    const query = supabase.from('listings').select('*').eq('active', true).limit(30);
-    const { data, error } = q
+    let query = supabase.from('listings').select('*').eq('active', true).limit(30);
+    if (state.filters.category) query = query.eq('category_slug', state.filters.category);
+    if (state.filters.subcategory) query = query.eq('subcategory_slug', state.filters.subcategory);
+    const { data } = q
       ? await query.or(`title.ilike.%${q}%,description.ilike.%${q}%,neighbourhood.ilike.%${q}%`)
       : await query.order('booking_count', {ascending:false});
     renderListingList(list, data || []);
@@ -1517,11 +1609,42 @@ function renderAdminEdit() {
     {v:'hotel', label:'Hotel'},
     {v:'bundle', label:'Bundle'},
   ];
-  w.appendChild(el('div',{class:'form-row'},
-    field('Category', 'f-cat', edit?.category_slug || '', {select:true, options: catOpts}),
-    field('Type', 'f-type', edit?.type || 'activity', {select:true, options: typeOpts})
-  ));
+  const catFieldDiv = field('Category', 'f-cat', edit?.category_slug || '', {select:true, options: catOpts});
+  const typeFieldDiv = field('Type', 'f-type', edit?.type || 'activity', {select:true, options: typeOpts});
+  w.appendChild(el('div',{class:'form-row'}, catFieldDiv, typeFieldDiv));
+  const catSelect = catFieldDiv.querySelector('select');
+
+  // subcategory select — repopulated when category changes
+  const subSelect = el('select',{id:'f-subcat'}, el('option',{value:''},'— Select category first —'));
+  w.appendChild(el('div',{class:'form-field'}, el('label',{},'Subcategory'), subSelect));
+  function populateSubcats(catSlug, preselect) {
+    const subs = state.subcategories.filter(s => s.category_slug === catSlug);
+    subSelect.innerHTML = '';
+    subSelect.appendChild(el('option',{value:''}, subs.length ? '— Select —' : 'No subcategories'));
+    for (const s of subs) subSelect.appendChild(el('option',{value:s.slug, ...(s.slug===preselect?{selected:''}:{})}, s.name));
+  }
+  loadSubcategories().then(() => populateSubcats(catSelect.value, edit?.subcategory_slug));
+  catSelect.addEventListener('change', e => populateSubcats(e.target.value, null));
+
   w.appendChild(field('Meeting point', 'f-meet', edit?.meeting_point, {ph:'Crawford Market gate'}));
+
+  // who tags (multi-select chips)
+  w.appendChild(el('div',{class:'form-field'}, el('label',{},'Who it\'s for')));
+  const whoChips = el('div',{class:'pill-row', id:'f-who', style:'padding:0 20px 12px;overflow:visible;flex-wrap:wrap'});
+  for (const o of WHO_OPTS) {
+    whoChips.appendChild(el('div',{class:'pill' + ((edit?.who_tags||[]).includes(o.v)?' on':''), 'data-v':o.v, onclick: function(){ this.classList.toggle('on'); }}, o.label));
+  }
+  w.appendChild(whoChips);
+
+  // mood tags (multi-select chips)
+  w.appendChild(el('div',{class:'form-field'}, el('label',{},'Mood / intent')));
+  const moodChips = el('div',{class:'pill-row', id:'f-mood', style:'padding:0 20px 12px;overflow:visible;flex-wrap:wrap'});
+  for (const o of MOOD_OPTS) {
+    moodChips.appendChild(el('div',{class:'pill' + ((edit?.mood_tags||[]).includes(o.v)?' on':''), 'data-v':o.v, onclick: function(){ this.classList.toggle('on'); }}, o.label));
+  }
+  w.appendChild(moodChips);
+
+  w.appendChild(field('Format', 'f-format', edit?.format_tag || 'guided', {select:true, options: FORMAT_OPTS.map(o=>({v:o.v,label:o.label}))}));
   w.appendChild(el('div',{class:'form-field'},
     el('label',{},'Status'),
     el('div',{style:'display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--p-surface);border:1px solid var(--p-border);border-radius:12px'},
@@ -1576,6 +1699,10 @@ async function saveListing(existing) {
       base_price_paise: price * 100,
       cover_image: cover,
       category_slug: $('#f-cat').value || null,
+      subcategory_slug: $('#f-subcat').value || null,
+      who_tags: Array.from(document.querySelectorAll('#f-who .pill.on')).map(p => p.getAttribute('data-v')),
+      mood_tags: Array.from(document.querySelectorAll('#f-mood .pill.on')).map(p => p.getAttribute('data-v')),
+      format_tag: $('#f-format').value || 'guided',
       active,
     };
     const { error } = existing

@@ -26,7 +26,14 @@ URL        : https://rwcgtxmpokzfplgnlwye.supabase.co
 Anon key   : sb_publishable_H_V75-uE8h8AXkb1Zm124w_v6klpmEz
 ```
 
-Current state: 18 tables (all RLS-enabled), 10 sample listings, 6 real Mumbai operators, 10 neighbourhoods, 52 availability slots, 4 feature flags, 1 sample digest edition. Extensions installed: `pgcrypto`, `pgvector` (for AI recs), `pg_trgm` — all in the `extensions` schema (not `public`).
+Current state: 20 tables (all RLS-enabled), 10 sample listings, 6 real Mumbai operators, 13 categories, 48 subcategories, 10 neighbourhoods, 52 availability slots, 4 feature flags, 1 sample digest edition. Extensions installed: `pgcrypto`, `pgvector` (for AI recs), `pg_trgm` — all in the `extensions` schema (not `public`).
+
+**Demo accounts** (created directly via SQL, auto-confirmed):
+- **Admin**: `yash` / `xyzxyz123` — full CRUD on listings, photo upload, category/subcategory management
+- **Guest customer**: `guest` / `abcabc123` — regular customer account with a small starter points balance
+- Sign-in accepts either the short username or the full `@mumbaiinsider.app` email
+
+**Full taxonomy** — 13 categories × subcategories (Food & Drink, Music/Comedy/Nightlife, Art & Creativity, Culture & Heritage, Film & Bollywood, Outdoor & Adventure, Wellness & Self-Care, Shopping & Local Life, Events & Festivals, Family & Kids, Social & Dating, Mumbai-Specific, Weekend Escapes) is fully modeled in the `categories`/`subcategories` tables, plus `who_tags`, `mood_tags`, and `format_tag` on every listing for intent-based discovery. Per the catalogue design principle, the **consumer UI leads with intent** (mood + who chips on Home) rather than exposing all 13 categories up front — the full directory is one tap away via "Browse all categories."
 
 To connect from a frontend:
 ```ts
