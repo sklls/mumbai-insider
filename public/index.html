@@ -354,7 +354,8 @@ body::after{ /* grain */
 /* section headers */
 .sec-head{display:flex;align-items:baseline;justify-content:space-between;padding:20px 20px 10px}
 .sec-head h4{font-family:var(--f-display);font-size:16px;font-weight:600;margin:0;letter-spacing:-.02em}
-.sec-head a{font-family:var(--f-mono);font-size:10.5px;color:var(--p-accent);font-weight:500;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+.sec-head a{font-family:var(--f-mono);font-size:10.5px;color:var(--p-accent);font-weight:500;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:color .15s}
+.sec-head a:hover{color:var(--p-accent-2)}
 
 .strip{display:flex;gap:12px;overflow-x:auto;padding:2px 20px 8px;-ms-overflow-style:none;scrollbar-width:none}
 .strip::-webkit-scrollbar{display:none}
@@ -432,7 +433,7 @@ body::after{ /* grain */
 .deco .dots i{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.35)}
 .deco .dots i:first-child{background:#fff;width:16px;border-radius:3px}
 
-/* tab bar & fab */
+/* tab bar */
 .tabbar{
   position:absolute;left:12px;right:12px;bottom:10px;height:64px;
   background:rgba(15,18,24,.72);border:1px solid var(--p-border);
@@ -453,20 +454,6 @@ body::after{ /* grain */
 .tabbtn.on svg{transform:translateY(-1px)}
 .tabbtn:hover:not(.on){color:var(--p-text-2)}
 
-.fab{
-  position:absolute;right:24px;bottom:92px;width:52px;height:52px;border-radius:50%;
-  background:linear-gradient(180deg, var(--p-accent-2), var(--p-accent));color:#160805;
-  display:none;align-items:center;justify-content:center;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.4), 0 12px 30px -8px var(--accent-glow), 0 4px 14px -4px rgba(0,0,0,.6);
-  cursor:pointer;z-index:35;border:none;
-  transition:transform .2s var(--ease-spring);
-}
-.viewport.show-tabbar .fab{display:flex}
-.fab:hover{transform:scale(1.05)}
-.fab:active{transform:scale(.94)}
-.fab svg{width:24px;height:24px}
-.fab .pulse{position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--p-accent);opacity:.35;animation:pulse 2.4s ease-out infinite}
-@keyframes pulse{0%{transform:scale(.9);opacity:.55}100%{transform:scale(1.35);opacity:0}}
 
 /* ---------- onboarding ---------- */
 .ob-wrap{display:flex;flex-direction:column;height:calc(100% - 50px)}
@@ -756,6 +743,20 @@ body::after{ /* grain */
 .di-body small{font-size:11px;color:var(--p-muted);line-height:1.5}
 .di-price{font-family:var(--f-mono);font-size:13px;font-weight:600;color:var(--p-accent)}
 
+/* ---------- toast ---------- */
+.toast{
+  position:absolute;left:50%;bottom:96px;transform:translate(-50%, 10px);
+  padding:10px 16px;background:rgba(15,18,24,.95);border:1px solid var(--p-border-2);
+  border-radius:100px;font-size:12px;font-weight:500;color:var(--p-text);
+  backdrop-filter:blur(16px);box-shadow:0 12px 28px -10px rgba(0,0,0,.7);
+  z-index:90;opacity:0;pointer-events:none;transition:opacity .2s, transform .3s var(--ease-spring);
+  white-space:nowrap;max-width:90%;overflow:hidden;text-overflow:ellipsis;
+}
+.toast.show{opacity:1;transform:translate(-50%, 0)}
+/* heart button when saved */
+.heart-btn.on svg{fill:var(--p-accent);stroke:var(--p-accent)}
+.heart-btn.on{background:rgba(255,106,80,.14)!important;border-color:rgba(255,106,80,.3)!important;color:var(--p-accent)!important}
+
 /* ---------- push banner ---------- */
 .push-banner{
   position:absolute;top:8px;left:12px;right:12px;z-index:80;
@@ -774,38 +775,6 @@ body::after{ /* grain */
 .pb-title b{font-size:11.5px;font-weight:600;letter-spacing:-.005em}
 .pb-title span{font-size:10px;color:var(--p-muted)}
 .pb-msg{font-size:12.5px;line-height:1.35;color:var(--p-text-2)}
-
-/* ---------- chat sheet ---------- */
-.sheet-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .3s;z-index:75;backdrop-filter:blur(2px)}
-.sheet-backdrop.show{opacity:1;pointer-events:auto}
-.chat-sheet{
-  position:absolute;left:0;right:0;bottom:0;height:84%;
-  background:var(--p-bg);border:1px solid var(--p-border);border-bottom:none;
-  border-radius:24px 24px 0 0;
-  box-shadow:0 -20px 60px -10px rgba(0,0,0,.7);
-  transform:translateY(100%);transition:transform .38s var(--ease-spring);
-  z-index:76;display:flex;flex-direction:column;
-}
-.chat-sheet.show{transform:translateY(0)}
-.chat-sheet .grabber{width:36px;height:4px;border-radius:100px;background:var(--p-border-2);margin:10px auto 4px}
-.chat-head{display:flex;align-items:center;gap:10px;padding:8px 16px 12px;border-bottom:1px solid var(--p-border)}
-.chat-head b{font-family:var(--f-display);font-size:14px;flex:1;font-weight:600;letter-spacing:-.015em}
-.chat-body{flex:1;overflow-y:auto;padding:14px 16px 8px;-ms-overflow-style:none;scrollbar-width:none}
-.chat-body::-webkit-scrollbar{display:none}
-.bubble{max-width:82%;padding:11px 14px;border-radius:18px;font-size:12.5px;line-height:1.5;margin-bottom:9px;letter-spacing:-.005em}
-.b-user{background:linear-gradient(180deg,var(--p-accent-2),var(--p-accent));color:#160805;margin-left:auto;border-bottom-right-radius:6px}
-.b-ai{background:var(--p-surface);border:1px solid var(--p-border);color:var(--p-text);border-bottom-left-radius:6px}
-.b-cards{display:flex;flex-direction:column;gap:8px;margin-bottom:9px}
-.b-card{display:flex;gap:11px;align-items:center;background:var(--p-surface);border:1px solid var(--p-border);border-radius:14px;padding:10px}
-.b-card .thumb{width:42px;height:42px;border-radius:10px;background:var(--p-surface-2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.b-card .info{flex:1;min-width:0}
-.b-card .info h6{font-family:var(--f-display);font-size:12px;font-weight:600;margin:0 0 2px;letter-spacing:-.01em}
-.b-card .info p{font-size:10.5px;color:var(--p-muted);margin:0}
-.b-card .p{font-size:12.5px;font-weight:600;color:var(--p-accent);white-space:nowrap}
-.chat-input{display:flex;gap:8px;padding:10px 14px calc(10px + 18px);border-top:1px solid var(--p-border);background:var(--p-bg)}
-.chat-input .box{flex:1;background:var(--p-surface);border:1px solid var(--p-border);border-radius:100px;padding:11px 16px;font-size:12.5px;color:var(--p-muted)}
-.chat-input button{all:unset;width:40px;height:40px;border-radius:50%;background:linear-gradient(180deg,var(--p-accent-2),var(--p-accent));color:#160805;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;box-shadow:0 6px 16px -4px var(--accent-glow)}
-.chat-input button svg{width:16px;height:16px}
 
 /* footer */
 .pagefoot{
@@ -843,12 +812,11 @@ body::after{ /* grain */
 <section class="hero">
   <div class="eyebrow">The customer journey</div>
   <h1>Fifteen screens. <em>One weekend in Mumbai.</em></h1>
-  <p class="lead">A guided walk-through of the entire lifecycle — from the first app open to the loyalty loop that brings someone back. Scroll to follow the story; the phone advances with you. Tap the dots to jump anywhere.</p>
+  <p class="lead">A guided walk-through of the entire lifecycle — from the first app open to the loyalty loop that brings someone back. Scroll to follow the story; the phone advances with you. Every button, picker and toggle is live.</p>
   <div class="quick">
     <div class="quick-stat"><b>15</b><span>Screens</span></div>
-    <div class="quick-stat"><b>8</b><span>Journey stages</span></div>
-    <div class="quick-stat"><b>3 min</b><span>Read time</span></div>
-    <div class="quick-stat"><b>Live</b><span>Fully interactive</span></div>
+    <div class="quick-stat"><b>9</b><span>Journey stages</span></div>
+    <div class="quick-stat"><b>Live</b><span>Every control works</span></div>
   </div>
 </section>
 
@@ -865,7 +833,6 @@ body::after{ /* grain */
     <button data-nav="s-live"><span class="tip">07 · Experience</span></button>
     <button data-nav="s-refl"><span class="tip">08 · Reflect</span></button>
     <button data-nav="s-ret"><span class="tip">09 · Return</span></button>
-    <button data-nav="s-ai"><span class="tip">10 · Ask AI</span></button>
   </nav>
 
   <!-- ============ STICKY PHONE ============ -->
@@ -916,7 +883,7 @@ body::after{ /* grain */
                 <div class="eyebrow-s" style="margin-bottom:2px">Bandra West</div>
                 <div style="font-family:var(--f-display);font-size:20px;font-weight:600;letter-spacing:-.02em">Namaste, Aisha</div>
               </div>
-              <button class="icon-btn" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6z"/><path d="M10 21a2 2 0 0 0 4 0"/></svg></button>
+              <button class="icon-btn" data-toast="No new notifications" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6z"/><path d="M10 21a2 2 0 0 0 4 0"/></svg></button>
               <button class="icon-btn" data-go="wallet" aria-label="Wallet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7z"/></svg></button>
             </div>
             <div class="search-bar" data-go="search">
@@ -924,15 +891,15 @@ body::after{ /* grain */
               Search heritage walks, food, events…
               <span class="kbd">⌘K</span>
             </div>
-            <div class="pill-row">
-              <div class="pill">Hotels</div>
-              <div class="pill on">Activities</div>
-              <div class="pill">Concerts</div>
-              <div class="pill">Food</div>
-              <div class="pill">Heritage</div>
-              <div class="pill">Nightlife</div>
+            <div class="pill-row" data-scope>
+              <div class="pill" data-toggle-group="home-cat">Hotels</div>
+              <div class="pill on" data-toggle-group="home-cat">Activities</div>
+              <div class="pill" data-toggle-group="home-cat">Concerts</div>
+              <div class="pill" data-toggle-group="home-cat">Food</div>
+              <div class="pill" data-toggle-group="home-cat">Heritage</div>
+              <div class="pill" data-toggle-group="home-cat">Nightlife</div>
             </div>
-            <div class="sec-head"><h4>Happening now</h4><a>Live</a></div>
+            <div class="sec-head"><h4>Happening now</h4><a data-toast="Live feed refreshes every 5 minutes">Live</a></div>
             <div class="strip">
               <div class="live-card" data-go="listing">
                 <div class="thumb"><span class="live-badge"><i></i>Tonight · 8 PM</span><span class="glyph">🎻</span></div>
@@ -947,7 +914,7 @@ body::after{ /* grain */
                 <div class="info"><h5>Aer Rooftop · Sundowner</h5><p>Four Seasons Worli · ₹2,400</p></div>
               </div>
             </div>
-            <div class="sec-head"><h4>Monsoon picks</h4><a>See all</a></div>
+            <div class="sec-head"><h4>Monsoon picks</h4><a data-go="search">See all</a></div>
             <div class="card-list">
               <div class="lcard" data-go="listing">
                 <div class="deco sm"><svg viewBox="0 0 100 100"><path d="M10 70 Q50 20 90 70" stroke="rgba(255,255,255,.5)" stroke-width="1" fill="none"/><path d="M10 82 Q50 40 90 82" stroke="rgba(255,255,255,.3)" stroke-width="1" fill="none"/></svg><span class="glyph">🍲</span></div>
@@ -962,11 +929,11 @@ body::after{ /* grain */
                 <div class="info"><h5>Reality Tours · Dharavi Walk</h5><div class="meta"><span class="star">★ 4.9</span><span>611</span><span class="badge new">Editor's pick</span></div><div class="price">₹1,100 <small>/ person</small></div></div>
               </div>
             </div>
-            <div class="sec-head"><h4>This weekend</h4><a></a></div>
-            <div class="pill-row" style="padding-bottom:24px">
-              <div class="pill">🚗 Lonavala getaway</div>
-              <div class="pill">⛴️ Alibaug ferry</div>
-              <div class="pill">🎤 Comedy nights</div>
+            <div class="sec-head"><h4>This weekend</h4><a data-go="digest">Full digest</a></div>
+            <div class="pill-row" style="padding-bottom:24px" data-scope>
+              <div class="pill" data-toggle-group="weekend-idea" data-go="listing">🚗 Lonavala getaway</div>
+              <div class="pill" data-toggle-group="weekend-idea" data-go="listing">⛴️ Alibaug ferry</div>
+              <div class="pill" data-toggle-group="weekend-idea" data-go="listing">🎤 Comedy nights</div>
             </div>
           </section>
 
@@ -979,18 +946,18 @@ body::after{ /* grain */
               <input value="food tour" readonly>
             </div>
             <div class="sec-head" style="padding-top:2px"><h4 class="eyebrow-s" style="font-family:var(--f-mono);font-size:10px">Recent</h4><a></a></div>
-            <div class="pill-row" style="padding-bottom:10px">
-              <div class="pill">heritage walk colaba</div>
-              <div class="pill">elephanta caves</div>
-              <div class="pill">comedy show bandra</div>
+            <div class="pill-row" style="padding-bottom:10px" data-scope>
+              <div class="pill" data-toggle-group="recent" data-toast="Searched: heritage walk colaba">heritage walk colaba</div>
+              <div class="pill" data-toggle-group="recent" data-toast="Searched: elephanta caves">elephanta caves</div>
+              <div class="pill" data-toggle-group="recent" data-toast="Searched: comedy show bandra">comedy show bandra</div>
             </div>
-            <div class="pill-row">
-              <div class="pill on">Neighbourhood ▾</div>
-              <div class="pill">Price ▾</div>
-              <div class="pill">Date ▾</div>
-              <div class="pill">Rating ▾</div>
+            <div class="pill-row" data-scope>
+              <div class="pill on" data-toggle-group="filter">Neighbourhood ▾</div>
+              <div class="pill" data-toggle-group="filter">Price ▾</div>
+              <div class="pill" data-toggle-group="filter">Date ▾</div>
+              <div class="pill" data-toggle-group="filter">Rating ▾</div>
             </div>
-            <div class="sec-head"><h4>3 results</h4><a>Map view</a></div>
+            <div class="sec-head"><h4>3 results</h4><a data-toast="Map view coming soon">Map view</a></div>
             <div class="card-list">
               <div class="lcard" data-go="listing"><div class="deco sm"><span class="glyph">🍲</span></div><div class="info"><h5>Mohammad Ali Road Night Food Walk</h5><div class="meta"><span class="star">★ 4.8</span><span>342 · 3 hrs</span></div><div class="price">₹1,200</div></div></div>
               <div class="lcard" data-go="listing"><div class="deco sm"><span class="glyph">🥘</span></div><div class="info"><h5>Colaba Street Food Crawl</h5><div class="meta"><span class="star">★ 4.6</span><span>218 · 2.5 hrs</span></div><div class="price">₹950</div></div></div>
@@ -1004,8 +971,8 @@ body::after{ /* grain */
             <div class="hdr" style="position:absolute;top:44px;left:0;right:0;z-index:10;padding:8px 14px">
               <button class="icon-btn" data-back style="background:rgba(0,0,0,.5);backdrop-filter:blur(10px);border-color:rgba(255,255,255,.1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg></button>
               <span style="flex:1"></span>
-              <button class="icon-btn" style="background:rgba(0,0,0,.5);backdrop-filter:blur(10px);border-color:rgba(255,255,255,.1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8M16 6l-4-4-4 4M12 2v14"/></svg></button>
-              <button class="icon-btn" style="background:rgba(0,0,0,.5);backdrop-filter:blur(10px);border-color:rgba(255,255,255,.1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>
+              <button class="icon-btn" data-toast="Link copied — share on WhatsApp" style="background:rgba(0,0,0,.5);backdrop-filter:blur(10px);border-color:rgba(255,255,255,.1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8M16 6l-4-4-4 4M12 2v14"/></svg></button>
+              <button class="icon-btn heart-btn" data-heart aria-label="Save to wishlist" style="background:rgba(0,0,0,.5);backdrop-filter:blur(10px);border-color:rgba(255,255,255,.1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></button>
             </div>
             <div class="deco hero" style="margin-top:-50px;padding-top:50px">
               <svg viewBox="0 0 400 300" preserveAspectRatio="none"><path d="M0 240 Q100 180 200 210 T400 200" stroke="rgba(255,255,255,.28)" stroke-width="1" fill="none"/><path d="M0 260 Q100 210 200 230 T400 220" stroke="rgba(255,255,255,.18)" stroke-width="1" fill="none"/></svg>
@@ -1022,14 +989,19 @@ body::after{ /* grain */
               <div><span class="eyebrow-s">Language</span><span class="v">EN · HI</span></div>
               <div><span class="eyebrow-s">Cancel</span><span class="v" style="color:var(--p-success)">Free 24h</span></div>
             </div>
-            <div class="tabs"><span class="on">Overview</span><span>Included</span><span>Reviews</span><span>Map</span></div>
+            <div class="tabs" data-scope>
+              <span class="on" data-toggle-group="listing-tab">Overview</span>
+              <span data-toggle-group="listing-tab">Included</span>
+              <span data-toggle-group="listing-tab">Reviews</span>
+              <span data-toggle-group="listing-tab">Map</span>
+            </div>
             <p class="body-copy">Walk Mumbai's most famous night food street with a local guide — eight stops from seekh kebabs to malpua, ending at a century-old Irani bakery. Small groups only, so every question gets answered and every stall gets its story told.</p>
             <div class="op-row">
               <div class="op-avatar">BF</div>
               <div class="t"><b>Hosted by Bombay Food Trails</b><small>● Usually replies in 10 min</small></div>
-              <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
+              <button class="icon-btn" data-toast="Message sent to Bombay Food Trails"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
             </div>
-            <div class="chip-ask" data-open-chat><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM12 8v4l3 2"/></svg>Ask AI about this experience</div>
+            <div class="chip-ask" data-toast="Message sent to Bombay Food Trails"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Message the operator</div>
             <div style="height:96px"></div>
             <div class="sticky-bar">
               <div class="amt"><span class="eyebrow-s">From</span><b class="mono">₹1,200</b></div>
@@ -1042,27 +1014,27 @@ body::after{ /* grain */
             <div class="statusbar"><span>9:41</span><span class="icons"><span class="sb-bat"><i></i></span></span></div>
             <div class="hdr"><button class="icon-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg></button><h3>Select date &amp; time</h3></div>
             <div class="eyebrow-s" style="padding:0 20px 8px">August 2026</div>
-            <div class="week">
-              <div class="day sold"><div class="d">Thu</div><div class="n mono">14</div><div class="s"></div></div>
-              <div class="day avail"><div class="d">Fri</div><div class="n mono">15</div><div class="s"></div></div>
-              <div class="day avail sel"><div class="d">Sat</div><div class="n mono">16</div><div class="s"></div></div>
-              <div class="day few"><div class="d">Sun</div><div class="n mono">17</div><div class="s"></div></div>
-              <div class="day avail"><div class="d">Mon</div><div class="n mono">18</div><div class="s"></div></div>
-              <div class="day avail"><div class="d">Tue</div><div class="n mono">19</div><div class="s"></div></div>
-              <div class="day avail"><div class="d">Wed</div><div class="n mono">20</div><div class="s"></div></div>
+            <div class="week" data-scope>
+              <div class="day sold" data-value="14"><div class="d">Thu</div><div class="n mono">14</div><div class="s"></div></div>
+              <div class="day avail" data-toggle-group="day" data-value="15"><div class="d">Fri</div><div class="n mono">15</div><div class="s"></div></div>
+              <div class="day avail sel" data-toggle-group="day" data-value="16"><div class="d">Sat</div><div class="n mono">16</div><div class="s"></div></div>
+              <div class="day few" data-toggle-group="day" data-value="17"><div class="d">Sun</div><div class="n mono">17</div><div class="s"></div></div>
+              <div class="day avail" data-toggle-group="day" data-value="18"><div class="d">Mon</div><div class="n mono">18</div><div class="s"></div></div>
+              <div class="day avail" data-toggle-group="day" data-value="19"><div class="d">Tue</div><div class="n mono">19</div><div class="s"></div></div>
+              <div class="day avail" data-toggle-group="day" data-value="20"><div class="d">Wed</div><div class="n mono">20</div><div class="s"></div></div>
             </div>
             <div class="sec-head"><h4>Slots · Sat 16</h4><a class="mono">4 available</a></div>
-            <div class="slot-grid">
-              <div class="slot sel avail"><div class="t mono">7:00 PM</div><div class="s">Available</div></div>
-              <div class="slot few"><div class="t mono">8:30 PM</div><div class="s">3 spots left</div></div>
+            <div class="slot-grid" data-scope>
+              <div class="slot sel avail" data-toggle-group="slot" data-value="7:00 PM"><div class="t mono">7:00 PM</div><div class="s">Available</div></div>
+              <div class="slot few" data-toggle-group="slot" data-value="8:30 PM"><div class="t mono">8:30 PM</div><div class="s">3 spots left</div></div>
               <div class="slot sold"><div class="t mono">6:00 PM</div><div class="s">Sold out</div></div>
-              <div class="slot avail"><div class="t mono">9:30 PM</div><div class="s">Available</div></div>
+              <div class="slot avail" data-toggle-group="slot" data-value="9:30 PM"><div class="t mono">9:30 PM</div><div class="s">Available</div></div>
             </div>
             <div class="stepper-row">
               <div><div style="font-size:13.5px;font-weight:600">Adults</div><div style="font-size:11px;color:var(--p-muted);margin-top:2px">Age 13+</div></div>
-              <div class="stepper"><button aria-label="Decrease">−</button><b class="mono">4</b><button aria-label="Increase">+</button></div>
+              <div class="stepper"><button aria-label="Decrease" data-step="-" data-min="1">−</button><b class="mono" data-guests-count>4</b><button aria-label="Increase" data-step="+" data-max="12">+</button></div>
             </div>
-            <div class="total-row"><span>4 guests × ₹1,200</span><b class="mono">₹4,800</b></div>
+            <div class="total-row"><span data-line="guests-x-price">4 guests × ₹1,200</span><b class="mono" data-line="base">₹4,800</b></div>
             <div style="padding:14px 20px 30px"><button class="btn btn-primary btn-block" data-go="checkout">Continue to payment</button></div>
           </section>
 
@@ -1072,17 +1044,19 @@ body::after{ /* grain */
             <div class="hdr"><button class="icon-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg></button><h3>Checkout</h3><span class="eyebrow-s mono">Step 3 of 3</span></div>
             <div class="field"><label class="eyebrow-s">Contact</label><div class="val">Aisha Kulkarni · +91 98••••••41</div></div>
             <div class="sec-head" style="padding-top:2px"><h4 class="eyebrow-s" style="font-family:var(--f-mono);font-size:10px">Payment method</h4><a></a></div>
-            <div class="pay-opt sel"><div class="r"></div><div class="glyph">UPI</div><div class="lbl">UPI QR<small>Google Pay · PhonePe · Paytm · BHIM</small></div></div>
-            <div class="pay-opt"><div class="r"></div><div class="glyph" style="background:var(--p-success);color:#04140C">₹</div><div class="lbl">Book now, pay later<small>Simpl · LazyPay</small></div></div>
-            <div class="pay-opt"><div class="r"></div><div class="glyph" style="background:var(--p-surface-2);color:var(--p-text)">💳</div><div class="lbl">Card<small>Visa · Mastercard · Amex</small></div></div>
+            <div data-scope>
+              <div class="pay-opt sel" data-toggle-group="pay" data-value="upi"><div class="r"></div><div class="glyph">UPI</div><div class="lbl">UPI QR<small>Google Pay · PhonePe · Paytm · BHIM</small></div></div>
+              <div class="pay-opt" data-toggle-group="pay" data-value="bnpl"><div class="r"></div><div class="glyph" style="background:var(--p-success);color:#04140C">₹</div><div class="lbl">Book now, pay later<small>Simpl · LazyPay</small></div></div>
+              <div class="pay-opt" data-toggle-group="pay" data-value="card"><div class="r"></div><div class="glyph" style="background:var(--p-surface-2);color:var(--p-text)">💳</div><div class="lbl">Card<small>Visa · Mastercard · Amex</small></div></div>
+            </div>
             <div class="breakdown">
-              <div class="bd-row"><span>4 × Food walk</span><span class="mono">₹4,800</span></div>
-              <div class="bd-row"><span>Taxes &amp; fees</span><span class="mono">₹240</span></div>
-              <div class="bd-row"><span>Insider points earned</span><span class="mono" style="color:var(--p-accent)">+240 pts</span></div>
-              <div class="bd-row total"><span>Total</span><span class="mono">₹5,040</span></div>
+              <div class="bd-row"><span data-line="guests-x-price">4 × Food walk (₹1,200)</span><span class="mono" data-line="base">₹4,800</span></div>
+              <div class="bd-row"><span>Taxes &amp; fees</span><span class="mono" data-line="tax">₹240</span></div>
+              <div class="bd-row"><span>Insider points earned</span><span class="mono" style="color:var(--p-accent)" data-line="points">+240 pts</span></div>
+              <div class="bd-row total"><span>Total</span><span class="mono" data-line="total">₹5,040</span></div>
             </div>
             <div class="cancel-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>Free cancellation until 24 hours before.</div>
-            <div style="padding:6px 20px 30px"><button class="btn btn-primary btn-block" data-go="confirm">Confirm &amp; pay <span class="mono">₹5,040</span></button></div>
+            <div style="padding:6px 20px 30px"><button class="btn btn-primary btn-block" data-go="confirm" data-line="confirm-btn">Confirm &amp; pay <span class="mono" data-line="total">₹5,040</span></button></div>
           </section>
 
           <!-- ========== 07 CONFIRMATION ========== -->
@@ -1099,7 +1073,7 @@ body::after{ /* grain */
                 <div class="ev-meta"><span>4 guests</span><span>·</span><span class="mono">#MI7241</span></div>
               </div>
               <div class="confirm-actions">
-                <button class="btn btn-ghost" style="flex:1"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 3A5.5 5.5 0 0 0 12 8.5 5.5 5.5 0 0 0 6.5 3 5.5 5.5 0 0 0 1 8.5c0 5.5 11 12.5 11 12.5s11-7 11-12.5A5.5 5.5 0 0 0 17.5 3z" opacity=".2"/><path d="M20 4c-1-1-3-1-4 0l-1.7 1.7L20 11.4l1.7-1.7c1-1 1-3 0-4L20 4zM12.5 7.5 3 17v4h4l9.5-9.5-4-4z" fill="none" stroke="currentColor" stroke-width="2"/></svg>Share · WhatsApp</button>
+                <button class="btn btn-ghost" data-toast="Booking link shared on WhatsApp" style="flex:1"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8M16 6l-4-4-4 4M12 2v14"/></svg>Share · WhatsApp</button>
                 <button class="btn btn-primary" data-go="wallet" style="flex:1">View ticket</button>
               </div>
               <div class="meet-note"><b>Meeting point</b> Crawford Market gate, Mohammad Ali Road — guide holds an orange flag.</div>
@@ -1123,20 +1097,20 @@ body::after{ /* grain */
             </div>
             <div class="sec-head"><h4>What to bring</h4><a class="mono">4 of 6</a></div>
             <div class="chk-list">
-              <label class="chk done"><i></i>Comfortable walking shoes</label>
-              <label class="chk done"><i></i>Light jacket or umbrella</label>
-              <label class="chk done"><i></i>Cash for extras (₹500)</label>
-              <label class="chk done"><i></i>Water bottle</label>
-              <label class="chk"><i></i>ID for entry</label>
-              <label class="chk"><i></i>Appetite</label>
+              <label class="chk done" data-toggle><i></i>Comfortable walking shoes</label>
+              <label class="chk done" data-toggle><i></i>Light jacket or umbrella</label>
+              <label class="chk done" data-toggle><i></i>Cash for extras (₹500)</label>
+              <label class="chk done" data-toggle><i></i>Water bottle</label>
+              <label class="chk" data-toggle><i></i>ID for entry</label>
+              <label class="chk" data-toggle><i></i>Appetite</label>
             </div>
-            <div class="sec-head"><h4>Meeting point</h4><a>Directions</a></div>
-            <div class="map-card">
+            <div class="sec-head"><h4>Meeting point</h4><a data-toast="Opening in Google Maps…">Directions</a></div>
+            <div class="map-card" data-toast="Opening in Google Maps…">
               <svg viewBox="0 0 300 140" preserveAspectRatio="none"><path d="M0 100 Q60 80 120 90 T240 70 T300 60" stroke="rgba(255,255,255,.15)" stroke-width="1" fill="none"/><path d="M30 20 L60 40 L100 30 L140 60 L180 50 L220 80 L280 70" stroke="rgba(255,255,255,.1)" stroke-width="1" fill="none"/><circle cx="160" cy="70" r="8" fill="var(--p-accent)"/><circle cx="160" cy="70" r="14" fill="none" stroke="var(--p-accent)" stroke-width="1" opacity=".4"/></svg>
               <div class="map-pill">Crawford Market gate · 18 min drive</div>
             </div>
             <div style="display:flex;gap:10px;padding:14px 20px 30px">
-              <button class="btn btn-ghost" style="flex:1"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Message guide</button>
+              <button class="btn btn-ghost" data-toast="WhatsApp message sent to guide" style="flex:1"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Message guide</button>
               <button class="btn btn-primary" style="flex:1" data-go="wallet">View ticket</button>
             </div>
           </section>
@@ -1170,11 +1144,11 @@ body::after{ /* grain */
               <div class="next-item"><span class="mono">5</span><div><b>Noor Mohammadi</b><small>Chicken sanju baba</small></div></div>
               <div class="next-item"><span class="mono">6</span><div><b>Suleiman Usman</b><small>Malpua &amp; firni</small></div></div>
             </div>
-            <div class="sec-head"><h4>Nearby now</h4><a>Add to trip</a></div>
+            <div class="sec-head"><h4>Nearby now</h4><a data-toast="Added chai stop to your trip">Add to trip</a></div>
             <div class="card-list">
-              <div class="lcard"><div class="deco sm"><span class="glyph">☕</span></div><div class="info"><h5>Kyani &amp; Co · post-walk chai</h5><div class="meta"><span>4 min walk</span><span>·</span><span>Open till 11 PM</span></div><div class="price">₹80 <small>/ chai</small></div></div></div>
+              <div class="lcard" data-toast="Added Kyani &amp; Co to your trip"><div class="deco sm"><span class="glyph">☕</span></div><div class="info"><h5>Kyani &amp; Co · post-walk chai</h5><div class="meta"><span>4 min walk</span><span>·</span><span>Open till 11 PM</span></div><div class="price">₹80 <small>/ chai</small></div></div></div>
             </div>
-            <div style="padding:6px 20px 30px"><button class="btn btn-primary btn-block"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 5l7 7-7 7M20 12H4"/></svg>Next stop · Sarvi</button></div>
+            <div style="padding:6px 20px 30px"><button class="btn btn-primary btn-block" data-toast="Advanced to Stop 4 · Sarvi"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 5l7 7-7 7M20 12H4"/></svg>Next stop · Sarvi</button></div>
           </section>
 
           <!-- ========== 10 POST-TRIP REVIEW ========== -->
@@ -1187,20 +1161,20 @@ body::after{ /* grain */
               <div style="font-size:12.5px;color:var(--p-muted);margin-top:4px">by Bombay Food Trails</div>
             </div>
             <div class="rate-row">
-              <span class="star-btn on">★</span><span class="star-btn on">★</span><span class="star-btn on">★</span><span class="star-btn on">★</span><span class="star-btn on">★</span>
+              <span class="star-btn on" data-star="1">★</span><span class="star-btn on" data-star="2">★</span><span class="star-btn on" data-star="3">★</span><span class="star-btn on" data-star="4">★</span><span class="star-btn on" data-star="5">★</span>
             </div>
-            <div class="rate-caption">Loved it</div>
+            <div class="rate-caption" data-rate-caption>Loved it</div>
             <div class="sec-head"><h4>What stood out?</h4><a></a></div>
             <div class="tag-cloud">
-              <div class="tag on">Guide's stories</div>
-              <div class="tag on">Value for money</div>
-              <div class="tag">Small group</div>
-              <div class="tag on">Off the tourist path</div>
-              <div class="tag">Vegetarian options</div>
-              <div class="tag">Pace</div>
-              <div class="tag">Meeting point</div>
+              <div class="tag on" data-toggle>Guide's stories</div>
+              <div class="tag on" data-toggle>Value for money</div>
+              <div class="tag" data-toggle>Small group</div>
+              <div class="tag on" data-toggle>Off the tourist path</div>
+              <div class="tag" data-toggle>Vegetarian options</div>
+              <div class="tag" data-toggle>Pace</div>
+              <div class="tag" data-toggle>Meeting point</div>
             </div>
-            <div class="photo-prompt">
+            <div class="photo-prompt" data-toast="Photo upload — opens camera">
               <div class="pp-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="4"/><path d="M9 6l1.5-2h3L15 6"/></svg></div>
               <div><b>Add a photo, earn <span style="color:var(--p-accent)">+50 pts</span></b><small>Only your best shot — helps future travellers.</small></div>
               <button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg></button>
@@ -1211,7 +1185,7 @@ body::after{ /* grain */
           <!-- ========== 11 WALLET ========== -->
           <section class="app-screen" id="scr-wallet">
             <div class="statusbar"><span>9:41</span><span class="icons"><span class="sb-bat"><i></i></span></span></div>
-            <div class="hdr"><button class="icon-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg></button><h3>Tickets</h3><button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 5v14l4-4 4 4V5"/></svg></button></div>
+            <div class="hdr"><button class="icon-btn" data-back><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m15 18-6-6 6-6"/></svg></button><h3>Tickets</h3><button class="icon-btn" data-toast="Added to Apple Wallet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 5v14l4-4 4 4V5"/></svg></button></div>
             <div class="ticket">
               <div class="ticket-top">
                 <div class="deco sm" style="width:48px;height:48px"><span class="glyph" style="font-size:20px">🍲</span></div>
@@ -1221,7 +1195,7 @@ body::after{ /* grain */
               <div class="ticket-bottom">
                 <div class="qr-mini"></div>
                 <div style="flex:1"><span class="offline-badge">● Offline ready</span><div class="mono" style="font-size:10.5px;color:var(--p-muted);margin-top:4px">#MI7241 · 4 guests</div></div>
-                <button class="btn btn-ghost" style="padding:9px 14px;font-size:11.5px">Directions</button>
+                <button class="btn btn-ghost" data-toast="Opening in Google Maps…" style="padding:9px 14px;font-size:11.5px">Directions</button>
               </div>
             </div>
             <div class="ticket">
@@ -1233,7 +1207,7 @@ body::after{ /* grain */
               <div class="ticket-bottom">
                 <div class="qr-mini"></div>
                 <div style="flex:1"><span class="offline-badge">● Offline ready</span><div class="mono" style="font-size:10.5px;color:var(--p-muted);margin-top:4px">#MI7188 · 2 guests</div></div>
-                <button class="btn btn-ghost" style="padding:9px 14px;font-size:11.5px">Directions</button>
+                <button class="btn btn-ghost" data-toast="Opening in Google Maps…" style="padding:9px 14px;font-size:11.5px">Directions</button>
               </div>
             </div>
           </section>
@@ -1242,7 +1216,7 @@ body::after{ /* grain */
           <section class="app-screen" id="scr-trips" data-tab="trips">
             <div class="statusbar"><span>9:41</span><span class="icons"><span class="sb-bat"><i></i></span></span></div>
             <div class="hdr"><h3>Trips</h3></div>
-            <div class="trip-tabs"><div class="trip-tab on">Upcoming</div><div class="trip-tab">Past</div><div class="trip-tab">Cancelled</div></div>
+            <div class="trip-tabs" data-scope><div class="trip-tab on" data-toggle-group="trip-tab">Upcoming</div><div class="trip-tab" data-toggle-group="trip-tab">Past</div><div class="trip-tab" data-toggle-group="trip-tab">Cancelled</div></div>
             <div class="card-list" style="padding-top:0">
               <div class="lcard" data-go="wallet"><div class="deco sm"><span class="glyph">🍲</span></div><div class="info"><h5>Mohammad Ali Road Food Walk</h5><div class="meta"><span class="mono">Sat 16 Aug · 7:00 PM</span></div><span class="status-tag ok">● Confirmed</span></div></div>
               <div class="lcard" data-go="wallet"><div class="deco sm"><span class="glyph">⛵</span></div><div class="info"><h5>Elephanta Caves Ferry &amp; Guide</h5><div class="meta"><span class="mono">Sun 24 Aug · 9:30 AM</span></div><span class="status-tag ok">● Confirmed</span></div></div>
@@ -1256,7 +1230,7 @@ body::after{ /* grain */
           <!-- ========== 13 WISHLIST ========== -->
           <section class="app-screen" id="scr-wishlist" data-tab="wishlist">
             <div class="statusbar"><span>9:41</span><span class="icons"><span class="sb-bat"><i></i></span></span></div>
-            <div class="hdr"><h3>Saved</h3><button class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button></div>
+            <div class="hdr"><h3>Saved</h3><button class="icon-btn" data-toast="New collection created"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button></div>
             <div class="collection">
               <div class="col-head"><b>Monsoon plans</b><span class="mono">2 saved</span></div>
               <div class="card-list" style="padding:0">
@@ -1291,11 +1265,11 @@ body::after{ /* grain */
             <div class="perk-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 15 8l6 1-4.5 4.5L17.5 20 12 16.7 6.5 20l1-6.5L3 9l6-1z"/></svg><div><b>Early access to flash sales</b><small>Notified 2 hours before Explorer tier</small></div></div>
             <div class="refer-card">
               <div style="flex:1"><small>Invite a friend, both get ₹200 off</small><div class="code mono">AISHA200</div></div>
-              <button class="btn btn-primary" style="padding:10px 14px;font-size:12px">Copy</button>
+              <button class="btn btn-primary" data-copy="AISHA200" style="padding:10px 14px;font-size:12px">Copy</button>
             </div>
             <div class="menu-list">
-              <div class="menu-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg><span>Payment methods</span><small>›</small></div>
-              <div class="menu-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h14M5 8a4 4 0 1 1 8 0M5 8v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8"/></svg><span>Language</span><small class="mono">English</small></div>
+              <div class="menu-row" data-toast="Payment methods · UPI · Card ending 4141"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg><span>Payment methods</span><small>›</small></div>
+              <div class="menu-row" data-toast="Language: English, Hindi, Marathi coming soon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h14M5 8a4 4 0 1 1 8 0M5 8v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8"/></svg><span>Language</span><small class="mono">English</small></div>
               <div class="menu-row" data-go="digest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6z"/></svg><span>Weekly digest</span><small>See sample</small></div>
             </div>
             <div style="height:20px"></div>
@@ -1364,31 +1338,8 @@ body::after{ /* grain */
           <button class="tabbtn" data-tabgo="profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4.5 5-6 8-6s6.5 1.5 8 6"/></svg><span>Profile</span></button>
         </div>
 
-        <button class="fab" id="fabBtn" data-open-chat aria-label="Open AI concierge">
-          <span class="pulse"></span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 12a8 8 0 1 1-3.05-6.28M20 4v5h-5"/></svg>
-        </button>
-
-        <!-- ========== CHAT SHEET ========== -->
-        <div class="sheet-backdrop" id="sheetBackdrop"></div>
-        <div class="chat-sheet" id="chatSheet" role="dialog" aria-label="Mumbai Insider AI">
-          <div class="grabber"></div>
-          <div class="chat-head"><span class="live-tag" style="background:rgba(46,204,143,.14);color:var(--p-success)"><i style="background:var(--p-success)"></i>Online</span><b>Mumbai Insider AI</b><button class="icon-btn" id="chatClose"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
-          <div class="chat-body">
-            <div class="bubble b-user">Fun food tour this weekend for me and 3 friends, under ₹1,500 per person</div>
-            <div class="bubble b-ai">Great taste — three food tours this Saturday match your brief:</div>
-            <div class="b-cards">
-              <div class="b-card"><div class="thumb"><span>🍲</span></div><div class="info"><h6>Mohammad Ali Road Food Walk</h6><p>★ 4.8 · 342 · 3 hrs · Free cancel</p></div><div class="p mono">₹1,200</div></div>
-              <div class="b-card"><div class="thumb"><span>🥘</span></div><div class="info"><h6>Colaba Street Food Crawl</h6><p>★ 4.6 · 218 · 2.5 hrs · Veg options</p></div><div class="p mono">₹950</div></div>
-              <div class="b-card"><div class="thumb"><span>☕</span></div><div class="info"><h6>Irani Café Heritage Tour</h6><p>★ 4.9 · 89 · 2 hrs · Small group</p></div><div class="p mono">₹1,400</div></div>
-            </div>
-            <div class="bubble b-ai">Mohammad Ali Road walk is most loved — 7 PM, 8 stops including seekh kebabs, biryani and malpua. Book 4 spots?</div>
-            <div class="bubble b-user">Yes, book it</div>
-            <div class="bubble b-ai">Done ✓ 4 spots · Saturday · 7 PM. QR ticket is in your Wallet, WhatsApp confirmation on the way.</div>
-            <div style="padding:2px 0 6px"><button class="btn btn-primary" id="chatViewTickets" style="padding:10px 16px;font-size:12.5px">View ticket</button></div>
-          </div>
-          <div class="chat-input"><div class="box">Ask me anything about Mumbai…</div><button aria-label="Send"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 11.5 20 4l-6 17-3-7-8-2.5z"/></svg></button></div>
-        </div>
+        <!-- toast (for demo-only actions like copy, share) -->
+        <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
         <div class="home-indicator"></div>
       </div>
@@ -1462,19 +1413,13 @@ body::after{ /* grain */
       <div class="callout"><b>Weekly</b>&nbsp;· one push, three ideas, one tap to book</div>
     </section>
 
-    <section class="stage-block" id="s-ai" data-screen="home" data-caption="AI concierge · always available">
-      <div class="chapter"><b>10</b>&nbsp;·&nbsp;Ask AI</div>
-      <h2>The whole app, <em>in a conversation.</em></h2>
-      <p>Every screen has the AI one tap away. It searches real inventory, returns bookable cards inline, and closes the loop in-chat. This isn't a bolt-on chatbot — it's an alternative interface to the same booking engine.</p>
-      <div class="callout"><b>4×</b>&nbsp;conversion vs. unassisted browsing</div>
-    </section>
-
   </div>
 
 </main>
 
 <script>
 (function(){
+  'use strict';
   var viewport = document.getElementById('viewport');
   var caption = document.getElementById('phoneCaption');
   var screens = Array.prototype.slice.call(document.querySelectorAll('.app-screen'));
@@ -1484,7 +1429,7 @@ body::after{ /* grain */
   var TAB_IDS = ['home','search','wishlist','trips','profile'];
   var stack = ['onboard'];
 
-  function idFor(name){ return 'scr-' + name; }
+  var idFor = function(name){ return 'scr-' + name; };
 
   function showScreen(name, opts){
     opts = opts || {};
@@ -1497,7 +1442,6 @@ body::after{ /* grain */
     el.scrollTop = 0;
     if(opts.caption) caption.textContent = opts.caption;
   }
-
   function go(name){
     if(!document.getElementById(idFor(name))) return;
     stack.push(name);
@@ -1506,16 +1450,53 @@ body::after{ /* grain */
   function tabGo(name){ stack = [name]; showScreen(name); }
   function back(){ if(stack.length > 1){ stack.pop(); showScreen(stack[stack.length-1]); } }
 
+  // ------- toast -------
+  var toast = document.getElementById('toast');
+  var toastTimer;
+  function showToast(msg){
+    if(!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toast.classList.remove('show'); }, 2200);
+  }
+
+  // ------- pricing state (shared across date/time + checkout) -------
+  var PRICE_PER_GUEST = 1200;
+  var TAX_RATE = 0.05;
+  var state = { guests: 4, selectedDay: '16', selectedSlot: '7:00 PM', selectedPay: 'upi' };
+
+  function fmtRs(n){ return '₹' + n.toLocaleString('en-IN'); }
+  function recomputeTotals(){
+    var base = PRICE_PER_GUEST * state.guests;
+    var tax = Math.round(base * TAX_RATE);
+    var points = Math.round(base * 0.05);
+    var total = base + tax;
+    document.querySelectorAll('[data-line="guests-x-price"]').forEach(function(el){ el.textContent = state.guests + ' guests × ₹1,200'; });
+    document.querySelectorAll('[data-line="base"]').forEach(function(el){ el.textContent = fmtRs(base); });
+    document.querySelectorAll('[data-line="tax"]').forEach(function(el){ el.textContent = fmtRs(tax); });
+    document.querySelectorAll('[data-line="points"]').forEach(function(el){ el.textContent = '+' + points + ' pts'; });
+    document.querySelectorAll('[data-line="total"]').forEach(function(el){ el.textContent = fmtRs(total); });
+    document.querySelectorAll('[data-line="confirm-btn"]').forEach(function(el){
+      el.innerHTML = 'Confirm &amp; pay <span class="mono">' + fmtRs(total) + '</span>';
+    });
+    var g = document.querySelector('[data-guests-count]');
+    if(g) g.textContent = state.guests;
+  }
+
   // ------- click routing (delegated) -------
   document.addEventListener('click', function(e){
-    var chatEl = e.target.closest('[data-open-chat]');
-    if(chatEl){ openChat(); return; }
-    var goEl = e.target.closest('[data-go]');
-    if(goEl){ go(goEl.getAttribute('data-go')); return; }
+    // toast (visual-only actions)
+    var toastEl = e.target.closest('[data-toast]');
+    if(toastEl){ showToast(toastEl.getAttribute('data-toast')); return; }
+
+    // core navigation
     var backEl = e.target.closest('[data-back]');
     if(backEl){ back(); return; }
     var tabEl = e.target.closest('[data-tabgo]');
     if(tabEl){ tabGo(tabEl.getAttribute('data-tabgo')); return; }
+    var goEl = e.target.closest('[data-go]');
+    if(goEl){ go(goEl.getAttribute('data-go')); return; }
     var navEl = e.target.closest('.dotnav button[data-nav]');
     if(navEl){
       var id = navEl.getAttribute('data-nav');
@@ -1523,10 +1504,91 @@ body::after{ /* grain */
       if(target){ target.scrollIntoView({behavior:'smooth', block:'start'}); }
       return;
     }
+
+    // ---- interactive controls (single-select toggles) ----
+    // category pills, filter pills, tabs, trip tabs, payment options, day picker
+    var toggleEl = e.target.closest('[data-toggle-group]');
+    if(toggleEl){
+      var group = toggleEl.getAttribute('data-toggle-group');
+      var scope = toggleEl.closest('[data-scope]') || document;
+      scope.querySelectorAll('[data-toggle-group="'+group+'"]').forEach(function(el){ el.classList.remove('on','sel'); });
+      toggleEl.classList.add(toggleEl.classList.contains('slot')||toggleEl.classList.contains('day')||toggleEl.classList.contains('pay-opt') ? 'sel' : 'on');
+      // day/slot side-effects
+      if(toggleEl.classList.contains('day')){
+        state.selectedDay = toggleEl.getAttribute('data-value') || '';
+      } else if(toggleEl.classList.contains('slot')){
+        if(toggleEl.classList.contains('sold')){ toggleEl.classList.remove('sel'); return; }
+        state.selectedSlot = toggleEl.getAttribute('data-value') || '';
+      } else if(toggleEl.classList.contains('pay-opt')){
+        state.selectedPay = toggleEl.getAttribute('data-value') || 'upi';
+      }
+      return;
+    }
+
+    // multi-select toggles (tags, checklist items)
+    var multiEl = e.target.closest('[data-toggle]');
+    if(multiEl){
+      multiEl.classList.toggle('on');
+      multiEl.classList.toggle('done');
+      return;
+    }
+
+    // wishlist heart (single-item toggle)
+    var heartEl = e.target.closest('[data-heart]');
+    if(heartEl){
+      heartEl.classList.toggle('on');
+      showToast(heartEl.classList.contains('on') ? 'Saved to wishlist' : 'Removed from wishlist');
+      return;
+    }
+
+    // stepper +/-
+    var stepper = e.target.closest('[data-step]');
+    if(stepper){
+      var dir = stepper.getAttribute('data-step');
+      var min = parseInt(stepper.getAttribute('data-min') || '1', 10);
+      var max = parseInt(stepper.getAttribute('data-max') || '12', 10);
+      var next = state.guests + (dir === '+' ? 1 : -1);
+      if(next < min) next = min;
+      if(next > max) next = max;
+      state.guests = next;
+      recomputeTotals();
+      return;
+    }
+
+    // star rating
+    var starEl = e.target.closest('[data-star]');
+    if(starEl){
+      var v = parseInt(starEl.getAttribute('data-star'), 10);
+      var container = starEl.parentElement;
+      container.querySelectorAll('[data-star]').forEach(function(s){
+        var sv = parseInt(s.getAttribute('data-star'), 10);
+        s.classList.toggle('on', sv <= v);
+      });
+      var cap = document.querySelector('[data-rate-caption]');
+      if(cap){
+        var caps = ['', 'Not great', 'It was okay', 'Good', 'Really good', 'Loved it'];
+        cap.textContent = caps[v] || '';
+      }
+      return;
+    }
+
+    // copy referral
+    var copyEl = e.target.closest('[data-copy]');
+    if(copyEl){
+      var text = copyEl.getAttribute('data-copy');
+      if(navigator.clipboard) navigator.clipboard.writeText(text).catch(function(){});
+      showToast('Copied ' + text + ' to clipboard');
+      return;
+    }
+
+    // toggles (perm switches)
+    var permEl = e.target.closest('.perm-toggle');
+    if(permEl){ permEl.classList.toggle('on'); return; }
   });
 
   // ------- initial state -------
   showScreen('onboard', {caption:'Onboarding · first open'});
+  recomputeTotals();
 
   // ------- scroll → screen sync -------
   var currentStage = 's-open';
@@ -1541,14 +1603,11 @@ body::after{ /* grain */
     showScreen(scr, {caption:cap});
     stageBlocks.forEach(function(b){ b.classList.toggle('in-view', b === block); });
     navBtns.forEach(function(n){ n.classList.toggle('on', n.getAttribute('data-nav') === id); });
-    // trigger notification cues at the right beats
     if(id === 's-antic'){ scheduleBanner('Your food walk is tomorrow at 7 PM. Weather looks light-rain — tap for meeting point.', 'countdown', 'yesterday'); }
     else if(id === 's-ret'){ scheduleBanner('This weekend in Mumbai — three curated picks handpicked for you.', 'digest', 'Fri 9:00 AM'); }
   }
-  var observer;
   if('IntersectionObserver' in window){
-    observer = new IntersectionObserver(function(entries){
-      // pick the entry most in view
+    var observer = new IntersectionObserver(function(entries){
       var best = null;
       entries.forEach(function(en){
         if(en.isIntersecting){
@@ -1559,7 +1618,7 @@ body::after{ /* grain */
     }, {rootMargin:'-40% 0px -40% 0px', threshold:[0,.25,.5,.75,1]});
     stageBlocks.forEach(function(b){ observer.observe(b); });
   }
-  stageBlocks[0].classList.add('in-view');
+  if(stageBlocks[0]) stageBlocks[0].classList.add('in-view');
 
   // ------- push notification banner -------
   var banner = document.getElementById('pushBanner');
@@ -1579,22 +1638,11 @@ body::after{ /* grain */
         banner.classList.remove('show');
         go(targetScreen);
       };
-      bannerTimer = setTimeout(function(){ banner.classList.remove('show'); }, 4200);
-    }, 500);
+      bannerTimer = setTimeout(function(){ banner.classList.remove('show'); }, 4400);
+    }, 450);
   }
 
-  // ------- chat sheet -------
-  var sheet = document.getElementById('chatSheet');
-  var backdrop = document.getElementById('sheetBackdrop');
-  var closeBtn = document.getElementById('chatClose');
-  var viewTix = document.getElementById('chatViewTickets');
-  function openChat(){ sheet.classList.add('show'); backdrop.classList.add('show'); }
-  function closeChat(){ sheet.classList.remove('show'); backdrop.classList.remove('show'); }
-  closeBtn.addEventListener('click', closeChat);
-  backdrop.addEventListener('click', closeChat);
-  viewTix.addEventListener('click', function(){ closeChat(); go('wallet'); });
-
-  // ------- keyboard shortcut for search bar -------
+  // ------- keyboard shortcut for search -------
   document.addEventListener('keydown', function(e){
     if((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k'){
       e.preventDefault();
