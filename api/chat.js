@@ -45,13 +45,23 @@ module.exports = async (req, res) => {
     buildUserContext(token),
   ]);
 
+  // Mood-first concierge (sub-project 1/6): a lightweight keyword scan, not
+  // an LLM tool call — deterministic and never blocks the reply on failure.
+  // Persisted in the background (shows up next turn via ACCOUNT CONTEXT) and
+  // also injected live below so THIS reply can already use it.
+  let liveVibe = null;
+  if (account.userId) {
+    liveVibe = extractVibe(message, catalog.listings);
+    if (liveVibe) persistVibe(token, account.userId, liveVibe).catch(err => console.error('persistVibe', err));
+  }
+
   const cleanHistory = history
     .filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string')
     .slice(-MAX_HISTORY_TURNS)
     .map(m => ({ role: m.role, content: m.content.slice(0, MAX_MESSAGE_LEN) }));
 
   const messages = [
-    { role: 'system', content: systemPrompt(catalog.text, account.text) },
+    { role: 'system', content: systemPrompt(catalog.text, account.text, liveVibe) },
     ...cleanHistory,
     { role: 'user', content: message },
   ];
@@ -135,6 +145,49 @@ function extractCards(reply, listings, bookings) {
   return cards;
 }
 
+// Mood-first concierge (sub-project 1/6): deterministic keyword matching
+// instead of an LLM tool call — no dependency on the model reliably emitting
+// structured output. See docs/superpowers/specs/2026-08-19-mood-first-ai-concierge-design.md
+const MOOD_PATTERNS = [
+  ['foodie', /food|\beat(ing)?\b|dining|restaurant|thali|street food|hungry/i],
+  ['culture', /culture|heritage|museum|history|temple|spiritual|dargah/i],
+  ['adventure', /adventure|trek|hik(e|ing)|thrill|waterfall|rappel/i],
+  ['date_night', /date night|romantic|\bdate\b/i],
+  ['social', /\bsocial\b|meet people|meetup|make friends/i],
+  ['creative', /creative|\bart\b|craft|pottery|\bworkshop\b/i],
+  ['relax', /relax|chill|calm|peaceful|wellness|\byoga\b|meditat/i],
+  ['party', /\bparty\b|nightlife|\bclub\b/i],
+  ['learn', /\blearn\b|educational/i],
+];
+function extractVibe(message, listings) {
+  const lower = message.toLowerCase();
+  const moods = MOOD_PATTERNS.filter(([, re]) => re.test(lower)).map(([m]) => m);
+  const knownNeighbourhoods = Array.from(new Set(listings.map(l => l.neighbourhood).filter(Boolean)));
+  const neighbourhood = knownNeighbourhoods.find(n => lower.includes(n.toLowerCase())) || null;
+  if (!moods.length && !neighbourhood) return null;
+  return { moods, neighbourhood };
+}
+async function persistVibe(token, userId, vibe) {
+  const headers = { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
+  const currentRes = await fetch(`${SUPABASE_URL}/rest/v1/profiles?select=vibe&id=eq.${userId}`, { headers });
+  const current = (await safeJson(currentRes))?.[0]?.vibe || {};
+  const merged = { ...current };
+  if (vibe.moods.length) merged.moods = Array.from(new Set([...(current.moods || []), ...vibe.moods])).slice(-5);
+  if (vibe.neighbourhood) merged.neighbourhood = vibe.neighbourhood;
+  merged.updated_at = new Date().toISOString();
+  await fetch(`${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}`, {
+    method: 'PATCH', headers, body: JSON.stringify({ vibe: merged }),
+  });
+  // Affinity scoring only understands category_slug + neighbourhood (not raw
+  // mood strings), so only log a signal when there's a neighbourhood to score.
+  if (vibe.neighbourhood) {
+    await fetch(`${SUPABASE_URL}/rest/v1/user_signals`, {
+      method: 'POST', headers,
+      body: JSON.stringify({ user_id: userId, signal_type: 'vibe_update', neighbourhood: vibe.neighbourhood, weight: 5 }),
+    });
+  }
+}
+
 async function buildCatalogContext() {
   try {
     const headers = { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` };
@@ -175,6 +228,7 @@ async function buildUserContext(token) {
     return {
       text: 'The visitor is NOT signed in. You have no access to any personal account data — do not reference bookings, profile info, or loyalty points. You can still recommend activities from the CATALOG above. Invite them to sign in or continue as guest for personalized help (their own bookings, points, etc.).',
       bookings: [],
+      userId: null,
     };
   }
 
@@ -183,15 +237,15 @@ async function buildUserContext(token) {
 
     const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, { headers });
     if (!userRes.ok) {
-      return { text: "The visitor's session could not be verified. Do not reference any personal data; ask them to sign in again.", bookings: [] };
+      return { text: "The visitor's session could not be verified. Do not reference any personal data; ask them to sign in again.", bookings: [], userId: null };
     }
     const user = await userRes.json();
     if (!user?.id) {
-      return { text: "The visitor's session could not be verified. Do not reference any personal data; ask them to sign in again.", bookings: [] };
+      return { text: "The visitor's session could not be verified. Do not reference any personal data; ask them to sign in again.", bookings: [], userId: null };
     }
 
     const [profileRes, bookingsRes, collectionsRes] = await Promise.all([
-      fetch(`${SUPABASE_URL}/rest/v1/profiles?select=full_name,role,loyalty_points,loyalty_tier,home_neighbourhood&id=eq.${user.id}`, { headers }),
+      fetch(`${SUPABASE_URL}/rest/v1/profiles?select=full_name,role,loyalty_points,loyalty_tier,home_neighbourhood,vibe&id=eq.${user.id}`, { headers }),
       fetch(`${SUPABASE_URL}/rest/v1/bookings?select=code,status,starts_at,guests,total_paise,created_at,listings(title,neighbourhood,cover_image)&order=created_at.desc&limit=15`, { headers }),
       fetch(`${SUPABASE_URL}/rest/v1/collections?select=name,visibility&order=created_at.desc&limit=10`, { headers }),
     ]);
@@ -205,6 +259,13 @@ async function buildUserContext(token) {
     ctx += `Role: ${profile?.role || 'customer'}\n`;
     ctx += `Loyalty: ${profile?.loyalty_points ?? 0} points (${profile?.loyalty_tier || 'explorer'} tier)\n`;
     if (profile?.home_neighbourhood) ctx += `Home neighbourhood: ${profile.home_neighbourhood}\n`;
+    const vibe = profile?.vibe;
+    if (vibe && (vibe.moods?.length || vibe.neighbourhood)) {
+      const bits = [];
+      if (vibe.moods?.length) bits.push(`likes: ${vibe.moods.join(', ')}`);
+      if (vibe.neighbourhood) bits.push(`prefers area: ${vibe.neighbourhood}`);
+      ctx += `Known vibe from past conversations: ${bits.join(' · ')}\n`;
+    }
 
     ctx += `\nBOOKINGS (${bookings.length} most recent):\n`;
     if (!bookings.length) {
@@ -218,12 +279,13 @@ async function buildUserContext(token) {
     }
 
     ctx += `\nSAVED COLLECTIONS: ${collections.length ? collections.map(c => c.name).join(', ') : 'none'}\n`;
-    return { text: ctx, bookings };
+    return { text: ctx, bookings, userId: user.id };
   } catch (err) {
     console.error('buildUserContext error', err);
     return {
       text: 'Account data could not be loaded right now. Do not reference personal data; answer generally and suggest the user try again shortly.',
       bookings: [],
+      userId: null,
     };
   }
 }
@@ -239,9 +301,14 @@ const APP_INFO = `HOW MUMBAI INSIDER WORKS (real, verified facts about the app i
 - Guest browsing: anyone can browse categories and listings without an account; signing in (or creating one) is needed to book, save collections, or see personal bookings/points.
 - Prices shown are per person in INR (Rs.) and may include taxes at checkout.`;
 
-function systemPrompt(catalog, account) {
+function systemPrompt(catalog, account, liveVibe) {
+  const liveVibeLine = liveVibe
+    ? `\nThe user's CURRENT message just revealed: ${[liveVibe.moods.length && `mood(s) ${liveVibe.moods.join(', ')}`, liveVibe.neighbourhood && `area ${liveVibe.neighbourhood}`].filter(Boolean).join(' and ')}. Use this immediately in this reply — no need to ask about it again this turn.\n`
+    : '';
   return `You are the in-app assistant for Mumbai Insider, a Mumbai experiences & bookings app. Be concise, warm, and practical. Use Rs. for prices and IST for times.
 
+Be mood-first, like a concierge, not a search box: if the user asks for a recommendation ("what should I do", "suggest something", "I'm bored") and you don't yet know their mood/vibe (foodie, culture, adventure, relax, social, creative, party, learn, date night) AND their area of Mumbai — from this message, the conversation so far, or their known vibe in ACCOUNT CONTEXT — ask ONE brief, warm clarifying question for whichever is missing before listing picks (e.g. "What are you in the mood for, and which part of Mumbai works for you?"). Once you know both (or the user answers), go straight to 2-3 concrete picks — don't keep asking once you have enough to recommend well.
+${liveVibeLine}
 For any question about activities, tours, things to do, prices, ratings, or recommendations, use ONLY the CATALOG section below — it is the complete, real list of what Mumbai Insider offers. Never recommend or describe a place, tour, or price from your own general knowledge of Mumbai; if it's not in the CATALOG, it doesn't exist on this app.
 
 For personal or account questions, use ONLY the ACCOUNT CONTEXT section below — it has already been scoped to the current signed-in user by the database's row-level security, so it is ground truth about ONLY this user. Never claim knowledge of any other user's bookings, profile, or data, even if asked.

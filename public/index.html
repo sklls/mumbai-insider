@@ -1097,7 +1097,32 @@ async function loadListings(opts) {
   q = q.order('featured', {ascending:false}).order('booking_count', {ascending:false}).limit(30);
   const { data, error } = await q;
   if (error) { console.error(error); return []; }
-  return data;
+  return applyAffinityBoost(data);
+}
+// Personalization data layer (sub-project 2/6): a signed-in user with any
+// signal history gets items matching their category/neighbourhood affinity
+// bubbled up; ties (incl. a zero-signal user, who ties on everything) keep
+// the original featured/booking_count order untouched — additive only.
+let _affinityCache = null;
+async function getAffinity() {
+  if (!state.user) return null;
+  if (_affinityCache) return _affinityCache;
+  const { data, error } = await supabase.rpc('get_user_affinity', { p_user_id: state.user.id });
+  if (error) { console.warn('affinity', error.message); return null; }
+  return (_affinityCache = data || []);
+}
+async function applyAffinityBoost(items) {
+  const aff = await getAffinity();
+  if (!aff || !aff.length) return items;
+  const catScore = {}, nbrScore = {};
+  for (const row of aff) {
+    if (row.kind === 'category') catScore[row.value] = row.score;
+    else if (row.kind === 'neighbourhood') nbrScore[row.value] = row.score;
+  }
+  return items
+    .map((item, i) => ({ item, i, aff: (catScore[item.category_slug] || 0) + (nbrScore[item.neighbourhood] || 0) }))
+    .sort((a, b) => (b.aff - a.aff) || (a.i - b.i))
+    .map(x => x.item);
 }
 
 // ============ SCREEN: CATEGORY DIRECTORY ============
@@ -1177,7 +1202,22 @@ function renderSearch() {
 // ============ SCREEN: LISTING DETAIL ============
 async function openListing(l) {
   state.currentListing = l;
+  logSignal('view', l);
   goto('listing');
+}
+// Fire-and-forget append to the personalization signal log (see
+// docs/superpowers/specs/2026-08-19-personalization-data-layer-design.md).
+// Never blocks or surfaces errors to the user — it's purely additive.
+function logSignal(signal_type, l, weight) {
+  if (!state.user || !l) return;
+  supabase.from('user_signals').insert({
+    user_id: state.user.id,
+    listing_id: l.id || null,
+    signal_type,
+    category_slug: l.category_slug || null,
+    neighbourhood: l.neighbourhood || null,
+    weight: weight ?? (signal_type === 'book' ? 5 : 1),
+  }).then(({ error }) => { if (error) console.warn('logSignal', signal_type, error.message); });
 }
 function renderListing() {
   const l = state.currentListing;
@@ -1412,6 +1452,7 @@ async function doBooking() {
       razorpay_payment_id: 'demo_' + Date.now()
     }).eq('id', data.id);
     await supabase.rpc('award_booking_points', { p_booking_id: data.id });
+    logSignal('book', state.currentListing);
     state.currentBooking = data;
     showToast('Booking confirmed!', 'success');
     goto('confirm');
@@ -1980,6 +2021,7 @@ $('#chatInput').addEventListener('keydown', e => {
 // keep session sync
 supabase.auth.onAuthStateChange((_evt, session) => {
   state.user = session?.user || null;
+  _affinityCache = null;
 });
 </script>
 </body>
