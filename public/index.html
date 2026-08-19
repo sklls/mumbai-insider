@@ -709,7 +709,7 @@ function renderAuth() {
   if (mode === 'signup') {
     form.appendChild(el('div',{}, el('label',{},'Full name'), el('input',{id:'inp-name', placeholder:'Aisha Kulkarni', required:'', autocomplete:'name'})));
   }
-  form.appendChild(el('div',{}, el('label',{},'Email'), el('input',{id:'inp-email', type:'email', placeholder:'you@example.com', required:'', autocomplete:'email'})));
+  form.appendChild(el('div',{}, el('label',{},'Email'), el('input',{id:'inp-email', type:'text', placeholder: mode==='signin'?'you@example.com or "yash"':'you@example.com', required:'', autocomplete:'email'})));
   form.appendChild(el('div',{}, el('label',{},'Password'), el('input',{id:'inp-pass', type:'password', placeholder:'••••••••', required:'', minlength:'6', autocomplete: mode==='signin'?'current-password':'new-password'})));
   const errBox = el('div',{id:'auth-err', class:'err', style:'display:none'});
   form.appendChild(errBox);
@@ -722,7 +722,7 @@ function renderAuth() {
   ));
   wrap.appendChild(el('div',{class:'admin-note'},
     el('b',{},'Admin demo'),
-    'Sign in as ', el('span',{class:'mono'},'yash@mumbaiinsider.app'), ' / ', el('span',{class:'mono'},'xyzxyz123'), ' to manage listings, photos and categories.'
+    'Sign in as ', el('span',{class:'mono'},'yash'), ' / ', el('span',{class:'mono'},'xyzxyz123'), ' to manage listings, photos and categories.'
   ));
   wrap.appendChild(el('div',{class:'auth-guest'},
     'Or ', el('a',{onclick: () => goto('home', {reset:true})}, 'browse as guest')
@@ -735,8 +735,12 @@ async function handleAuthSubmit() {
   const errBox = $('#auth-err');
   errBox.style.display = 'none';
   btn.disabled = true;
-  const email = $('#inp-email').value.trim();
+  let email = $('#inp-email').value.trim();
   const password = $('#inp-pass').value;
+  // shortcut: allow signing in as "yash" (auto-append the admin domain)
+  if (state.auth.mode === 'signin' && email && !email.includes('@')) {
+    email = email + '@mumbaiinsider.app';
+  }
   try {
     if (state.auth.mode === 'signin') {
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
