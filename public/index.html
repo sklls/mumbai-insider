@@ -566,6 +566,22 @@ body::before{
 }
 .chat-send:disabled{opacity:.5;cursor:default}
 .chat-empty{margin:auto;text-align:center;color:var(--p-muted);font-size:12px;padding:0 24px;line-height:1.5}
+.chat-cards{display:flex;flex-direction:column;gap:8px;max-width:88%;align-self:flex-start}
+.chat-card{display:flex;flex-direction:column;gap:8px;background:var(--p-surface);border:1px solid var(--p-border);border-radius:14px;padding:10px}
+.chat-card .row{display:flex;gap:10px;align-items:center;cursor:pointer}
+.chat-card .thumb{width:44px;height:44px;border-radius:10px;flex-shrink:0;overflow:hidden;background:linear-gradient(160deg,#1E2634,#10161F);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--p-muted)}
+.chat-card .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.chat-card .info{flex:1;min-width:0}
+.chat-card h6{margin:0;font-family:var(--f-display);font-size:12.5px;font-weight:600;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-card .meta{font-size:10.5px;color:var(--p-muted);display:flex;gap:6px;align-items:center;margin-top:3px;flex-wrap:wrap}
+.chat-card .star{color:var(--p-amber);font-weight:600}
+.chat-card .price{font-family:var(--f-mono);font-size:11.5px;font-weight:600;color:var(--p-text)}
+.chat-card .ctas{display:flex;gap:6px}
+.chat-card .cta{all:unset;flex:1;text-align:center;padding:7px 10px;border-radius:100px;font-size:11px;font-weight:700;cursor:pointer;background:linear-gradient(180deg,var(--p-accent-2),var(--p-accent));color:#160805}
+.chat-card .cta.ghost{background:transparent;border:1px solid var(--p-border-2);color:var(--p-text-2);font-weight:600}
+.chat-card .status-pill{font-family:var(--f-mono);font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:100px;background:rgba(46,204,143,.14);color:var(--p-success)}
+.chat-card .status-pill.pending{background:rgba(242,169,60,.16);color:var(--p-amber)}
+.chat-card .status-pill.cancelled,.chat-card .status-pill.refunded,.chat-card .status-pill.no_show{background:rgba(255,84,112,.14);color:var(--p-danger)}
 
 /* ============ RESPONSIVE ============ */
 @media (max-width:460px){
@@ -1816,12 +1832,62 @@ function renderChatMessages() {
   } else {
     for (const m of state.chat.messages) {
       box.appendChild(el('div',{class:'chat-msg ' + m.role}, m.content));
+      if (m.cards && m.cards.length) {
+        box.appendChild(el('div',{class:'chat-cards'}, m.cards.map(renderChatCard)));
+      }
     }
   }
   if (state.chat.loading) {
     box.appendChild(el('div',{class:'chat-msg assistant typing'}, el('i',{}), el('i',{}), el('i',{})));
   }
   box.scrollTop = box.scrollHeight;
+}
+function renderChatCard(card) {
+  const thumb = el('div',{class:'thumb'});
+  if (card.image && card.image.startsWith('http')) {
+    thumb.appendChild(el('img',{src:card.image, alt:card.title, onerror:e=>{e.target.style.display='none';}}));
+  } else {
+    thumb.textContent = '📍';
+  }
+  if (card.type === 'listing') {
+    const meta = [card.rating ? `★ ${card.rating} (${card.ratingCount||0})` : null, card.neighbourhood].filter(Boolean);
+    const row = el('div',{class:'row', onclick: () => openChatCardListing(card)},
+      thumb,
+      el('div',{class:'info'},
+        el('h6',{}, card.title),
+        el('div',{class:'meta'}, meta.map((t,i) => i===0 ? el('span',{class:'star'},t) : el('span',{},t))),
+        el('div',{class:'price'}, fmtRs(card.price), el('small',{}, ' /person'))
+      )
+    );
+    return el('div',{class:'chat-card'}, row,
+      el('div',{class:'ctas'}, el('button',{class:'cta', onclick: () => openChatCardListing(card)}, 'View & Book →'))
+    );
+  }
+  // booking card
+  const row = el('div',{class:'row', onclick: () => { closeChat(); goto('trips', {reset:true}); }},
+    thumb,
+    el('div',{class:'info'},
+      el('h6',{}, card.title),
+      el('div',{class:'meta'},
+        el('span',{class:'status-pill ' + card.status}, card.status),
+        card.startsAt ? el('span',{}, fmtDate(card.startsAt)) : null,
+      ),
+      el('div',{class:'price'}, '#' + card.code)
+    )
+  );
+  const ctas = el('div',{class:'ctas'},
+    el('button',{class:'cta ghost', onclick: () => { closeChat(); goto('trips', {reset:true}); }}, 'View in Trips')
+  );
+  if (card.status === 'confirmed') {
+    ctas.appendChild(el('button',{class:'cta', onclick: () => showToast('Cancel flow — coming soon')}, 'Cancel'));
+  }
+  return el('div',{class:'chat-card'}, row, ctas);
+}
+async function openChatCardListing(card) {
+  const { data, error } = await supabase.from('listings').select('*').eq('id', card.id).single();
+  if (error || !data) { showToast('Could not load that listing', 'error'); return; }
+  closeChat();
+  openListing(data);
 }
 async function sendChatMessage() {
   const input = $('#chatInput');
@@ -1842,7 +1908,7 @@ async function sendChatMessage() {
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data?.error || 'Something went wrong');
-    state.chat.messages.push({ role: 'assistant', content: data.reply });
+    state.chat.messages.push({ role: 'assistant', content: data.reply, cards: Array.isArray(data.cards) ? data.cards : [] });
   } catch (err) {
     state.chat.messages.push({ role: 'assistant', content: "Sorry, I'm having trouble replying right now. Please try again in a moment." });
   } finally {
