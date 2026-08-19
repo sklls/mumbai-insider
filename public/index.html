@@ -521,6 +521,52 @@ body::before{
 .sheet.show{transform:translateY(0)}
 .sheet .grabber{width:36px;height:4px;border-radius:100px;background:var(--p-border-2);margin:10px auto 4px}
 
+/* ============ AI CHAT ============ */
+.tabbtn.ai-tab .ai-fab{
+  width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(180deg,var(--p-accent-2),var(--p-accent));color:#160805;
+  box-shadow:0 6px 16px -4px rgba(255,106,80,.65);margin-bottom:2px;transition:transform .2s var(--ease-spring);
+}
+.tabbtn.ai-tab .ai-fab svg{width:16px;height:16px}
+.tabbtn.ai-tab:hover .ai-fab{transform:translateY(-1px) scale(1.05)}
+.chat-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .3s;z-index:80;backdrop-filter:blur(2px)}
+.chat-backdrop.show{opacity:1;pointer-events:auto}
+.chat-panel{
+  position:absolute;left:0;right:0;bottom:0;height:78%;
+  background:var(--p-bg);border:1px solid var(--p-border);border-bottom:none;
+  border-radius:24px 24px 0 0;box-shadow:0 -20px 60px -10px rgba(0,0,0,.7);
+  transform:translateY(100%);transition:transform .38s var(--ease-spring);
+  z-index:81;display:flex;flex-direction:column;overflow:hidden;
+}
+.chat-panel.show{transform:translateY(0)}
+.chat-panel-hdr{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:14px 16px 12px;border-bottom:1px solid var(--p-border);flex-shrink:0;
+}
+.chat-panel-title{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;font-family:var(--f-display)}
+.chat-dot{width:8px;height:8px;border-radius:50%;background:var(--p-success);box-shadow:0 0 0 3px rgba(46,204,143,.2);flex-shrink:0}
+.chat-msgs{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.chat-msg{max-width:82%;padding:9px 12px;border-radius:16px;font-size:12.5px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
+.chat-msg.user{align-self:flex-end;background:linear-gradient(180deg,var(--p-accent-2),var(--p-accent));color:#160805;border-bottom-right-radius:5px}
+.chat-msg.assistant{align-self:flex-start;background:var(--p-surface);border:1px solid var(--p-border);color:var(--p-text);border-bottom-left-radius:5px}
+.chat-msg.typing{display:flex;gap:4px;align-items:center;padding:11px 14px}
+.chat-msg.typing i{width:5px;height:5px;border-radius:50%;background:var(--p-muted);animation:chatTyping 1s infinite ease-in-out}
+.chat-msg.typing i:nth-child(2){animation-delay:.15s}
+.chat-msg.typing i:nth-child(3){animation-delay:.3s}
+@keyframes chatTyping{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-2px)}}
+.chat-input-row{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--p-border);flex-shrink:0}
+.chat-input-row input{
+  flex:1;background:var(--p-surface);border:1px solid var(--p-border);border-radius:100px;
+  padding:10px 14px;color:var(--p-text);font-size:12.5px;font-family:var(--f-body);outline:none;min-width:0;
+}
+.chat-input-row input:focus{border-color:var(--p-accent)}
+.chat-send{
+  all:unset;padding:10px 16px;border-radius:100px;background:linear-gradient(180deg,var(--p-accent-2),var(--p-accent));
+  color:#160805;font-size:12.5px;font-weight:700;cursor:pointer;flex-shrink:0;
+}
+.chat-send:disabled{opacity:.5;cursor:default}
+.chat-empty{margin:auto;text-align:center;color:var(--p-muted);font-size:12px;padding:0 24px;line-height:1.5}
+
 /* ============ RESPONSIVE ============ */
 @media (max-width:460px){
   .stage{padding:14px 8px 40px;gap:12px}
@@ -545,11 +591,24 @@ body::before{
       <div class="tabbar" id="tabbar">
         <button class="tabbtn" data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 10 9-7 9 7v9a2 2 0 0 1-2 2h-4v-7H9v7H5a2 2 0 0 1-2-2z"/></svg><span>Home</span></button>
         <button class="tabbtn" data-tab="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><span>Search</span></button>
+        <button class="tabbtn ai-tab" id="aiTabBtn" type="button"><span class="ai-fab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></span><span>AI</span></button>
         <button class="tabbtn" data-tab="trips"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg><span>Trips</span></button>
         <button class="tabbtn" data-tab="profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4.5 5-6 8-6s6.5 1.5 8 6"/></svg><span>Profile</span></button>
       </div>
       <div class="toast" id="toast"></div>
       <div class="sheet-backdrop" id="sheetBackdrop"></div>
+      <div class="chat-backdrop" id="chatBackdrop"></div>
+      <div class="chat-panel" id="chatPanel">
+        <div class="chat-panel-hdr">
+          <div class="chat-panel-title"><span class="chat-dot"></span> Insider Assistant</div>
+          <button class="icon-btn" id="chatCloseBtn" type="button"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+        </div>
+        <div class="chat-msgs" id="chatMsgs"></div>
+        <div class="chat-input-row">
+          <input id="chatInput" type="text" placeholder="Ask about your bookings, points, Mumbai..." maxlength="600" />
+          <button class="chat-send" id="chatSendBtn" type="button">Send</button>
+        </div>
+      </div>
       <div class="home-indicator"></div>
     </div>
   </div>
@@ -586,6 +645,7 @@ const state = {
   admin: { tab: 'listings', editing: null, uploadedUrl: null },
   locationOn: false,
   locationBannerDismissed: false,
+  chat: { open: false, messages: [], loading: false },
 };
 
 // ============ HELPERS ============
@@ -1730,9 +1790,73 @@ async function deleteListing(id) {
 function renderWallet() { goto('trips', {reset:true}); return el('div',{}); }
 
 // ============ TAB BAR EVENTS ============
-document.querySelectorAll('.tabbtn').forEach(b => b.addEventListener('click', () => {
+document.querySelectorAll('.tabbtn[data-tab]').forEach(b => b.addEventListener('click', () => {
   goto(b.getAttribute('data-tab'), {reset:true});
 }));
+
+// ============ AI CHAT ============
+function openChat() {
+  state.chat.open = true;
+  $('#chatBackdrop').classList.add('show');
+  $('#chatPanel').classList.add('show');
+  renderChatMessages();
+  setTimeout(() => $('#chatInput')?.focus(), 350);
+}
+function closeChat() {
+  state.chat.open = false;
+  $('#chatBackdrop').classList.remove('show');
+  $('#chatPanel').classList.remove('show');
+}
+function renderChatMessages() {
+  const box = $('#chatMsgs');
+  if (!box) return;
+  box.innerHTML = '';
+  if (!state.chat.messages.length) {
+    box.appendChild(el('div',{class:'chat-empty'}, 'Ask me about your bookings, loyalty points, cancellation policy, or things to do around Mumbai.'));
+  } else {
+    for (const m of state.chat.messages) {
+      box.appendChild(el('div',{class:'chat-msg ' + m.role}, m.content));
+    }
+  }
+  if (state.chat.loading) {
+    box.appendChild(el('div',{class:'chat-msg assistant typing'}, el('i',{}), el('i',{}), el('i',{})));
+  }
+  box.scrollTop = box.scrollHeight;
+}
+async function sendChatMessage() {
+  const input = $('#chatInput');
+  const msg = input.value.trim();
+  if (!msg || state.chat.loading) return;
+  input.value = '';
+  state.chat.messages.push({ role: 'user', content: msg });
+  const history = state.chat.messages.slice(0, -1).slice(-10).map(m => ({ role: m.role, content: m.content }));
+  state.chat.loading = true;
+  renderChatMessages();
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    const headers = { 'Content-Type': 'application/json' };
+    if (session?.access_token) headers['Authorization'] = 'Bearer ' + session.access_token;
+    const res = await fetch('/api/chat', {
+      method: 'POST', headers,
+      body: JSON.stringify({ message: msg, history }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data?.error || 'Something went wrong');
+    state.chat.messages.push({ role: 'assistant', content: data.reply });
+  } catch (err) {
+    state.chat.messages.push({ role: 'assistant', content: "Sorry, I'm having trouble replying right now. Please try again in a moment." });
+  } finally {
+    state.chat.loading = false;
+    renderChatMessages();
+  }
+}
+$('#aiTabBtn').addEventListener('click', openChat);
+$('#chatCloseBtn').addEventListener('click', closeChat);
+$('#chatBackdrop').addEventListener('click', closeChat);
+$('#chatSendBtn').addEventListener('click', sendChatMessage);
+$('#chatInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); sendChatMessage(); }
+});
 
 // ============ BOOT ============
 (async () => {

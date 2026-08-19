@@ -10,3 +10,6 @@ Thumbs.db
 .cache/
 dist/
 build/
+
+.vercel
+.env*
