@@ -1,25 +1,49 @@
 # Mumbai Insider
 
-A Mumbai-native experiences marketplace — hotels + activities + concerts + food + heritage + nightlife in one mobile-first app.
+A Mumbai-native experiences marketplace — hotels + activities + concerts + food + heritage + nightlife, mobile-first.
 
-This repo contains:
+## What's in this repo
 
-| File / dir | What it is |
+| Path | What it is |
 |---|---|
-| `public/index.html` | **Interactive customer-journey prototype** — 15 screens, scroll-driven narrative, Basalt dark theme. Deploys straight to Vercel as a static site. |
-| `SUPABASE_BACKEND_PLAN.md` | End-to-end backend plan: schema, RLS, edge functions, cron, Realtime, deployment sequence, security checklist, milestones. |
-| `mumbai-app-blueprint.html` | Product research: 12 core screens, checkout flow, conversion levers, retention, India-specific features, competitor map. |
-| `mumbai-supply-gtm-strategy.html` | Supply strategy, GTM channels, Gen Z data, SEO keywords, 90-day launch plan. |
-| `ux-ui-ai-agent-playbook.html` | E-commerce UX/UI best practices, friction-elimination framework, AI concierge design + integration. |
-| `vercel.json` | Vercel deployment config (static, security headers). |
+| `public/index.html` | **Interactive customer-journey prototype** — 15 screens, scroll-driven narrative, dark "Basalt" theme. Every button, picker, tab, stepper, star, tag and toggle is live. Deploys straight to Vercel as a static site. |
+| `supabase/migrations/` | The full applied schema (18 tables, RLS, atomic booking RPC, seed data). |
+| `SUPABASE_BACKEND_PLAN.md` | End-to-end backend blueprint — schema, RLS, 10 edge functions, cron, Realtime, edge-fn code snippets, security checklist, 8-week execution roadmap. |
+| `vercel.json` | Static deploy config (security headers, `outputDirectory: public`, no build). |
+| `.env.local.example` | Env-var template — Supabase URL, anon key, Razorpay, WhatsApp, etc. |
+| `mumbai-app-blueprint.html` | Research deck: 12 core screens, checkout flow, conversion levers, retention, India-specific features, competitor map. |
+| `mumbai-supply-gtm-strategy.html` | Research deck: supply strategy, GTM channels, Gen Z data, SEO keywords, 90-day launch plan. |
+| `ux-ui-ai-agent-playbook.html` | Research deck: e-commerce UX/UI best practices, friction-elimination framework. |
+
+## Live Supabase project
+
+The backend schema is already **applied and seeded** on:
+
+```
+Project    : trial  (rwcgtxmpokzfplgnlwye)
+Region     : ap-south-1 (Mumbai)
+URL        : https://rwcgtxmpokzfplgnlwye.supabase.co
+Anon key   : sb_publishable_H_V75-uE8h8AXkb1Zm124w_v6klpmEz
+```
+
+Current state: 18 tables (all RLS-enabled), 10 sample listings, 6 real Mumbai operators, 10 neighbourhoods, 52 availability slots, 4 feature flags, 1 sample digest edition. Extensions installed: `pgcrypto`, `pgvector` (for AI recs), `pg_trgm` — all in the `extensions` schema (not `public`).
+
+To connect from a frontend:
+```ts
+import { createClient } from '@supabase/supabase-js';
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+```
 
 ## Deploy the prototype (static, ~1 minute)
 
 ### Option A — Vercel (recommended)
-1. Push this repo to GitHub (see below).
+1. Push this repo to GitHub (already done: [github.com/sklls/mumbai-insider](https://github.com/sklls/mumbai-insider)).
 2. Go to https://vercel.com/new → import the repo.
 3. Framework preset: **Other**. Output directory: `public`. No build command.
-4. Deploy. Your prototype is live at `https://<project>.vercel.app`.
+4. Deploy. Live at `https://<project>.vercel.app`.
 
 ### Option B — Vercel CLI
 ```bash
@@ -27,41 +51,28 @@ npm i -g vercel
 vercel deploy public --prod
 ```
 
-## Local preview
-
-```bash
-npm run dev
-# opens http://localhost:3000
-```
-
 ## What's in the prototype
 
-Scroll top → bottom to walk the full customer journey. The phone advances with you.
+Scroll top → bottom to walk the full customer journey. The phone advances with you. Everything is clickable:
 
 1. **First open** — onboarding, permission priming
 2. **Discover** — Home with live "Happening now" feed
-3. **Evaluate** — listing detail with sticky book bar
-4. **Book** — three-tap date/time selection
+3. **Evaluate** — listing detail with sticky book bar, tabs, save-to-wishlist heart
+4. **Book** — three-tap date/time selection with live-updating totals
 5. **Confirmed** — UPI checkout, QR ticket
 6. **Anticipate** — pre-trip reminder push, weather, checklist, meeting-point map
 7. **Experience** — in-trip live guide, stop-by-stop
-8. **Reflect** — post-trip review with tag cloud + photo prompt
+8. **Reflect** — post-trip review with star rating + tag cloud + photo prompt
 9. **Return** — weekend digest push, curated picks
-10. **AI concierge** — chat sheet that books inline
 
-The floating orange button opens the AI chat from any screen. Push-notification banners drop in at the anticipation and return stages.
+Push-notification banners drop in at the right story beats.
 
-## Backend
+## Local preview
 
-The full backend plan is in [`SUPABASE_BACKEND_PLAN.md`](./SUPABASE_BACKEND_PLAN.md) — Postgres schema (17 tables), row-level security, ten edge functions, cron jobs, Realtime channels, Next.js structure, env vars, and an 8-week execution roadmap.
+```bash
+npm run dev              # opens http://localhost:3000
+```
 
-## Later — when you upgrade to the real product
+## Backend plan
 
-The prototype is static HTML. To become the real product, follow the plan:
-- `mumbai-insider/` Next.js 14 app (App Router)
-- Supabase project in `ap-south-1` (Mumbai)
-- Razorpay for payments (UPI-first)
-- Anthropic Claude for the AI concierge
-- WhatsApp Business API for confirmations & reminders
-
-Ship one vertical (food tours) end-to-end before adding surface area.
+The full backend blueprint is in [`SUPABASE_BACKEND_PLAN.md`](./SUPABASE_BACKEND_PLAN.md). The schema portion is now live — the next steps documented there are the ten Edge Functions (Razorpay webhook, WhatsApp notify, digest generator, pre-trip reminders, embeddings refresh, QR verify, cancel) and the Next.js frontend structure.
