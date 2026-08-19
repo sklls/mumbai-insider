@@ -724,15 +724,40 @@ function setTabbar(show, active) {
 function goto(screen, opts) {
   opts = opts || {};
   if (opts.reset) state.screenStack = [];
-  if (!opts.replace) state.screenStack.push(screen);
-  else state.screenStack[state.screenStack.length-1] = screen;
+  if (opts.replace && !opts.reset) state.screenStack[state.screenStack.length-1] = screen;
+  else state.screenStack.push(screen);
+  // Reset/replace navigations (tab switches, sign-in redirects, etc.) collapse
+  // the current history entry instead of growing it, so the hardware/browser
+  // back button doesn't require replaying every tab switch to actually leave
+  // a flow. Only genuine forward navigation (opening a listing, checkout...)
+  // pushes a new entry.
+  try {
+    if (opts.reset || opts.replace) history.replaceState({depth: state.screenStack.length}, '', '#'+screen);
+    else history.pushState({depth: state.screenStack.length}, '', '#'+screen);
+  } catch (e) {}
+  saveNavState();
   render(screen);
 }
 function back() {
+  if (state.screenStack.length > 1) history.back();
+}
+// Hardware/browser back (and iOS swipe-back) previously did nothing useful --
+// goto()/back() only tracked an in-memory stack with no History API wiring.
+// This listener is what makes the real back gesture step through in-app
+// screens the same way the on-screen back arrows do.
+window.addEventListener('popstate', () => {
   if (state.screenStack.length > 1) {
     state.screenStack.pop();
+    saveNavState();
     render(state.screenStack[state.screenStack.length-1]);
   }
+});
+function saveNavState() {
+  try {
+    const lastTab = state.screenStack.filter(s => TAB_SCREENS.includes(s)).pop();
+    if (lastTab) sessionStorage.setItem('mi_lastTab', lastTab);
+    sessionStorage.setItem('mi_filters', JSON.stringify(state.filters));
+  } catch (e) {}
 }
 function statusBar() {
   return el('div', {class:'statusbar'},
@@ -1929,8 +1954,24 @@ $('#chatInput').addEventListener('keydown', e => {
   await loadSession();
   await loadCategories();
   if (state.user) {
-    if (state.profile?.onboarding_complete) goto('home',{reset:true});
-    else goto('onboard',{reset:true});
+    if (state.profile?.onboarding_complete) {
+      // Restore the tab (and mood/who filters) the user was last on, so a
+      // reload -- an accidental pull-to-refresh, or iOS Safari silently
+      // reloading a backgrounded tab -- doesn't drop them back to a blank
+      // Home. Only ever restores among the four self-loading tab screens,
+      // never mid-flow screens like checkout, which need live context
+      // (current listing, selected slot) this session storage doesn't carry.
+      let lastTab = 'home';
+      try {
+        const savedTab = sessionStorage.getItem('mi_lastTab');
+        if (savedTab && TAB_SCREENS.includes(savedTab)) lastTab = savedTab;
+        const savedFilters = sessionStorage.getItem('mi_filters');
+        if (savedFilters) Object.assign(state.filters, JSON.parse(savedFilters));
+      } catch (e) {}
+      goto(lastTab, {reset:true});
+    } else {
+      goto('onboard',{reset:true});
+    }
   } else {
     goto('auth',{reset:true});
   }
