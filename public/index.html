@@ -543,8 +543,11 @@ body::before{
   display:flex;align-items:center;justify-content:space-between;gap:8px;
   padding:14px 16px 12px;border-bottom:1px solid var(--p-border);flex-shrink:0;
 }
-.chat-panel-title{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;font-family:var(--f-display)}
-.chat-dot{width:8px;height:8px;border-radius:50%;background:var(--p-success);box-shadow:0 0 0 3px rgba(46,204,143,.2);flex-shrink:0}
+.chat-panel-id{display:flex;align-items:center;gap:10px}
+.chat-avatar{width:34px;height:34px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--p-accent-2),var(--p-accent));display:flex;align-items:center;justify-content:center;color:#160805;font-family:var(--f-display);font-weight:800;font-size:15px;box-shadow:0 4px 12px -2px rgba(255,106,80,.55)}
+.chat-panel-title{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700;font-family:var(--f-display)}
+.chat-panel-sub{font-size:10.5px;color:var(--p-muted);font-weight:500;margin-top:1px}
+.chat-dot{width:7px;height:7px;border-radius:50%;background:var(--p-success);box-shadow:0 0 0 3px rgba(46,204,143,.2);flex-shrink:0}
 .chat-msgs{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
 .chat-msg{max-width:82%;padding:9px 12px;border-radius:16px;font-size:12.5px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
 .chat-msg.user{align-self:flex-end;background:linear-gradient(180deg,var(--p-accent-2),var(--p-accent));color:#160805;border-bottom-right-radius:5px}
@@ -616,12 +619,18 @@ body::before{
       <div class="chat-backdrop" id="chatBackdrop"></div>
       <div class="chat-panel" id="chatPanel">
         <div class="chat-panel-hdr">
-          <div class="chat-panel-title"><span class="chat-dot"></span> Insider Assistant</div>
+          <div class="chat-panel-id">
+            <div class="chat-avatar">L</div>
+            <div>
+              <div class="chat-panel-title">Local <span class="chat-dot"></span></div>
+              <div class="chat-panel-sub">Your Mumbai Insider</div>
+            </div>
+          </div>
           <button class="icon-btn" id="chatCloseBtn" type="button"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
         </div>
         <div class="chat-msgs" id="chatMsgs"></div>
         <div class="chat-input-row">
-          <input id="chatInput" type="text" placeholder="Ask about your bookings, points, Mumbai..." maxlength="600" />
+          <input id="chatInput" type="text" placeholder="Ask Local about bookings, points, Mumbai..." maxlength="600" />
           <button class="chat-send" id="chatSendBtn" type="button">Send</button>
         </div>
       </div>
@@ -649,7 +658,8 @@ const state = {
   screenStack: ['auth'],
   categories: [],
   subcategories: [],
-  filters: { mood: [], who: null, category: null, subcategory: null },
+  filters: { mood: [], who: null, category: null, subcategory: null, neighbourhood: null },
+  neighbourhoods: [],
   listings: [],
   currentListing: null,
   currentAvailability: [],
@@ -662,6 +672,7 @@ const state = {
   locationOn: false,
   locationBannerDismissed: false,
   chat: { open: false, messages: [], loading: false },
+  onboard: { step: 1, moods: [], neighbourhood: null },
 };
 
 // ============ HELPERS ============
@@ -902,7 +913,11 @@ async function loadSession() {
 }
 
 // ============ SCREEN: ONBOARD ============
+const STARTER_NEIGHBOURHOODS = ['Bandra West','Colaba','Powai','Andheri West','Juhu','Lower Parel','Fort','Khar West','Worli','Dadar'];
 function renderOnboard() {
+  return state.onboard.step === 1 ? renderOnboardWelcome() : renderOnboardVibe();
+}
+function renderOnboardWelcome() {
   const w = el('div',{});
   w.appendChild(statusBar());
   w.appendChild(el('div',{class:'ob-media'},
@@ -917,15 +932,65 @@ function renderOnboard() {
       permRow('Booking reminders', 'Weather, meeting point, tickets', 'notif', true, true)
     ),
     el('div',{class:'ob-cta'},
-      el('button',{class:'btn btn-primary btn-block', onclick: async () => {
-        if (state.user) {
-          await supabase.from('profiles').update({ onboarding_complete: true }).eq('id', state.user.id);
-        }
-        goto('home', {reset:true});
-      }}, 'Get started')
+      el('button',{class:'btn btn-primary btn-block', onclick: () => { state.onboard.step = 2; render('onboard'); }}, 'Continue')
     )
   ));
   return w;
+}
+function renderOnboardVibe() {
+  const w = el('div',{});
+  w.appendChild(statusBar());
+  const intro = el('div',{style:'padding:16px 22px 4px;display:flex;flex-direction:column;gap:10px'});
+  intro.appendChild(el('div',{class:'eyebrow'}, 'One last thing'));
+  intro.appendChild(el('h2',{style:'font-family:var(--f-display);font-size:24px;font-weight:600;letter-spacing:-.03em;line-height:1.1;margin:0'}, 'What\'s your ', el('em',{style:'font-style:italic;color:var(--p-muted);font-weight:500'},'vibe?')));
+  intro.appendChild(el('p',{class:'ob-lead'}, 'Local (your Mumbai Insider assistant) uses this to recommend better from your very first open — skip if you\'d rather it learn as you go.'));
+  w.appendChild(intro);
+
+  w.appendChild(el('div',{style:'padding:18px 22px 0'}, el('b',{style:'font-size:12.5px'}, 'Pick a few moods that sound like you')));
+  const moodRow = el('div',{class:'pill-row', style:'padding:10px 20px'});
+  for (const m of MOOD_OPTS) {
+    moodRow.appendChild(el('div',{class:'pill' + (state.onboard.moods.includes(m.v)?' on':''), onclick: function(){
+      const i = state.onboard.moods.indexOf(m.v);
+      if (i === -1) state.onboard.moods.push(m.v); else state.onboard.moods.splice(i,1);
+      this.classList.toggle('on');
+    }}, m.label));
+  }
+  w.appendChild(moodRow);
+
+  w.appendChild(el('div',{style:'padding:8px 22px 0'}, el('b',{style:'font-size:12.5px'}, 'And which part of Mumbai do you call home?')));
+  const nbrRow = el('div',{class:'pill-row', style:'padding:10px 20px'});
+  for (const n of STARTER_NEIGHBOURHOODS) {
+    nbrRow.appendChild(el('div',{class:'pill' + (state.onboard.neighbourhood===n?' on':''), onclick: function(){
+      state.onboard.neighbourhood = (state.onboard.neighbourhood === n) ? null : n;
+      nbrRow.querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
+      if (state.onboard.neighbourhood) this.classList.add('on');
+    }}, n));
+  }
+  w.appendChild(nbrRow);
+
+  const ctaWrap = el('div',{style:'padding:20px 22px 24px'});
+  ctaWrap.appendChild(el('button',{class:'btn btn-primary btn-block', onclick: finishOnboarding}, 'Get started'));
+  ctaWrap.appendChild(el('button',{class:'btn btn-ghost btn-block', style:'margin-top:8px', onclick: finishOnboarding}, 'Skip for now'));
+  w.appendChild(ctaWrap);
+  return w;
+}
+async function finishOnboarding() {
+  if (state.user) {
+    const { moods, neighbourhood } = state.onboard;
+    if (moods.length || neighbourhood) {
+      const vibe = {};
+      if (moods.length) vibe.moods = moods;
+      if (neighbourhood) vibe.neighbourhood = neighbourhood;
+      vibe.updated_at = new Date().toISOString();
+      await supabase.from('profiles').update({ onboarding_complete: true, vibe }).eq('id', state.user.id);
+      if (neighbourhood) {
+        await supabase.from('user_signals').insert({ user_id: state.user.id, signal_type: 'vibe_update', neighbourhood, weight: 5 });
+      }
+    } else {
+      await supabase.from('profiles').update({ onboarding_complete: true }).eq('id', state.user.id);
+    }
+  }
+  goto('home', {reset:true});
 }
 function permRow(title, sub, key, defOn, defaultToggleable) {
   const t = el('button',{class:'toggle' + (defOn?' on':''), onclick: function(){
@@ -1079,6 +1144,13 @@ async function loadCategories() {
   state.categories = data;
   return data;
 }
+async function loadNeighbourhoods() {
+  if (state.neighbourhoods.length) return state.neighbourhoods;
+  const { data, error } = await supabase.from('neighbourhoods').select('slug,name').eq('active', true).order('name');
+  if (error) { console.error(error); return []; }
+  state.neighbourhoods = data;
+  return data;
+}
 async function loadSubcategories(categorySlug) {
   if (!state.subcategories.length) {
     const { data, error } = await supabase.from('subcategories').select('*').eq('active', true).order('sort_order');
@@ -1175,6 +1247,15 @@ function renderSearch() {
     }
   }
 
+  const nbrRow = el('div',{class:'pill-row', id:'nbr-row'});
+  nbrRow.appendChild(el('div',{class:'pill' + (!state.filters.neighbourhood?' on':''), onclick: function(){ state.filters.neighbourhood=null; doSearch(input.value.trim()); nbrRow.querySelectorAll('.pill').forEach(p=>p.classList.remove('on')); this.classList.add('on'); }}, '📍 All areas'));
+  w.appendChild(nbrRow);
+  loadNeighbourhoods().then(nbrs => {
+    for (const n of nbrs) {
+      nbrRow.appendChild(el('div',{class:'pill' + (state.filters.neighbourhood===n.name?' on':''), onclick: function(){ state.filters.neighbourhood=n.name; doSearch(input.value.trim()); nbrRow.querySelectorAll('.pill').forEach(p=>p.classList.remove('on')); this.classList.add('on'); }}, n.name));
+    }
+  });
+
   const list = el('div',{class:'card-list', id:'search-list'});
   list.appendChild(el('div',{class:'loading'}, spinnerSvg()));
   w.appendChild(list);
@@ -1186,6 +1267,7 @@ function renderSearch() {
     let query = supabase.from('listings').select('*').eq('active', true).limit(30);
     if (state.filters.category) query = query.eq('category_slug', state.filters.category);
     if (state.filters.subcategory) query = query.eq('subcategory_slug', state.filters.subcategory);
+    if (state.filters.neighbourhood) query = query.eq('neighbourhood', state.filters.neighbourhood);
     const { data } = q
       ? await query.or(`title.ilike.%${q}%,description.ilike.%${q}%,neighbourhood.ilike.%${q}%`)
       : await query.order('booking_count', {ascending:false});
@@ -1894,7 +1976,7 @@ function renderChatMessages() {
   if (!box) return;
   box.innerHTML = '';
   if (!state.chat.messages.length) {
-    box.appendChild(el('div',{class:'chat-empty'}, 'Ask me about your bookings, loyalty points, cancellation policy, or things to do around Mumbai.'));
+    box.appendChild(el('div',{class:'chat-empty'}, el('b',{style:'display:block;color:var(--p-text-2);margin-bottom:4px'}, 'Hey, I\'m Local 👋'), 'Ask me about your bookings, loyalty points, cancellation policy, or things to do around Mumbai.'));
   } else {
     for (const m of state.chat.messages) {
       box.appendChild(el('div',{class:'chat-msg ' + m.role}, m.content));
